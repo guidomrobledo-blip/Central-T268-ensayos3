@@ -71,16 +71,27 @@ header {visibility: hidden;}
 
 /* ===== HEADER PEQUEÑO ===== */
 .header-container {
-    background: red !important;
-    min-height: 20px !important;
-    padding: 0 !important;
-}
+    background: linear-gradient(
+        135deg,
+        var(--bg-header) 0%,
+        var(--bg-header-2) 100%
+    );
 
-@media (min-width: 1400px) {
-    .header-container {
-        margin: 0 -3rem 0 -3rem;
-        padding: 6px 32px;
-    }
+    position: sticky;
+    top: 0;
+    z-index: 999;
+
+    padding: 3px 20px;
+
+    min-height: 36px;
+
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
+
+    display: flex;
+    align-items: center;
+
+    box-shadow: 0 1px 3px rgba(0,0,0,.12);
 }
 
 .header-left {
@@ -90,7 +101,7 @@ header {visibility: hidden;}
 }
 
 .header-logo {
-    height: 22px;
+    height: 16px;
 }
 
 .header-text {
@@ -100,10 +111,11 @@ header {visibility: hidden;}
 }
 
 .title-main {
-    font-size: 0.95rem;
+    font-size: 0.78rem;
     line-height: 1;
     margin: 0 !important;
     padding: 0 !important;
+    font-weight: 600;
 }
 
 .title-main::after {
@@ -116,9 +128,10 @@ header {visibility: hidden;}
 }
 
 .subtitle-main {
-    font-size: 0.65rem;
+    font-size: 0.55rem;
     margin: 0 !important;
     padding: 0 !important;
+    line-height: 1;
 }
 
 /* NUEVO */
@@ -132,11 +145,9 @@ header {visibility: hidden;}
 .header-divider {
     height: 1px;
     background: var(--border-medium);
-    margin: 0 -2rem 0 -2rem;
-}
 
-@media (min-width: 1400px) {
-    .header-divider { margin: 0 -3rem 0 -3rem; }
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
 }
 
 /* Separador del Panel de Ruteo */
