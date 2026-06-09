@@ -58,9 +58,17 @@ header {visibility: hidden;}
 
 /* ===== LAYOUT ANCHO COMPLETO ===== */
 .block-container {
-    padding: 0 2rem 2rem 2rem !important;
+    padding-top: 0 !important;
+    padding-right: 2rem !important;
+    padding-bottom: 2rem !important;
+    padding-left: 2rem !important;
     max-width: 100% !important;
     background: var(--bg-secondary);
+}
+
+.block-container > div:first-child {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
 }
 
 @media (min-width: 1400px) {
@@ -81,12 +89,14 @@ header {visibility: hidden;}
     top: 0;
     z-index: 999;
 
-    padding: 3px 20px;
+    padding: 2px 14px;
 
-    min-height: 36px;
+    min-height: 28px;
 
-    margin-left: calc(-50vw + 50%);
-    margin-right: calc(-50vw + 50%);
+    width: 100vw;
+    margin-left: calc(-1 * (50vw - 50%));
+
+    box-sizing: border-box;
 
     display: flex;
     align-items: center;
@@ -101,7 +111,7 @@ header {visibility: hidden;}
 }
 
 .header-logo {
-    height: 16px;
+    height: 12px;
 }
 
 .header-text {
@@ -111,7 +121,7 @@ header {visibility: hidden;}
 }
 
 .title-main {
-    font-size: 0.78rem;
+    font-size: 0.60rem;
     line-height: 1;
     margin: 0 !important;
     padding: 0 !important;
@@ -128,7 +138,7 @@ header {visibility: hidden;}
 }
 
 .subtitle-main {
-    font-size: 0.55rem;
+    font-size: 0.45rem;
     margin: 0 !important;
     padding: 0 !important;
     line-height: 1;
