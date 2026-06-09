@@ -81,28 +81,22 @@ header {visibility: hidden;}
     top: 0;
     z-index: 999;
 
-    border-radius: 0;
-    border: none;
+    padding: 6px 20px;
 
-    padding: 8px 24px;
+    min-height: 48px;
 
-    margin: 0 -2rem 0 -2rem;
+    margin: 0 -2rem;
 
     display: flex;
     align-items: center;
-    justify-content: space-between;
 
-    gap: 10px;
-
-    min-height: 60px;
-
-    box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+    box-shadow: 0 1px 4px rgba(0,0,0,.15);
 }
 
 @media (min-width: 1400px) {
     .header-container {
         margin: 0 -3rem 0 -3rem;
-        padding: 28px 48px;
+        padding: 6px 32px;
     }
 }
 
@@ -113,9 +107,7 @@ header {visibility: hidden;}
 }
 
 .header-logo {
-    height: 28px;
-    width: auto;
-    filter: brightness(0) invert(1);
+    height: 22px;
 }
 
 .header-text {
@@ -125,13 +117,8 @@ header {visibility: hidden;}
 }
 
 .title-main {
-    color: var(--text-white) !important;
-    font-weight: 700;
-    font-size: 1.15rem;
-    margin: 0;
-    letter-spacing: 0.4px;
-    text-shadow: none;
-    line-height: 1.1;
+    font-size: 0.95rem;
+    line-height: 1;
 }
 
 .title-main::after { display: none; }
@@ -140,10 +127,7 @@ header {visibility: hidden;}
 .title-main span { color: var(--text-white) !important; }
 
 .subtitle-main {
-    color: var(--accent-blue-soft);
-    font-size: 0.75rem;
-    margin: 0;
-    font-weight: 500;
+    font-size: 0.65rem;
 }
 
 /* Linea fina bajo header (separador del boceto) */
