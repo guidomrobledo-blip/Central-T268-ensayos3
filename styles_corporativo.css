@@ -102,15 +102,30 @@ header {visibility: hidden;}
 .title-main {
     font-size: 0.95rem;
     line-height: 1;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
-.title-main::after { display: none; }
+.title-main::after {
+    display: none;
+}
 
 .title-main,
-.title-main span { color: var(--text-white) !important; }
+.title-main span {
+    color: var(--text-white) !important;
+}
 
 .subtitle-main {
     font-size: 0.65rem;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* NUEVO */
+.header-text h1,
+.header-text p {
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 /* Linea fina bajo header (separador del boceto) */
