@@ -238,46 +238,66 @@ div.stButton > button[kind="primary"]:hover {
     text-decoration: none !important;
 }
 
-/* ===== FILE UPLOADER COMPACTO ===== */
+/* ===== FILE UPLOADER ULTRA COMPACTO (TAMAÑO BOTÓN) ===== */
 [data-testid="stFileUploader"] {
-    background: var(--bg-primary);
-    border-radius: var(--radius-sm);
-    padding: 0px 6px;
-    border: 1px solid var(--border-medium);
-    transition: all 0.15s ease;
-}
-
-[data-testid="stFileUploader"]:hover { border-color: var(--accent-primary); }
-
-[data-testid="stFileUploader"] label { color: var(--text-secondary) !important; font-size: 0.7em !important; }
-[data-testid="stFileUploader"] p { color: var(--text-muted) !important; }
-[data-testid="stFileUploader"] span { color: var(--text-primary) !important; font-weight: 500; }
-[data-testid="stFileUploader"] small { color: var(--text-muted) !important; }
-
-[data-testid="stFileUploaderDropzone"] {
     background: var(--bg-primary) !important;
-    border: none !important;
-    padding: 2px !important;
-}
-
-[data-testid="stFileUploaderDropzone"] svg { color: var(--accent-primary) !important; opacity: 0.6; }
-[data-testid="stFileUploaderDropzone"] > div { color: var(--text-secondary) !important; }
-[data-testid="stFileUploaderDropzone"] small { color: var(--text-muted) !important; }
-
-[data-testid="stFileUploader"] button {
-    height: 30px !important;
-    font-size: 0.75rem !important;
-    background: var(--bg-primary) !important;
-    color: var(--text-primary) !important;
-    border: 1px solid var(--border-medium) !important;
     border-radius: var(--radius-sm) !important;
+    border: 1px solid var(--border-medium) !important;
+    height: 42px !important; /* Misma altura que los botones */
+    padding: 0px !important;
+    margin: 0px !important;
+    overflow: hidden !important;
+    display: flex !important;
+    align-items: center !important;
+    box-shadow: var(--shadow-sm) !important;
+    transition: all 0.15s ease !important;
 }
 
-[data-testid="stFileUploader"] button:hover {
+[data-testid="stFileUploader"]:hover {
+    border-color: var(--text-primary) !important;
     background: var(--bg-tertiary) !important;
-    border-color: var(--border-dark) !important;
+    box-shadow: var(--shadow-md) !important;
 }
 
+/* Ocultar textos secundarios e instrucciones de arrastre que rompen el tamaño */
+[data-testid="stFileUploader"] section > div ~ div, 
+[data-testid="stFileUploader"] text, 
+[data-testid="stFileUploader"] p, 
+[data-testid="stFileUploader"] small {
+    display: none !important;
+}
+
+/* Rediseñar la zona de drop/botón interno para que ocupe todo el espacio */
+[data-testid="stFileUploaderDropzone"] {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 10px !important;
+    height: 100% !important;
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+}
+
+/* Estilo para el botón interno de "Browse files" que genera Streamlit */
+[data-testid="stFileUploader"] button {
+    background: transparent !important;
+    color: var(--text-primary) !important;
+    border: none !important;
+    font-weight: 600 !important;
+    font-size: 0.78em !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.4px !important;
+    padding: 0 !important;
+    height: 100% !important;
+    width: 100% !important;
+    cursor: pointer !important;
+}
+
+[data-testid="stFileUploaderDropzone"] svg {
+    display: none !important; /* Ocultamos el icono de la nube para ganar espacio */
+}
 /* ===== INPUTS ===== */
 .stTextInput input,
 .stNumberInput input {
