@@ -275,7 +275,8 @@ if archivo_cdp:
         if fue_registrado:
             st.rerun()
 
-    st.success(f"Janis.xlsx CARGADO: {fecha_tit}")
+    # CAMBIO AQUÍ: Alerta flotante ultra-compacta que desaparece sola
+    st.toast(f"Janis.xlsx CARGADO: {fecha_tit}", icon="✅")
 
     # --- BOTONES DE DESCARGA SEGUN PLANILLA SELECCIONADA ---
     if btn_1:
