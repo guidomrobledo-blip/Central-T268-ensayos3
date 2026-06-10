@@ -243,7 +243,7 @@ div.stButton > button[kind="primary"]:hover {
     background: var(--bg-primary) !important;
     border-radius: var(--radius-sm) !important;
     border: 1px solid var(--border-medium) !important;
-    height: 42px !important; /* Altura idéntica a tus botones del panel */
+    height: 42px !important; /* Altura exacta de los botones colindantes */
     padding: 0px !important;
     margin: 0px !important;
     overflow: hidden !important;
@@ -260,7 +260,7 @@ div.stButton > button[kind="primary"]:hover {
     box-shadow: var(--shadow-md) !important;
 }
 
-/* Ocultar textos e iconos secundarios en estado vacío */
+/* Limpieza absoluta de textos distractores de arrastre */
 [data-testid="stFileUploader"] section > div ~ div, 
 [data-testid="stFileUploader"] text, 
 [data-testid="stFileUploader"] p,
@@ -268,7 +268,7 @@ div.stButton > button[kind="primary"]:hover {
     display: none !important;
 }
 
-/* Forzar la zona de drop principal */
+/* Control total de la zona interna de drop */
 [data-testid="stFileUploaderDropzone"] {
     background: transparent !important;
     border: none !important;
@@ -282,7 +282,7 @@ div.stButton > button[kind="primary"]:hover {
     margin: 0 !important;
 }
 
-/* Botón "Browse files" en estado vacío */
+/* Botón "Browse files" cuando está vacío (Alineación y tipografía corporativa) */
 [data-testid="stFileUploader"] section button {
     background: transparent !important;
     color: var(--text-primary) !important;
@@ -299,25 +299,26 @@ div.stButton > button[kind="primary"]:hover {
     box-shadow: none !important;
 }
 
-/* ENTORNO CUANDO EL ARCHIVO YA ESTÁ CARGADO */
-[data-testid="stFileUploader"] [data-testid="stFileUploaderFileData"] {
+/* SOLUCIÓN QUIRÚRGICA: CAMBIO DE SELECTOR DIRECTO PARA EL ARCHIVO CARGADO */
+[data-testid="stFileUploaderFileData"] {
     display: flex !important;
     flex-direction: row !important;
     align-items: center !important;
     justify-content: space-between !important;
-    height: 100% !important;
+    height: 40px !important; /* Forzado milimétrico dentro de los 42px */
     width: 100% !important;
-    padding: 0 10px !important;
+    padding: 0 6px !important;
     margin: 0 !important;
     position: absolute !important;
     top: 0 !important;
     left: 0 !important;
     background: var(--bg-primary) !important;
     box-sizing: border-box !important;
+    z-index: 10 !important;
 }
 
-/* Contenedor del nombre y el peso del archivo (Evitamos el bloque negro nativo) */
-[data-testid="stFileUploader"] [data-testid="stFileUploaderFileData"] > div:first-child {
+/* Caja de textos del archivo (Elimina el fondo gris/negro nativo) */
+[data-testid="stFileUploaderFileData"] > div:first-child {
     background: transparent !important; 
     padding: 0 !important;
     margin: 0 !important;
@@ -326,22 +327,23 @@ div.stButton > button[kind="primary"]:hover {
     justify-content: center !important;
     align-items: flex-start !important;
     height: 100% !important;
-    max-width: 80% !important;
+    max-width: 78% !important;
 }
 
-/* Nombre del archivo (ej: shipping-1.xlsx) perfectamente centrado en su eje */
-[data-testid="stFileUploader"] [data-testid="stFileUploaderFileData"] span {
-    font-size: 0.72rem !important;
+/* Texto del nombre del documento cargado (shipping-1.xlsx) */
+[data-testid="stFileUploaderFileData"] span {
+    font-size: 0.70rem !important;
     color: var(--text-primary) !important;
-    line-height: 1.2 !important;
+    line-height: 1.1 !important;
     display: block !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
     white-space: nowrap !important;
+    font-weight: 500 !important;
 }
 
-/* Peso del archivo (ej: 22.0KB) */
-[data-testid="stFileUploader"] [data-testid="stFileUploaderFileData"] small {
+/* Texto del tamaño del archivo (22.0KB) */
+[data-testid="stFileUploaderFileData"] small {
     display: block !important; 
     font-size: 0.58rem !important;
     color: var(--text-muted) !important;
@@ -350,12 +352,12 @@ div.stButton > button[kind="primary"]:hover {
     padding: 0 !important;
 }
 
-/* ARREGLO CLAVE: Forzar al botón de eliminar ('X') a no heredar los 42px del panel */
-[data-testid="stFileUploader"] [data-testid="stFileUploaderFileData"] button {
-    width: 22px !important;
-    height: 22px !important;
-    min-height: 22px !important;
-    max-height: 22px !important;
+/* Botón de la cruz ('X') para eliminar archivo sin desbordar */
+[data-testid="stFileUploaderFileData"] button {
+    width: 20px !important;
+    height: 20px !important;
+    min-height: 20px !important;
+    max-height: 20px !important;
     padding: 0 !important;
     margin: 0 !important;
     background: transparent !important;
@@ -367,7 +369,7 @@ div.stButton > button[kind="primary"]:hover {
     box-shadow: none !important;
 }
 
-[data-testid="stFileUploader"] [data-testid="stFileUploaderFileData"] button:hover {
+[data-testid="stFileUploaderFileData"] button:hover {
     background: var(--danger-bg) !important;
     border-radius: 50% !important;
 }
