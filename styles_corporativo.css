@@ -251,6 +251,7 @@ div.stButton > button[kind="primary"]:hover {
     align-items: center !important;
     box-shadow: var(--shadow-sm) !important;
     transition: all 0.15s ease !important;
+    position: relative !important;
 }
 
 [data-testid="stFileUploader"]:hover {
@@ -259,11 +260,10 @@ div.stButton > button[kind="primary"]:hover {
     box-shadow: var(--shadow-md) !important;
 }
 
-/* Ocultar textos secundarios e instrucciones de arrastre que rompen el tamaño */
+/* Ocultar SOLAMENTE las instrucciones de arrastre del modo vacío */
 [data-testid="stFileUploader"] section > div ~ div, 
 [data-testid="stFileUploader"] text, 
-[data-testid="stFileUploader"] p, 
-[data-testid="stFileUploader"] small {
+[data-testid="stFileUploader"] p {
     display: none !important;
 }
 
@@ -278,9 +278,10 @@ div.stButton > button[kind="primary"]:hover {
     align-items: center !important;
     justify-content: center !important;
     cursor: pointer !important;
+    margin: 0 !important;
 }
 
-/* Estilo para el botón interno de "Browse files" que genera Streamlit */
+/* Estilo para el botón interno de "Browse files" cuando está vacío */
 [data-testid="stFileUploader"] button {
     background: transparent !important;
     color: var(--text-primary) !important;
@@ -296,53 +297,70 @@ div.stButton > button[kind="primary"]:hover {
 }
 
 [data-testid="stFileUploaderDropzone"] svg {
-    display: none !important; /* Ocultamos el icono de la nube para ganar espacio */
+    display: none !important; /* Ocultamos el icono de la nube */
 }
 
-/* Corrección para cuando el archivo ya está cargado */
+/* CORRECCIÓN QUIRÚRGICA: CUANDO EL ARCHIVO YA ESTÁ CARGADO */
 [data-testid="stFileUploader"] [data-testid="stFileUploaderFileData"] {
     display: flex !important;
     align-items: center !important;
-    justify-content: center !important;
+    justify-content: space-between !important;
     height: 100% !important;
     width: 100% !important;
-    padding: 0 4px !important;
+    padding: 0 8px !important;
     margin: 0 !important;
+    position: absolute !important; /* Forzamos a que cubra todo el botón */
+    top: 0 !important;
+    left: 0 !important;
+    background: var(--bg-primary) !important;
 }
 
-/* Ajustar el contenedor negro interno donde sale el nombre del archivo */
+/* Forzar la caja interna (la que se veía negra/oscura arriba) */
 [data-testid="stFileUploader"] [data-testid="stFileUploaderFileData"] > div:first-child {
-    max-height: 34px !important; /* Forzamos a que no supere la altura del botón */
-    padding: 2px 8px !important;
+    background: transparent !important; /* Le quitamos el fondo oscuro pesado */
+    padding: 0 !important;
     margin: 0 !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: center !important;
+    align-items: flex-start !important;
+    height: 100% !important;
+    max-width: 75% !important;
 }
 
-/* Achicar la tipografía del nombre del archivo cargado para que no se corte */
+/* El nombre del archivo (ej: shipping-1.xlsx) */
 [data-testid="stFileUploader"] [data-testid="stFileUploaderFileData"] span {
-    font-size: 0.70rem !important;
+    font-size: 0.72rem !important;
+    color: var(--text-primary) !important;
     line-height: 1.1 !important;
     display: block !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
 }
 
-/* Achicar el texto del peso del archivo (ej: 22.0KB) */
+/* El tamaño del archivo (ej: 22.0KB) */
 [data-testid="stFileUploader"] [data-testid="stFileUploaderFileData"] small {
-    display: block !important; /* Le devolvemos la visibilidad pero controlado */
-    font-size: 0.60rem !important;
-    color: var(--text-light) !important;
-    margin-top: 1px !important;
+    display: block !important; 
+    font-size: 0.58rem !important;
+    color: var(--text-muted) !important;
+    line-height: 1 !important;
+    margin: 2px 0 0 0 !important;
+    padding: 0 !important;
 }
 
-/* Reajustar el botón de eliminar archivo (la cruz o tacho) para que no deforme el contenedor */
+/* El botón de eliminar (la 'X') acomodado a la derecha */
 [data-testid="stFileUploader"] [data-testid="stFileUploaderFileData"] button {
-    width: auto !important;
+    width: 24px !important;
     height: 24px !important;
-    padding: 0 6px !important;
-    margin-left: 4px !important;
-    line-height: 1 !important;
+    min-height: 24px !important;
+    padding: 0 !important;
+    margin: 0 !important;
     background: transparent !important;
+    color: var(--danger) !important; /* La cruz en rojo para que destaque */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
 /* ===== INPUTS ===== */
 .stTextInput input,
