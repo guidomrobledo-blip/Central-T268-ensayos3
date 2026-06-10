@@ -196,6 +196,14 @@ st.markdown(f"""
     <div class="header-divider"></div>
 """, unsafe_allow_html=True)
 
+st.markdown(f"""
+    <div class="header-container">
+        ...
+    </div>
+    <div class="header-divider"></div>
+""", unsafe_allow_html=True)
+
+st.markdown('<div class="contenido-principal">', unsafe_allow_html=True)
 # =====================================================
 # BARRA DE ACCIONES:  UPLOAD + PLANILLAS
 # =====================================================
@@ -459,6 +467,8 @@ for col, (label, claves) in zip(cols_bandas, BANDAS_FIJAS):
                 '<div class="banda-vacia">Sin pedidos cargados</div>',
                 unsafe_allow_html=True
             )
+
+st.markdown('</div>', unsafe_allow_html=True)
 
 # =====================================================
 # FOOTER
