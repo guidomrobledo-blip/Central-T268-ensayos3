@@ -243,7 +243,7 @@ div.stButton > button[kind="primary"]:hover {
     background: var(--bg-primary) !important;
     border-radius: var(--radius-sm) !important;
     border: 1px solid var(--border-medium) !important;
-    height: 42px !important; /* Misma altura que los botones */
+    height: 42px !important; /* Altura idéntica a tus botones del panel */
     padding: 0px !important;
     margin: 0px !important;
     overflow: hidden !important;
@@ -260,18 +260,19 @@ div.stButton > button[kind="primary"]:hover {
     box-shadow: var(--shadow-md) !important;
 }
 
-/* Ocultar SOLAMENTE las instrucciones de arrastre del modo vacío */
+/* Ocultar textos e iconos secundarios en estado vacío */
 [data-testid="stFileUploader"] section > div ~ div, 
 [data-testid="stFileUploader"] text, 
-[data-testid="stFileUploader"] p {
+[data-testid="stFileUploader"] p,
+[data-testid="stFileUploaderDropzone"] svg {
     display: none !important;
 }
 
-/* Rediseñar la zona de drop/botón interno para que ocupe todo el espacio */
+/* Forzar la zona de drop principal */
 [data-testid="stFileUploaderDropzone"] {
     background: transparent !important;
     border: none !important;
-    padding: 0 10px !important;
+    padding: 0 8px !important;
     height: 100% !important;
     width: 100% !important;
     display: flex !important;
@@ -281,8 +282,8 @@ div.stButton > button[kind="primary"]:hover {
     margin: 0 !important;
 }
 
-/* Estilo para el botón interno de "Browse files" cuando está vacío */
-[data-testid="stFileUploader"] button {
+/* Botón "Browse files" en estado vacío */
+[data-testid="stFileUploader"] section button {
     background: transparent !important;
     color: var(--text-primary) !important;
     border: none !important;
@@ -293,31 +294,31 @@ div.stButton > button[kind="primary"]:hover {
     padding: 0 !important;
     height: 100% !important;
     width: 100% !important;
+    max-height: 42px !important;
     cursor: pointer !important;
+    box-shadow: none !important;
 }
 
-[data-testid="stFileUploaderDropzone"] svg {
-    display: none !important; /* Ocultamos el icono de la nube */
-}
-
-/* CORRECCIÓN QUIRÚRGICA: CUANDO EL ARCHIVO YA ESTÁ CARGADO */
+/* ENTORNO CUANDO EL ARCHIVO YA ESTÁ CARGADO */
 [data-testid="stFileUploader"] [data-testid="stFileUploaderFileData"] {
     display: flex !important;
+    flex-direction: row !important;
     align-items: center !important;
     justify-content: space-between !important;
     height: 100% !important;
     width: 100% !important;
-    padding: 0 8px !important;
+    padding: 0 10px !important;
     margin: 0 !important;
-    position: absolute !important; /* Forzamos a que cubra todo el botón */
+    position: absolute !important;
     top: 0 !important;
     left: 0 !important;
     background: var(--bg-primary) !important;
+    box-sizing: border-box !important;
 }
 
-/* Forzar la caja interna (la que se veía negra/oscura arriba) */
+/* Contenedor del nombre y el peso del archivo (Evitamos el bloque negro nativo) */
 [data-testid="stFileUploader"] [data-testid="stFileUploaderFileData"] > div:first-child {
-    background: transparent !important; /* Le quitamos el fondo oscuro pesado */
+    background: transparent !important; 
     padding: 0 !important;
     margin: 0 !important;
     display: flex !important;
@@ -325,42 +326,50 @@ div.stButton > button[kind="primary"]:hover {
     justify-content: center !important;
     align-items: flex-start !important;
     height: 100% !important;
-    max-width: 75% !important;
+    max-width: 80% !important;
 }
 
-/* El nombre del archivo (ej: shipping-1.xlsx) */
+/* Nombre del archivo (ej: shipping-1.xlsx) perfectamente centrado en su eje */
 [data-testid="stFileUploader"] [data-testid="stFileUploaderFileData"] span {
     font-size: 0.72rem !important;
     color: var(--text-primary) !important;
-    line-height: 1.1 !important;
+    line-height: 1.2 !important;
     display: block !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
     white-space: nowrap !important;
 }
 
-/* El tamaño del archivo (ej: 22.0KB) */
+/* Peso del archivo (ej: 22.0KB) */
 [data-testid="stFileUploader"] [data-testid="stFileUploaderFileData"] small {
     display: block !important; 
     font-size: 0.58rem !important;
     color: var(--text-muted) !important;
     line-height: 1 !important;
-    margin: 2px 0 0 0 !important;
+    margin: 1px 0 0 0 !important;
     padding: 0 !important;
 }
 
-/* El botón de eliminar (la 'X') acomodado a la derecha */
+/* ARREGLO CLAVE: Forzar al botón de eliminar ('X') a no heredar los 42px del panel */
 [data-testid="stFileUploader"] [data-testid="stFileUploaderFileData"] button {
-    width: 24px !important;
-    height: 24px !important;
-    min-height: 24px !important;
+    width: 22px !important;
+    height: 22px !important;
+    min-height: 22px !important;
+    max-height: 22px !important;
     padding: 0 !important;
     margin: 0 !important;
     background: transparent !important;
-    color: var(--danger) !important; /* La cruz en rojo para que destaque */
+    border: none !important;
+    color: var(--danger) !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
+    box-shadow: none !important;
+}
+
+[data-testid="stFileUploader"] [data-testid="stFileUploaderFileData"] button:hover {
+    background: var(--danger-bg) !important;
+    border-radius: 50% !important;
 }
 /* ===== INPUTS ===== */
 .stTextInput input,
