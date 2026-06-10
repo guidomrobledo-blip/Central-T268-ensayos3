@@ -467,12 +467,6 @@ h1, h2, h3, h4, h5, h6 { color: var(--text-primary) !important; }
 /* ===== COLUMN GAPS ===== */
 [data-testid="column"] { padding: 0 8px; }
 
-/* ===== CONTENIDO PRINCIPAL ===== */
-.contenido-principal {
-    padding-left: 20px;
-    padding-right: 20px;
-}
-
 /* ===== FOOTER ===== */
 .footer {
     text-align: center;
