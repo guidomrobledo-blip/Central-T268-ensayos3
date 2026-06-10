@@ -201,13 +201,14 @@ st.markdown(f"""
 # =====================================================
 st.write("")
 
-bu, b1, b2, b3, b4, b5 = st.columns([2.2, 1, 1, 1, 1, 1])
+bu, b1, b2, b3, b4, b5 = st.columns([1, 1, 1, 1, 1, 1])
 
 with bu:
     archivo_cdp = st.file_uploader(
         "Upload (cargar)",
         type=["xlsx"],
-        key="uploader_cdp"
+        key="uploader_cdp",
+        label_visibility="collapsed"
     )
 with b1:
     btn_1 = st.button("PLANILLA CLIENTES", key="top_1", use_container_width=True)
