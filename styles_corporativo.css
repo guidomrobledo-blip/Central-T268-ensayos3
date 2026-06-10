@@ -58,11 +58,10 @@ header {visibility: hidden;}
 
 /* ===== LAYOUT ANCHO COMPLETO ===== */
 .block-container {
-    padding: 0 !important;
+    padding: 0 2rem 2rem 2rem !important;
     max-width: 100% !important;
     background: var(--bg-secondary);
 }
-
 .block-container > div:first-child {
     margin-top: 0 !important;
     padding-top: 0 !important;
