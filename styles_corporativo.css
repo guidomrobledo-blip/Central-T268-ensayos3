@@ -298,6 +298,52 @@ div.stButton > button[kind="primary"]:hover {
 [data-testid="stFileUploaderDropzone"] svg {
     display: none !important; /* Ocultamos el icono de la nube para ganar espacio */
 }
+
+/* Corrección para cuando el archivo ya está cargado */
+[data-testid="stFileUploader"] [data-testid="stFileUploaderFileData"] {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 100% !important;
+    width: 100% !important;
+    padding: 0 4px !important;
+    margin: 0 !important;
+}
+
+/* Ajustar el contenedor negro interno donde sale el nombre del archivo */
+[data-testid="stFileUploader"] [data-testid="stFileUploaderFileData"] > div:first-child {
+    max-height: 34px !important; /* Forzamos a que no supere la altura del botón */
+    padding: 2px 8px !important;
+    margin: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+}
+
+/* Achicar la tipografía del nombre del archivo cargado para que no se corte */
+[data-testid="stFileUploader"] [data-testid="stFileUploaderFileData"] span {
+    font-size: 0.70rem !important;
+    line-height: 1.1 !important;
+    display: block !important;
+}
+
+/* Achicar el texto del peso del archivo (ej: 22.0KB) */
+[data-testid="stFileUploader"] [data-testid="stFileUploaderFileData"] small {
+    display: block !important; /* Le devolvemos la visibilidad pero controlado */
+    font-size: 0.60rem !important;
+    color: var(--text-light) !important;
+    margin-top: 1px !important;
+}
+
+/* Reajustar el botón de eliminar archivo (la cruz o tacho) para que no deforme el contenedor */
+[data-testid="stFileUploader"] [data-testid="stFileUploaderFileData"] button {
+    width: auto !important;
+    height: 24px !important;
+    padding: 0 6px !important;
+    margin-left: 4px !important;
+    line-height: 1 !important;
+    background: transparent !important;
+}
 /* ===== INPUTS ===== */
 .stTextInput input,
 .stNumberInput input {
