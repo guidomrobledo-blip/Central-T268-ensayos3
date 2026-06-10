@@ -58,10 +58,7 @@ header {visibility: hidden;}
 
 /* ===== LAYOUT ANCHO COMPLETO ===== */
 .block-container {
-    padding-top: 0 !important;
-    padding-right: 2rem !important;
-    padding-bottom: 2rem !important;
-    padding-left: 2rem !important;
+    padding: 0 !important;
     max-width: 100% !important;
     background: var(--bg-secondary);
 }
