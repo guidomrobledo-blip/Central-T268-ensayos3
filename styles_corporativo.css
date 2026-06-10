@@ -299,15 +299,12 @@ div.stButton > button[kind="primary"]:hover {
     box-shadow: none !important;
 }
 
-/* SOLUCIÓN QUIRÚRGICA: CAMBIO DE SELECTOR DIRECTO PARA EL ARCHIVO CARGADO */
+/* SOLUCIÓN RESILIENTE AL ZOOM: SELECTOR DIRECTO PARA EL ARCHIVO CARGADO */
 [data-testid="stFileUploaderFileData"] {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    height: 40px !important; /* Forzado milimétrico dentro de los 42px */
+    display: block !important; /* Cambiado de flex a block para evitar colapsos por falta de ancho */
+    height: 40px !important;
     width: 100% !important;
-    padding: 0 6px !important;
+    padding: 3px 6px !important; /* Margen interno controlado verticalmente */
     margin: 0 !important;
     position: absolute !important;
     top: 0 !important;
@@ -315,45 +312,50 @@ div.stButton > button[kind="primary"]:hover {
     background: var(--bg-primary) !important;
     box-sizing: border-box !important;
     z-index: 10 !important;
+    overflow: hidden !important;
 }
 
-/* Caja de textos del archivo (Elimina el fondo gris/negro nativo) */
+/* Caja de textos del archivo (Alineación vertical milimétrica) */
 [data-testid="stFileUploaderFileData"] > div:first-child {
     background: transparent !important; 
     padding: 0 !important;
     margin: 0 !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-    align-items: flex-start !important;
+    display: block !important;
+    float: left !important; /* Desplazamiento a la izquierda inmune al espacio */
+    width: calc(100% - 24px) !important; /* Deja espacio exacto para la cruz a la derecha */
     height: 100% !important;
-    max-width: 78% !important;
+    text-align: left !important;
 }
 
 /* Texto del nombre del documento cargado (shipping-1.xlsx) */
 [data-testid="stFileUploaderFileData"] span {
-    font-size: 0.70rem !important;
+    font-size: 0.68rem !important; /* Ligera reducción para asegurar que entre al 100% de zoom */
     color: var(--text-primary) !important;
-    line-height: 1.1 !important;
+    line-height: 18px !important; /* Forzado de altura de línea fija */
     display: block !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
     white-space: nowrap !important;
     font-weight: 500 !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 /* Texto del tamaño del archivo (22.0KB) */
 [data-testid="stFileUploaderFileData"] small {
     display: block !important; 
-    font-size: 0.58rem !important;
+    font-size: 0.55rem !important;
     color: var(--text-muted) !important;
-    line-height: 1 !important;
-    margin: 1px 0 0 0 !important;
+    line-height: 12px !important; /* Forzado de altura de línea fija */
+    margin: 0 !important;
     padding: 0 !important;
 }
 
-/* Botón de la cruz ('X') para eliminar archivo sin desbordar */
+/* Botón de la cruz ('X') posicionado estático a la derecha para evitar saltos */
 [data-testid="stFileUploaderFileData"] button {
+    position: absolute !important;
+    right: 4px !important;
+    top: 10px !important; /* Centrado vertical matemático (40px - 20px) / 2 */
     width: 20px !important;
     height: 20px !important;
     min-height: 20px !important;
