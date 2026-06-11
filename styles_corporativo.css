@@ -614,19 +614,39 @@ h1, h2, h3, h4, h5, h6 { color: var(--text-primary) !important; }
    ESTILIZADO MICRO Y SECTOR DE ALERTAS INMÓVIL
    ===================================================== */
 
-/* 1. Hachado general de la fila de inputs (Más bajos y compactos) */
+/* 1. Hachado general de la fila de inputs (Texto centrado a 28px) */
 .stTextInput input,
-.stNumberInput input,
-.stSelectbox > div > div {
-    height: 28px !important; /* Altura reducida al mínimo operativo */
+.stNumberInput input {
+    height: 28px !important;
     padding: 2px 8px !important;
     font-size: 0.8rem !important;
+}
+
+/* Corrección quirúrgica para selectores (Tipo y Banda) */
+.stSelectbox > div [data-baseweb="select"] {
+    height: 28px !important;
+    min-height: 28px !important;
+    display: flex !important;
+    align-items: center !important;
+    padding: 0 !important;
+}
+
+.stSelectbox > div [data-baseweb="select"] > div {
+    padding: 0 8px !important;
+    font-size: 0.8rem !important;
+    line-height: 28px !important;
+}
+
+/* Achicar las flechitas de los selectores para que no rompan el alto */
+.stSelectbox > div [data-baseweb="select"] button {
+    padding: 0 !important;
+    margin: 0 !important;
 }
 
 .stTextInput label,
 .stNumberInput label,
 .stSelectbox label {
-    font-size: 0.7rem !important; /* Etiquetas más chicas y discretas */
+    font-size: 0.7rem !important;
     margin-bottom: 2px !important;
 }
 
@@ -647,10 +667,10 @@ div.stButton > button {
 /* 2. Sistema de Alertas Absoluto e Inmóvil (Contenedor Altura Cero) */
 .wrapper-alertas-micro {
     position: absolute !important;
-    top: 18px !important; /* Alineado justo al lado de los controles */
+    top: 18px !important;
     left: 8px !important;
     width: 95% !important;
-    height: 0px !important; /* Cero impacto vertical en el layout */
+    height: 0px !important;
     margin: 0 !important;
     padding: 0 !important;
     z-index: 9999 !important;
@@ -675,15 +695,20 @@ div.stButton > button {
     line-height: 1 !important;
 }
 
-/* Rediseño de botones de acción a tamaño micro (1/5 del original) */
+/* Rediseño agresivo de botones de acción a tamaño micro (1/5 del original) */
 [data-testid="column"]:nth-child(6) div.stButton > button {
-    height: 20px !important; /* Chatitos tipo etiqueta */
+    height: 20px !important;
+    min-height: 20px !important;
     font-size: 0.62rem !important;
     font-weight: 700 !important;
     padding: 0 4px !important;
     border-radius: 3px !important;
     box-shadow: none !important;
     margin-top: 2px !important;
+    line-height: 1 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
 
 /* Botón OK */
