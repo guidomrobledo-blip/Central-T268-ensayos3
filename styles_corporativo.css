@@ -58,19 +58,18 @@ header {visibility: hidden;}
 
 /* ===== LAYOUT ANCHO COMPLETO ===== */
 .block-container {
-    padding: 70px 2rem 2rem 2rem !important; /* Dejamos 70px libres arriba limpios para el header */
+    padding: 45px 2rem 2rem 2rem !important; /* Luz ajustada al mínimo arriba */
     max-width: 100% !important;
     background: var(--bg-secondary);
 }
 
-/* Eliminamos la regla vieja que forzaba el padding-top en 0 */
 .block-container > div:first-child {
     margin-top: 0 !important;
 }
 
 @media (min-width: 1400px) {
     .block-container {
-        padding: 70px 3rem 2rem 3rem !important; /* Mantenemos los 70px en pantallas grandes */
+        padding: 45px 3rem 2rem 3rem !important; /* Luz ajustada también en pantallas grandes */
     }
 }
 
