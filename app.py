@@ -175,7 +175,7 @@ if loading_logo_base64:
     """, unsafe_allow_html=True)
 
 # =====================================================
-# HEADER GRANDE
+# HEADER (Optimizado: Logo Izquierda | Textos Derecha)
 # =====================================================
 logo_base64 = get_image_base64("carrefour+logo.png")
 if logo_base64:
@@ -187,10 +187,10 @@ st.markdown(f"""
     <div class="header-container">
         <div class="header-left">
             {logo_html}
-            <div class="header-text">
-                <h1 class="title-main">PANEL DE OPERACIONES CARREFOUR ONLINE</h1>
-                <p class="subtitle-main">Tienda 268 - Rosario&nbsp;&nbsp;|&nbsp;&nbsp;{hoy_ar.strftime("%d/%m/%Y")}</p>
-            </div>
+        </div>
+        <div class="header-right">
+            <h1 class="title-main">PANEL DE OPERACIONES CARREFOUR ONLINE</h1>
+            <p class="subtitle-main">Tienda 268 - Rosario&nbsp;&nbsp;|&nbsp;&nbsp;{hoy_ar.strftime("%d/%m/%Y")}</p>
         </div>
     </div>
     <div class="header-divider"></div>
