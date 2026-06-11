@@ -276,7 +276,6 @@ if df_clean is not None:
             pdf = logic_clientes.generar_pdf_clientes(df_clean, fecha_tit)
         st.download_button("DESCARGAR PDF CLIENTES", bytes(pdf), f"Clientes_{fecha_tit}.pdf")
 
-
     if btn_seguridad:
         with st.spinner("Generando reporte..."):
             pdf = logic_seguridad.generar_pdf_seguridad(df_clean, fecha_tit)
