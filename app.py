@@ -300,8 +300,8 @@ else:
 st.markdown('<div class="section-divider"></div>', unsafe_allow_html=True)
 st.markdown('<div class="section-title">Panel de Ruteo</div>', unsafe_allow_html=True)
 
-# --- FILA DE INPUTS HORIZONTAL: Direccion | Pedido | Tipo | Banda | Agregar ---
-c1, c2, c3, c4, c5 = st.columns([2.5, 1.6, 1.5, 1.6, 1])
+# --- FILA DE INPUTS HORIZONTAL: Direccion | Pedido | Tipo | Banda | Agregar | Alertas ---
+c1, c2, c3, c4, c5, c6 = st.columns([3.2, 1.2, 1.0, 1.3, 1.3, 2.0])
 
 with c1:
     dir_manual = st.text_input("Dirección", key="in_dir")
@@ -323,71 +323,81 @@ with c5:
     st.markdown('<div style="height:26px;"></div>', unsafe_allow_html=True)
     btn_agregar_manual = st.button("AGREGAR", key="btn_add", use_container_width=True, type="primary")
 
-# --- LOGICA AGREGAR / MOVER PEDIDO MANUAL ---
-if btn_agregar_manual:
-    prefijos = {
-        "Caja": "LC-", "Reclamo": "R-", "Reprogramado": "RP-",
-        "NonFood": "NF-", "Transferencia": "TR-"
-    }
-    pedido_final = f"{prefijos[tipo_manual]}{nro_manual}"
-    pedido_existente = None
-    for pedido in st.session_state.pedidos_manual:
-        if pedido["pedido"] == pedido_final:
-            pedido_existente = pedido
-            break
-
-    if pedido_existente:
-        st.session_state.pedido_a_mover = {
-            "pedido": pedido_final,
-            "direccion": dir_manual,
-            "tipo": tipo_manual,
-            "banda_actual": pedido_existente["banda"],
-            "banda_nueva": banda_manual
+# Celda de Alertas en la sexta columna (VIVE EN LA MISMA FILA)
+with c6:
+    st.markdown('<div class="wrapper-alertas-micro">', unsafe_allow_html=True)
+    
+    # --- LOGICA AGREGAR / MOVER PEDIDO MANUAL ---
+    if btn_agregar_manual:
+        prefijos = {
+            "Caja": "LC-", "Reclamo": "R-", "Reprogramado": "RP-",
+            "NonFood": "NF-", "Transferencia": "TR-"
         }
-    else:
-        st.session_state.pedidos_manual.append({
-            "direccion": dir_manual,
-            "pedido": pedido_final,
-            "tipo": tipo_manual,
-            "banda": banda_manual,
-            "estado": "Pendiente"
-        })
-        mensaje = st.empty()
-        mensaje.success("Pedido agregado")
-        time.sleep(1)
-        mensaje.empty()
-        st.rerun()
+        pedido_final = f"{prefijos[tipo_manual]}{nro_manual}"
+        pedido_existente = None
+        for pedido in st.session_state.pedidos_manual:
+            if pedido["pedido"] == pedido_final:
+                pedido_existente = pedido
+                break
 
-if st.session_state.pedido_a_mover:
-    datos = st.session_state.pedido_a_mover
-    if datos["banda_actual"] == datos["banda_nueva"]:
-        st.warning("⚠️ El pedido ya existe en esta banda horaria.")
-    else:
-        st.warning(f"⚠️ El pedido ya existe en la banda {datos['banda_actual']}")
-        col_a, col_b = st.columns(2)
-        with col_a:
-            mover = st.button("Mover pedido", key="mv_ok")
-        with col_b:
-            cancelar = st.button("Cancelar", key="mv_cancel")
-        if cancelar:
-            st.session_state.pedido_a_mover = None
-            st.rerun()
-        if mover:
-            st.session_state.pedidos_manual = [
-                p for p in st.session_state.pedidos_manual
-                if p["pedido"] != datos["pedido"]
-            ]
+        if pedido_existente:
+            st.session_state.pedido_a_mover = {
+                "pedido": pedido_final,
+                "direccion": dir_manual,
+                "tipo": tipo_manual,
+                "banda_actual": pedido_existente["banda"],
+                "banda_nueva": banda_manual
+            }
+        else:
             st.session_state.pedidos_manual.append({
-                "direccion": datos["direccion"],
-                "pedido": datos["pedido"],
-                "tipo": datos["tipo"],
-                "banda": datos["banda_nueva"],
+                "direccion": dir_manual,
+                "pedido": pedido_final,
+                "tipo": tipo_manual,
+                "banda": banda_manual,
                 "estado": "Pendiente"
             })
-            st.session_state.pedido_a_mover = None
+            st.toast(f"Pedido {pedido_final} agregado", icon="✅")
+            time.sleep(0.5)
             st.rerun()
 
-st.write("")
+    # Si hay conflicto de movimiento, se renderiza de forma micro aquí adentro
+    if st.session_state.pedido_a_mover:
+        datos = st.session_state.pedido_a_mover
+        if datos["banda_actual"] == datos["banda_nueva"]:
+            st.markdown(f'<div class="micro-txt-warning">⚠️ Ya existe en esta banda.</div>', unsafe_allow_html=True)
+            if st.button("OK", key="mv_close_err", use_container_width=True):
+                st.session_state.pedido_a_mover = None
+                st.rerun()
+        else:
+            st.markdown(f'<div class="micro-txt-warning">⚠️ Ya existe en banda {datos["banda_actual"].split(" ")[0]}</div>', unsafe_allow_html=True)
+            
+            # Micro-botones alineados horizontalmente
+            sub_col_a, sub_col_b = st.columns(2)
+            with sub_col_a:
+                mover = st.button("MOVER", key="mv_ok")
+            with sub_col_b:
+                cancelar = st.button("X", key="mv_cancel")
+                
+            if cancelar:
+                st.session_state.pedido_a_mover = None
+                st.rerun()
+            if mover:
+                st.session_state.pedidos_manual = [
+                    p for p in st.session_state.pedidos_manual
+                    if p["pedido"] != datos["pedido"]
+                ]
+                st.session_state.pedidos_manual.append({
+                    "direccion": datos["direccion"],
+                    "pedido": datos["pedido"],
+                    "tipo": datos["tipo"],
+                    "banda": datos["banda_nueva"],
+                    "estado": "Pendiente"
+                })
+                st.toast(f"Pedido movido a {datos['banda_nueva'].split(' ')[0]}", icon="🚚")
+                st.session_state.pedido_a_mover = None
+                st.rerun()
+                
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # =====================================================
 # TRES COLUMNAS DE BANDA HORARIA (tipo Excel, siempre visibles)
