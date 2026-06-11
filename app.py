@@ -175,7 +175,7 @@ if loading_logo_base64:
     """, unsafe_allow_html=True)
 
 # =====================================================
-# HEADER (Optimizado: Logo Izquierda | Textos Derecha)
+# HEADER GRANDE (Optimizado: Logo Izquierda | Textos Derecha)
 # =====================================================
 logo_base64 = get_image_base64("carrefour+logo.png")
 if logo_base64:
@@ -193,14 +193,13 @@ st.markdown(f"""
             <p class="subtitle-main">Tienda 268 - Rosario&nbsp;&nbsp;|&nbsp;&nbsp;{hoy_ar.strftime("%d/%m/%Y")}</p>
         </div>
     </div>
-    <div class="header-divider"></div>
-""", unsafe_allow_html=True)
+""", unsafe_allow_html=True) # <-- ELIMINAMOS LA LÍNEA DIVISORIA HTML DE ACÁ
 
 # =====================================================
 # BARRA DE ACCIONES:  UPLOAD + PLANILLAS
 # =====================================================
-# Espaciador al mínimo absoluto para optimizar espacio vertical
-st.markdown('<div style="margin-top: 2px;"></div>', unsafe_allow_html=True)
+# Forzamos un margen negativo muy sutil para pegarlo al header fijo
+st.markdown('<div style="margin-top: -6px;"></div>', unsafe_allow_html=True)
 
 bu, b1, b2, b3, b4, b5 = st.columns([1, 1, 1, 1, 1, 1])
 
