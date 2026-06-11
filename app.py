@@ -19,7 +19,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Inicialización de Estados en Session State (Evita el espacio muerto y la pérdida de tablas)
+# Inicialización de Estados en Session State
 if "pedidos_manual" not in st.session_state:
     st.session_state.pedidos_manual = []
 if "pedido_a_mover" not in st.session_state:
@@ -30,7 +30,7 @@ if "fecha_tit" not in st.session_state:
     st.session_state.fecha_tit = None
 
 # =====================================================
-# CARGA DE ESTILOS (archivo externo)
+# FUNCIONES DE UTILIDAD Y PERSISTENCIA (Declaradas al inicio)
 # =====================================================
 def cargar_css(path):
     try:
@@ -39,11 +39,120 @@ def cargar_css(path):
     except Exception:
         pass
 
-cargar_css("styles_corporativo.css")
+def get_image_base64(image_path):
+    try:
+        with open(image_path, "rb") as img_file:
+            return base64.b64encode(img_file.read()).decode()
+    except Exception:
+        return None
+
+def cargar_datos_mensuales():
+    try:
+        if os.path.exists(DATA_FILE):
+            with open(DATA_FILE, "r") as f:
+                datos = json.load(f)
+            mes_guardado = datos.get("mes", "")
+            mes_actual = hoy_ar.strftime("%Y-%m")
+            if mes_guardado != mes_actual:
+                return {"mes": mes_actual, "pedidos_por_dia": {}, "archivos_procesados": [], "modalidades": {"DOMICILIOS": 0, "DRIVE": 0, "SUCURSAL": 0}}
+            return datos
+        else:
+            return {"mes": hoy_ar.strftime("%Y-%m"), "pedidos_por_dia": {}, "archivos_procesados": [], "modalidades": {"DOMICILIOS": 0, "DRIVE": 0, "SUCURSAL": 0}}
+    except Exception:
+        return {"mes": hoy_ar.strftime("%Y-%m"), "pedidos_por_dia": {}, "archivos_procesados": [], "modalidades": {"DOMICILIOS": 0, "DRIVE": 0, "SUCURSAL": 0}}
+
+def guardar_datos_mensuales(datos):
+    try:
+        with open(DATA_FILE, "w") as f:
+            json.dump(datos, f)
+    except Exception:
+        pass
+
+def reiniciar_contador_mensual():
+    datos = {"mes": hoy_ar.strftime("%Y-%m"), "pedidos_por_dia": {}, "archivos_procesados": [], "modalidades": {"DOMICILIOS": 0, "DRIVE": 0, "SUCURSAL": 0}}
+    guardar_datos_mensuales(datos)
+    return datos
+
+def obtener_hash_archivo(archivo_bytes):
+    return hashlib.md5(archivo_bytes).hexdigest()
+
+def extraer_fecha_entrega(df):
+    col_fecha = None
+    for col in df.columns:
+        if "FECHA" in str(col).upper() and "ENTREGA" in str(col).upper():
+            col_fecha = col
+            break
+    if col_fecha is None:
+        return None
+    try:
+        fecha_val = df[col_fecha].dropna().iloc[0]
+        fecha_str = str(fecha_val).strip()
+        fecha = pd.to_datetime(fecha_str, dayfirst=True, errors='coerce')
+        if pd.isna(fecha):
+            return None
+        return fecha.date()
+    except Exception:
+        return None
+
+def contar_modalidades(df):
+    modalidades_conteo = {"DOMICILIOS": 0, "DRIVE": 0, "SUCURSAL": 0}
+    col_modalidad = None
+    for col in df.columns:
+        col_upper = str(col).upper().strip()
+        if "MODALIDAD" in col_upper and "ENTREGA" in col_upper:
+            col_modalidad = col
+            break
+    if col_modalidad is None:
+        for col in df.columns:
+            col_upper = str(col).upper().strip()
+            if "MODALIDAD" in col_upper and "FECHA" not in col_upper:
+                col_modalidad = col
+                break
+    if col_modalidad is None:
+        for col in df.columns:
+            col_upper = str(col).upper().strip()
+            if ("TIPO" in col_upper and "ENTREGA" in col_upper) or "CANAL" in col_upper:
+                col_modalidad = col
+                break
+    if col_modalidad is not None:
+        for valor in df[col_modalidad].dropna():
+            valor_upper = str(valor).upper().strip()
+            if "DOMICILIO" in valor_upper or "A DOMICILIO" in valor_upper:
+                modalidades_conteo["DOMICILIOS"] += 1
+            elif "DRIVE" in valor_upper:
+                modalidades_conteo["DRIVE"] += 1
+            elif "SUCURSAL" in valor_upper or "RETIRO" in valor_upper or "PICK" in valor_upper or "TIENDA" in valor_upper:
+                modalidades_conteo["SUCURSAL"] += 1
+    return modalidades_conteo
+
+def registrar_pedidos_cdp(archivo_bytes, df):
+    datos = cargar_datos_mensuales()
+    archivo_hash = obtener_hash_archivo(archivo_bytes)
+    if archivo_hash in datos["archivos_procesados"]:
+        return datos, False
+    fecha_entrega = extraer_fecha_entrega(df)
+    if fecha_entrega is None:
+        return datos, False
+    if fecha_entrega.strftime("%Y-%m") != datos["mes"]:
+        return datos, False
+    fecha_str = fecha_entrega.strftime("%Y-%m-%d")
+    cantidad_pedidos = len(df)
+    datos["pedidos_por_dia"][fecha_str] = cantidad_pedidos
+    datos["archivos_procesados"].append(archivo_hash)
+    modalidades_archivo = contar_modalidades(df)
+    if "modalidades" not in datos:
+        datos["modalidades"] = {"DOMICILIOS": 0, "DRIVE": 0, "SUCURSAL": 0}
+    datos["modalidades"]["DOMICILIOS"] += modalidades_archivo["DOMICILIOS"]
+    datos["modalidades"]["DRIVE"] += modalidades_archivo["DRIVE"]
+    datos["modalidades"]["SUCURSAL"] += modalidades_archivo["SUCURSAL"]
+    guardar_datos_mensuales(datos)
+    return datos, True
 
 # =====================================================
-# FECHA ARGENTINA (UTC-3)
+# EJECUCIÓN INICIAL: CARGA DE ESTILOS Y TIEMPO
 # =====================================================
+cargar_css("styles_corporativo.css")
+
 fecha_ar_ahora = datetime.utcnow() - timedelta(hours=3)
 hoy_ar = fecha_ar_ahora.date()
 manana_ar_obj = hoy_ar + timedelta(days=1)
@@ -51,10 +160,6 @@ manana_txt = manana_ar_obj.strftime("%d/%m/%Y")
 
 DATA_FILE = "pedidos_mensuales.json"
 DIAS_SEMANA_ES = {0: "Lun", 1: "Mar", 2: "Mie", 3: "Jue", 4: "Vie", 5: "Sab", 6: "Dom"}
-
-# [MANTENER AQUÍ TUS FUNCIONES EN JAVASCRIPT/PERSISTENCIA SIN CAMBIOS: 
-# cargar_datos_mensuales, guardar_datos_mensuales, reiniciar_contador_mensual, 
-# obtener_hash_archivo, extraer_fecha_entrega, contar_modalidades, registrar_pedidos_cdp, get_image_base64]
 
 # =====================================================
 # LOADING SCREEN
@@ -91,7 +196,6 @@ st.markdown(f"""
 # =====================================================
 # BARRA DE ACCIONES:  UPLOAD + PLANILLAS
 # =====================================================
-# HACK QUIRÚRGICO: Contrarrestamos el bloque contenedor superior de Streamlit
 st.markdown('<div style="margin-top: -25px;"></div>', unsafe_allow_html=True)
 
 bu, b1, b2, b3, b4, b5 = st.columns([1, 1, 1, 1, 1, 1])
@@ -119,13 +223,12 @@ with b5:
     )
 
 # =====================================================
-# PROCESAR ARCHIVO CARGADO (Estructura de Estado Sólido)
+# PROCESAR ARCHIVO CARGADO
 # =====================================================
 if archivo_cdp:
     archivo_cdp_bytes = archivo_cdp.read()
     archivo_cdp.seek(0)
 
-    # Si el dataframe no está en memoria, lo procesamos por única vez
     if st.session_state.df_clean is None:
         with st.spinner("Procesando archivo..."):
             df_raw = pd.read_excel(archivo_cdp)
@@ -160,20 +263,13 @@ if archivo_cdp:
 
             df_raw['FECHA ENTREGA'] = pd.to_datetime(df_raw['FECHA ENTREGA'], dayfirst=True, errors='coerce')
 
-            # Guardamos los resultados directamente en Session State
             st.session_state.df_clean, st.session_state.fecha_tit = logic_clientes.motor_limpieza(df_raw)
-            
-            # Registro en el reporte mensual persistente
             registrar_pedidos_cdp(archivo_cdp_bytes, st.session_state.df_clean)
-            
-            # Notificación compacta inmediata sin forzar rerun erráticos
             st.toast(f"Janis.xlsx CARGADO: {st.session_state.fecha_tit}", icon="✅")
 
-# Vinculamos variables locales al Session State para mantener compatibilidad con el resto del script
 df_clean = st.session_state.df_clean
 fecha_tit = st.session_state.fecha_tit
 
-# --- BOTONES DE DESCARGA (Leen de la memoria del estado de sesión de forma segura) ---
 if df_clean is not None:
     if btn_1:
         with st.spinner("Generando reporte..."):
@@ -195,7 +291,6 @@ if df_clean is not None:
             pdf = logic_domicilios.generar_pdf_domicilios(df_clean, fecha_tit)
         st.download_button("DESCARGAR PDF LOGISTICA", bytes(pdf), f"Domicilios_{fecha_tit}.pdf")
 else:
-    # Si se limpia el uploader, reseteamos el estado de las tablas internas
     st.session_state.df_clean = None
     st.session_state.fecha_tit = None
 
