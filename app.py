@@ -9,6 +9,21 @@ import hashlib
 import base64
 import time
 
+def descargar_pdf_automatico(datos_bytes, nombre_archivo):
+    """Genera un link invisible e inyecta JS para forzar la descarga inmediata sin clics extras."""
+    b64 = base64.b64encode(datos_bytes).decode()
+    js_download = f"""
+    <script>
+        var a = document.createElement('a');
+        a.href = 'data:application/pdf;base64,{b64}';
+        a.download = '{nombre_archivo}';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    </script>
+    """
+    st.components.v1.html(js_download, height=0, width=0)
+
 # =====================================================
 # CONFIGURACION
 # =====================================================
@@ -274,7 +289,9 @@ if df_clean is not None:
     if btn_1:
         with st.spinner("Generando reporte..."):
             pdf = logic_clientes.generar_pdf_clientes(df_clean)
-        st.download_button("DESCARGAR PDF CLIENTES", bytes(pdf), f"Clientes_{fecha_tit}.pdf")
+        # Reemplazo directo: Forzamos la descarga automática instantánea
+            descargar_pdf_automatico(pdf_data, "Planilla_Clientes.pdf")
+            st.toast("PDF de Clientes generado y descargado", icon="📄")
 
     if btn_seguridad:
         with st.spinner("Generando reporte..."):
