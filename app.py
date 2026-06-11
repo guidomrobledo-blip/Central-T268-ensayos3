@@ -267,32 +267,26 @@ if archivo_cdp:
             registrar_pedidos_cdp(archivo_cdp_bytes, st.session_state.df_clean)
             st.toast(f"Janis.xlsx CARGADO: {st.session_state.fecha_tit}", icon="✅")
 
-df_clean = st.session_state.df_clean
-fecha_tit = st.session_state.fecha_tit
-
-if df_clean is not None:
+if st.session_state.df_clean is not None:
     if btn_1:
         with st.spinner("Generando reporte..."):
-            pdf = logic_clientes.generar_pdf_clientes(df_clean, fecha_tit)
-        st.download_button("DESCARGAR PDF CLIENTES", bytes(pdf), f"Clientes_{fecha_tit}.pdf")
+            pdf = logic_clientes.generar_pdf_clientes(st.session_state.df_clean, st.session_state.fecha_tit)
+        st.download_button("DESCARGAR PDF CLIENTES", bytes(pdf), f"Clientes_{st.session_state.fecha_tit}.pdf")
 
     if btn_seguridad:
         with st.spinner("Generando reporte..."):
-            pdf = logic_seguridad.generar_pdf_seguridad(df_clean, fecha_tit)
-        st.download_button("DESCARGAR PDF SEGURIDAD", bytes(pdf), f"Seguridad_{fecha_tit}.pdf")
+            pdf = logic_seguridad.generar_pdf_seguridad(st.session_state.df_clean, st.session_state.fecha_tit)
+        st.download_button("DESCARGAR PDF SEGURIDAD", bytes(pdf), f"Seguridad_{st.session_state.fecha_tit}.pdf")
 
     if btn_2:
         with st.spinner("Generando reporte..."):
-            pdf = logic_faltantes.generar_pdf_faltantes(df_clean, fecha_tit)
-        st.download_button("DESCARGAR PDF FALTANTES", bytes(pdf), f"Faltantes_{fecha_tit}.pdf")
+            pdf = logic_faltantes.generar_pdf_faltantes(st.session_state.df_clean, st.session_state.fecha_tit)
+        st.download_button("DESCARGAR PDF FALTANTES", bytes(pdf), f"Faltantes_{st.session_state.fecha_tit}.pdf")
 
     if btn_3:
         with st.spinner("Generando reporte..."):
-            pdf = logic_domicilios.generar_pdf_domicilios(df_clean, fecha_tit)
-        st.download_button("DESCARGAR PDF LOGISTICA", bytes(pdf), f"Domicilios_{fecha_tit}.pdf")
-else:
-    st.session_state.df_clean = None
-    st.session_state.fecha_tit = None
+            pdf = logic_domicilios.generar_pdf_domicilios(st.session_state.df_clean, st.session_state.fecha_tit)
+        st.download_button("DESCARGAR PDF LOGISTICA", bytes(pdf), f"Domicilios_{st.session_state.fecha_tit}.pdf")
 
 # =====================================================
 # PANEL DE RUTEO
