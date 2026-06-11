@@ -289,9 +289,10 @@ if df_clean is not None:
     if btn_1:
         with st.spinner("Generando reporte..."):
             pdf = logic_clientes.generar_pdf_clientes(df_clean)
-        # Reemplazo directo: Forzamos la descarga automática instantánea
-            descargar_pdf_automatico(pdf_data, "Planilla_Clientes.pdf")
-            st.toast("PDF de Clientes generado y descargado", icon="📄")
+        
+        # Corregido: Fuera del spinner, bien indentado y usando 'pdf'
+        descargar_pdf_automatico(pdf, "Planilla_Clientes.pdf")
+        st.toast("PDF de Clientes generado y descargado", icon="✅")
 
     if btn_seguridad:
         with st.spinner("Generando reporte..."):
