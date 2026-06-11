@@ -156,7 +156,7 @@ header {visibility: hidden;}
 
 /* Forzar que el contenido de la app no se meta abajo del header fijo */
 .stApp {
-    padding-top: 55px !important;
+    padding-top: 85px !important;
 }
 
 /* Linea fina bajo header (separador del boceto) */
