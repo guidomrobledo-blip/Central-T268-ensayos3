@@ -81,47 +81,58 @@ header {visibility: hidden;}
         var(--bg-header-2) 100%
     );
 
-    position: sticky;
-    top: 0;
-    z-index: 999;
+    /* Fijado absoluto en la parte superior inmune al scroll */
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 99999 !important;
 
-    padding: 2px 14px;
+    /* Un poquito más alto y cómodo */
+    padding: 10px 24px;
+    height: 50px;
 
-    min-height: 28px;
-
-    width: 100vw;
-    margin-left: calc(-1 * (50vw - 50%));
-
+    /* Extensión absoluta de extremo a extremo sin márgenes */
+    width: 100vw !important;
+    margin: 0 !important;
     box-sizing: border-box;
 
-    display: flex;
-    align-items: center;
+    /* Distribución: Logo a la izquierda, textos a la derecha */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
 
-    box-shadow: 0 1px 3px rgba(0,0,0,.12);
+    box-shadow: 0 2px 4px rgba(0,0,0,.2);
 }
 
 .header-left {
     display: flex;
     align-items: center;
-    gap: 12px;
 }
 
+/* El logo escala proporcionalmente a la nueva altura del header */
 .header-logo {
-    height: 12px;
+    height: 24px !important;
+    width: auto !important;
+    display: block !important;
 }
 
-.header-text {
+/* Contenedor de textos alineados a la derecha */
+.header-right {
     display: flex;
     flex-direction: column;
-    gap: 1px;
+    align-items: flex-end; /* Alinea los bloques al extremo derecho */
+    text-align: right; /* Alinea el texto a la derecha */
+    gap: 4px;
 }
 
+/* Corrección de proporción: Título principal más grande y destacado */
 .title-main {
-    font-size: 0.60rem !important;
-    line-height: 1 !important;
+    font-size: 0.85rem !important; 
+    line-height: 1.1 !important;
     margin: 0 !important;
     padding: 0 !important;
-    font-weight: 600 !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.5px;
 }
 
 .title-main::after {
@@ -133,18 +144,19 @@ header {visibility: hidden;}
     color: var(--text-white) !important;
 }
 
+/* Subtítulo un escalón más chico para mantener jerarquía visual */
 .subtitle-main {
-    font-size: 0.45rem;
+    font-size: 0.68rem !important;
+    color: var(--text-light) !important;
     margin: 0 !important;
     padding: 0 !important;
-    line-height: 1;
+    line-height: 1 !important;
+    font-weight: 500 !important;
 }
 
-/* NUEVO */
-.header-text h1,
-.header-text p {
-    margin: 0 !important;
-    padding: 0 !important;
+/* Forzar que el contenido de la app no se meta abajo del header fijo */
+.stApp {
+    padding-top: 55px !important;
 }
 
 /* Linea fina bajo header (separador del boceto) */
