@@ -19,10 +19,15 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
+# Inicialización de Estados en Session State (Evita el espacio muerto y la pérdida de tablas)
 if "pedidos_manual" not in st.session_state:
     st.session_state.pedidos_manual = []
 if "pedido_a_mover" not in st.session_state:
     st.session_state.pedido_a_mover = None
+if "df_clean" not in st.session_state:
+    st.session_state.df_clean = None
+if "fecha_tit" not in st.session_state:
+    st.session_state.fecha_tit = None
 
 # =====================================================
 # CARGA DE ESTILOS (archivo externo)
@@ -45,123 +50,11 @@ manana_ar_obj = hoy_ar + timedelta(days=1)
 manana_txt = manana_ar_obj.strftime("%d/%m/%Y")
 
 DATA_FILE = "pedidos_mensuales.json"
-
 DIAS_SEMANA_ES = {0: "Lun", 1: "Mar", 2: "Mie", 3: "Jue", 4: "Vie", 5: "Sab", 6: "Dom"}
 
-# =====================================================
-# PERSISTENCIA DE DATOS MENSUALES
-# =====================================================
-def cargar_datos_mensuales():
-    try:
-        if os.path.exists(DATA_FILE):
-            with open(DATA_FILE, "r") as f:
-                datos = json.load(f)
-            mes_guardado = datos.get("mes", "")
-            mes_actual = hoy_ar.strftime("%Y-%m")
-            if mes_guardado != mes_actual:
-                return {"mes": mes_actual, "pedidos_por_dia": {}, "archivos_procesados": [], "modalidades": {"DOMICILIOS": 0, "DRIVE": 0, "SUCURSAL": 0}}
-            return datos
-        else:
-            return {"mes": hoy_ar.strftime("%Y-%m"), "pedidos_por_dia": {}, "archivos_procesados": [], "modalidades": {"DOMICILIOS": 0, "DRIVE": 0, "SUCURSAL": 0}}
-    except Exception:
-        return {"mes": hoy_ar.strftime("%Y-%m"), "pedidos_por_dia": {}, "archivos_procesados": [], "modalidades": {"DOMICILIOS": 0, "DRIVE": 0, "SUCURSAL": 0}}
-
-def guardar_datos_mensuales(datos):
-    try:
-        with open(DATA_FILE, "w") as f:
-            json.dump(datos, f)
-    except Exception:
-        pass
-
-def reiniciar_contador_mensual():
-    datos = {"mes": hoy_ar.strftime("%Y-%m"), "pedidos_por_dia": {}, "archivos_procesados": [], "modalidades": {"DOMICILIOS": 0, "DRIVE": 0, "SUCURSAL": 0}}
-    guardar_datos_mensuales(datos)
-    return datos
-
-def obtener_hash_archivo(archivo_bytes):
-    return hashlib.md5(archivo_bytes).hexdigest()
-
-def extraer_fecha_entrega(df):
-    col_fecha = None
-    for col in df.columns:
-        if "FECHA" in str(col).upper() and "ENTREGA" in str(col).upper():
-            col_fecha = col
-            break
-    if col_fecha is None:
-        return None
-    try:
-        fecha_val = df[col_fecha].dropna().iloc[0]
-        fecha_str = str(fecha_val).strip()
-        fecha = pd.to_datetime(fecha_str, dayfirst=True, errors='coerce')
-        if pd.isna(fecha):
-            return None
-        return fecha.date()
-    except Exception:
-        return None
-
-def contar_modalidades(df):
-    modalidades_conteo = {"DOMICILIOS": 0, "DRIVE": 0, "SUCURSAL": 0}
-    col_modalidad = None
-    for col in df.columns:
-        col_upper = str(col).upper().strip()
-        if "MODALIDAD" in col_upper and "ENTREGA" in col_upper:
-            col_modalidad = col
-            break
-    if col_modalidad is None:
-        for col in df.columns:
-            col_upper = str(col).upper().strip()
-            if "MODALIDAD" in col_upper and "FECHA" not in col_upper:
-                col_modalidad = col
-                break
-    if col_modalidad is None:
-        for col in df.columns:
-            col_upper = str(col).upper().strip()
-            if ("TIPO" in col_upper and "ENTREGA" in col_upper) or "CANAL" in col_upper:
-                col_modalidad = col
-                break
-    if col_modalidad is not None:
-        for valor in df[col_modalidad].dropna():
-            valor_upper = str(valor).upper().strip()
-            if "DOMICILIO" in valor_upper or "A DOMICILIO" in valor_upper:
-                modalidades_conteo["DOMICILIOS"] += 1
-            elif "DRIVE" in valor_upper:
-                modalidades_conteo["DRIVE"] += 1
-            elif "SUCURSAL" in valor_upper or "RETIRO" in valor_upper or "PICK" in valor_upper or "TIENDA" in valor_upper:
-                modalidades_conteo["SUCURSAL"] += 1
-    return modalidades_conteo
-
-def registrar_pedidos_cdp(archivo_bytes, df):
-    datos = cargar_datos_mensuales()
-    archivo_hash = obtener_hash_archivo(archivo_bytes)
-    if archivo_hash in datos["archivos_procesados"]:
-        return datos, False
-    fecha_entrega = extraer_fecha_entrega(df)
-    if fecha_entrega is None:
-        return datos, False
-    if fecha_entrega.strftime("%Y-%m") != datos["mes"]:
-        return datos, False
-    fecha_str = fecha_entrega.strftime("%Y-%m-%d")
-    cantidad_pedidos = len(df)
-    datos["pedidos_por_dia"][fecha_str] = cantidad_pedidos
-    datos["archivos_procesados"].append(archivo_hash)
-    modalidades_archivo = contar_modalidades(df)
-    if "modalidades" not in datos:
-        datos["modalidades"] = {"DOMICILIOS": 0, "DRIVE": 0, "SUCURSAL": 0}
-    datos["modalidades"]["DOMICILIOS"] += modalidades_archivo["DOMICILIOS"]
-    datos["modalidades"]["DRIVE"] += modalidades_archivo["DRIVE"]
-    datos["modalidades"]["SUCURSAL"] += modalidades_archivo["SUCURSAL"]
-    guardar_datos_mensuales(datos)
-    return datos, True
-
-# =====================================================
-# UTILIDAD IMAGENES
-# =====================================================
-def get_image_base64(image_path):
-    try:
-        with open(image_path, "rb") as img_file:
-            return base64.b64encode(img_file.read()).decode()
-    except Exception:
-        return None
+# [MANTENER AQUÍ TUS FUNCIONES EN JAVASCRIPT/PERSISTENCIA SIN CAMBIOS: 
+# cargar_datos_mensuales, guardar_datos_mensuales, reiniciar_contador_mensual, 
+# obtener_hash_archivo, extraer_fecha_entrega, contar_modalidades, registrar_pedidos_cdp, get_image_base64]
 
 # =====================================================
 # LOADING SCREEN
@@ -193,13 +86,13 @@ st.markdown(f"""
             <p class="subtitle-main">Tienda 268 - Rosario&nbsp;&nbsp;|&nbsp;&nbsp;{hoy_ar.strftime("%d/%m/%Y")}</p>
         </div>
     </div>
-""", unsafe_allow_html=True) # <-- ELIMINAMOS LA LÍNEA DIVISORIA HTML DE ACÁ
+""", unsafe_allow_html=True)
 
 # =====================================================
 # BARRA DE ACCIONES:  UPLOAD + PLANILLAS
 # =====================================================
-# Forzamos un margen negativo muy sutil para pegarlo al header fijo
-st.markdown('<div style="margin-top: -6px;"></div>', unsafe_allow_html=True)
+# HACK QUIRÚRGICO: Contrarrestamos el bloque contenedor superior de Streamlit
+st.markdown('<div style="margin-top: -25px;"></div>', unsafe_allow_html=True)
 
 bu, b1, b2, b3, b4, b5 = st.columns([1, 1, 1, 1, 1, 1])
 
@@ -226,78 +119,85 @@ with b5:
     )
 
 # =====================================================
-# PROCESAR ARCHIVO CARGADO
+# PROCESAR ARCHIVO CARGADO (Estructura de Estado Sólido)
 # =====================================================
-df_clean = None
-fecha_tit = None
-archivo_cdp_bytes = None
-
 if archivo_cdp:
     archivo_cdp_bytes = archivo_cdp.read()
     archivo_cdp.seek(0)
 
-    with st.spinner("Procesando archivo..."):
-        df_raw = pd.read_excel(archivo_cdp)
-
-        columnas_janis = [
-            "displayId", "shippingType", "dropoffStreet", "dropoffNumber",
-            "scheduleStart", "scheduleEnd", "receiverFullname", "receiverPhone"
-        ]
-        es_janis = all(col in df_raw.columns for col in columnas_janis)
-
-        if es_janis:
-            df_janis = pd.DataFrame()
-            df_janis["NUMERO PEDIDO"] = (
-                df_raw["orderCommerceIds"].astype(str).str.split("-").str[0]
-            )
-            df_janis["MODALIDAD DE ENTREGA"] = df_raw["carrierName"].replace({
-                "Envío a Domicilio 0268 - Hiper Rosario Pueyrredón": "Domicilio",
-                "Drive 0268 - Hiper Rosario Pueyrredón": "Drive",
-                "Retiro en Tienda 0268 - Hiper Rosario Pueyrredón": "Sucursal"
-            })
-            df_janis["CALLE"] = df_raw["dropoffStreet"]
-            df_janis["NUMERO"] = df_raw["dropoffNumber"]
-            df_janis["DEPTO"] = df_raw["dropoffComplement"]
-            df_janis["FECHA ENTREGA"] = pd.to_datetime(df_raw["scheduleStart"], errors="coerce")
-            hora_inicio = pd.to_datetime(df_raw["scheduleStart"], errors="coerce").dt.strftime("%H:%M")
-            hora_fin = pd.to_datetime(df_raw["scheduleEnd"], errors="coerce").dt.strftime("%H:%M")
-            df_janis["BANDA HORARIA"] = hora_inicio + " a " + hora_fin
-            df_janis["NOMBRE CLIENTE"] = df_raw["receiverFullname"].fillna("").astype(str).str.strip()
-            df_janis["TELEFONO CLIENTE"] = df_raw["receiverPhone"]
-            df_janis["TEL. PARTICULAR"] = df_raw["receiverPhone"]
-            df_raw = df_janis.copy()
-
-        df_raw['FECHA ENTREGA'] = pd.to_datetime(df_raw['FECHA ENTREGA'], dayfirst=True, errors='coerce')
-
-        df_clean, fecha_tit = logic_clientes.motor_limpieza(df_raw)
-
-        datos_actualizados, fue_registrado = registrar_pedidos_cdp(archivo_cdp_bytes, df_clean)
-        if fue_registrado:
-            st.rerun()
-
-    # CAMBIO AQUÍ: Alerta flotante ultra-compacta que desaparece sola
-    st.toast(f"Janis.xlsx CARGADO: {fecha_tit}", icon="✅")
-
-    # --- BOTONES DE DESCARGA SEGUN PLANILLA SELECCIONADA ---
-    if btn_1:
+    # Si el dataframe no está en memoria, lo procesamos por única vez
+    if st.session_state.df_clean is None:
         with st.spinner("Procesando archivo..."):
+            df_raw = pd.read_excel(archivo_cdp)
+
+            columnas_janis = [
+                "displayId", "shippingType", "dropoffStreet", "dropoffNumber",
+                "scheduleStart", "scheduleEnd", "receiverFullname", "receiverPhone"
+            ]
+            es_janis = all(col in df_raw.columns for col in columnas_janis)
+
+            if es_janis:
+                df_janis = pd.DataFrame()
+                df_janis["NUMERO PEDIDO"] = (
+                    df_raw["orderCommerceIds"].astype(str).str.split("-").str[0]
+                )
+                df_janis["MODALIDAD DE ENTREGA"] = df_raw["carrierName"].replace({
+                    "Envío a Domicilio 0268 - Hiper Rosario Pueyrredón": "Domicilio",
+                    "Drive 0268 - Hiper Rosario Pueyrredón": "Drive",
+                    "Retiro en Tienda 0268 - Hiper Rosario Pueyrredón": "Sucursal"
+                })
+                df_janis["CALLE"] = df_raw["dropoffStreet"]
+                df_janis["NUMERO"] = df_raw["dropoffNumber"]
+                df_janis["DEPTO"] = df_raw["dropoffComplement"]
+                df_janis["FECHA ENTREGA"] = pd.to_datetime(df_raw["scheduleStart"], errors="coerce")
+                hora_inicio = pd.to_datetime(df_raw["scheduleStart"], errors="coerce").dt.strftime("%H:%M")
+                hora_fin = pd.to_datetime(df_raw["scheduleEnd"], errors="coerce").dt.strftime("%H:%M")
+                df_janis["BANDA HORARIA"] = hora_inicio + " a " + hora_fin
+                df_janis["NOMBRE CLIENTE"] = df_raw["receiverFullname"].fillna("").astype(str).str.strip()
+                df_janis["TELEFONO CLIENTE"] = df_raw["receiverPhone"]
+                df_janis["TEL. PARTICULAR"] = df_raw["receiverPhone"]
+                df_raw = df_janis.copy()
+
+            df_raw['FECHA ENTREGA'] = pd.to_datetime(df_raw['FECHA ENTREGA'], dayfirst=True, errors='coerce')
+
+            # Guardamos los resultados directamente en Session State
+            st.session_state.df_clean, st.session_state.fecha_tit = logic_clientes.motor_limpieza(df_raw)
+            
+            # Registro en el reporte mensual persistente
+            registrar_pedidos_cdp(archivo_cdp_bytes, st.session_state.df_clean)
+            
+            # Notificación compacta inmediata sin forzar rerun erráticos
+            st.toast(f"Janis.xlsx CARGADO: {st.session_state.fecha_tit}", icon="✅")
+
+# Vinculamos variables locales al Session State para mantener compatibilidad con el resto del script
+df_clean = st.session_state.df_clean
+fecha_tit = st.session_state.fecha_tit
+
+# --- BOTONES DE DESCARGA (Leen de la memoria del estado de sesión de forma segura) ---
+if df_clean is not None:
+    if btn_1:
+        with st.spinner("Generando reporte..."):
             pdf = logic_clientes.generar_pdf_clientes(df_clean)
         st.download_button("DESCARGAR PDF CLIENTES", bytes(pdf), f"Clientes_{fecha_tit}.pdf")
 
     if btn_seguridad:
-        with st.spinner("Procesando archivo..."):
+        with st.spinner("Generando reporte..."):
             pdf = logic_seguridad.generar_pdf_seguridad(df_clean, fecha_tit)
         st.download_button("DESCARGAR PDF SEGURIDAD", bytes(pdf), f"Seguridad_{fecha_tit}.pdf")
 
     if btn_2:
-        with st.spinner("Procesando archivo..."):
+        with st.spinner("Generando reporte..."):
             pdf = logic_faltantes.generar_pdf_faltantes(df_clean, fecha_tit)
         st.download_button("DESCARGAR PDF FALTANTES", bytes(pdf), f"Faltantes_{fecha_tit}.pdf")
 
     if btn_3:
-        with st.spinner("Procesando archivo..."):
+        with st.spinner("Generando reporte..."):
             pdf = logic_domicilios.generar_pdf_domicilios(df_clean, fecha_tit)
         st.download_button("DESCARGAR PDF LOGISTICA", bytes(pdf), f"Domicilios_{fecha_tit}.pdf")
+else:
+    # Si se limpia el uploader, reseteamos el estado de las tablas internas
+    st.session_state.df_clean = None
+    st.session_state.fecha_tit = None
 
 # =====================================================
 # PANEL DE RUTEO
