@@ -267,14 +267,14 @@ if archivo_cdp:
             registrar_pedidos_cdp(archivo_cdp_bytes, st.session_state.df_clean)
             st.toast(f"Janis.xlsx CARGADO: {st.session_state.fecha_tit}", icon="✅")
 
-# Declaración de variables globales para las tablas de abajo
 df_clean = st.session_state.df_clean
 fecha_tit = st.session_state.fecha_tit
 
 if df_clean is not None:
     if btn_1:
         with st.spinner("Generando reporte..."):
-            pdf = logic_clientes.generar_pdf_clientes(df_clean, fecha_tit)
+            # CORREGIDO: Se quitó 'fecha_tit' porque esta función no lo acepta
+            pdf = logic_clientes.generar_pdf_clientes(df_clean)
         st.download_button("DESCARGAR PDF CLIENTES", bytes(pdf), f"Clientes_{fecha_tit}.pdf")
 
     if btn_seguridad:
@@ -291,7 +291,9 @@ if df_clean is not None:
         with st.spinner("Generando reporte..."):
             pdf = logic_domicilios.generar_pdf_domicilios(df_clean, fecha_tit)
         st.download_button("DESCARGAR PDF LOGISTICA", bytes(pdf), f"Domicilios_{fecha_tit}.pdf")
-
+else:
+    st.session_state.df_clean = None
+    st.session_state.fecha_tit = None
 # =====================================================
 # PANEL DE RUTEO
 # =====================================================
