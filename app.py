@@ -199,7 +199,8 @@ st.markdown(f"""
 # =====================================================
 # BARRA DE ACCIONES:  UPLOAD + PLANILLAS
 # =====================================================
-st.write("")
+# Espaciador HTML controlado para despegar los botones del header fijo
+st.markdown('<div style="margin-top: 15px;"></div>', unsafe_allow_html=True)
 
 bu, b1, b2, b3, b4, b5 = st.columns([1, 1, 1, 1, 1, 1])
 
