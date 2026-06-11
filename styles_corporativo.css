@@ -58,7 +58,7 @@ header {visibility: hidden;}
 
 /* ===== LAYOUT ANCHO COMPLETO ===== */
 .block-container {
-    padding: 45px 2rem 2rem 2rem !important; /* Luz ajustada al mínimo arriba */
+    padding: 38px 2rem 2rem 2rem !important; /* Reducido al límite operativo */
     max-width: 100% !important;
     background: var(--bg-secondary);
 }
@@ -69,8 +69,19 @@ header {visibility: hidden;}
 
 @media (min-width: 1400px) {
     .block-container {
-        padding: 45px 3rem 2rem 3rem !important; /* Luz ajustada también en pantallas grandes */
+        padding: 38px 3rem 2rem 3rem !important;
     }
+}
+
+/* Elminar por completo el separador antiguo */
+.header-divider {
+    display: none !important;
+}
+
+/* Corrección quirúrgica: Elimina el espacio que Streamlit mete por defecto antes de las columnas */
+[data-testid="stHorizontalBlock"] {
+    margin-top: 0px !important;
+    padding-top: 0px !important;
 }
 
 /* ===== HEADER PEQUEÑO ===== */
