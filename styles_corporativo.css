@@ -610,6 +610,71 @@ h1, h2, h3, h4, h5, h6 { color: var(--text-primary) !important; }
     text-transform: uppercase;
 }
 
+/* =====================================================
+   MICRO-ALERTAS PANEL DE RUTEO (OPERATIVO MULTI-COL)
+   ===================================================== */
+
+/* Contenedor invisible para alinear los elementos con los inputs */
+.wrapper-alertas-micro {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-end !important;
+    height: 64px !important; /* Mismo alto total que los inputs con sus labels */
+    padding-bottom: 2px !important;
+    box-sizing: border-box !important;
+}
+
+/* Texto de advertencia ultra compacto */
+.micro-txt-warning {
+    font-size: 0.72rem !important;
+    font-weight: 600 !important;
+    color: #FFC107 !important; /* Amarillo operativo de alerta */
+    text-transform: uppercase !important;
+    letter-spacing: 0.2px !important;
+    margin-bottom: 4px !important;
+    line-height: 1.1 !important;
+    white-space: nowrap !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Modificadores quirúrgicos para los botones adentro de la sexta columna */
+[data-testid="column"]:nth-child(6) div.stButton > button {
+    height: 24px !important; /* Altura ultra-reducida tipo tag */
+    padding: 0 4px !important;
+    font-size: 0.65rem !important; /* Letra bien chica */
+    font-weight: 700 !important;
+    letter-spacing: 0px !important;
+    border-radius: 3px !important;
+    margin: 0 !important;
+}
+
+/* Estilo específico para el botón Cancelar ("X") */
+[data-testid="column"]:nth-child(6) div.stButton > button[key*="mv_cancel"] {
+    background: rgba(197, 48, 48, 0.1) !important;
+    color: var(--danger) !important;
+    border: 1px solid rgba(197, 48, 48, 0.3) !important;
+}
+
+[data-testid="column"]:nth-child(6) div.stButton > button[key*="mv_cancel"]:hover {
+    background: var(--danger) !important;
+    color: var(--text-white) !important;
+    border-color: var(--danger) !important;
+}
+
+/* Estilo específico para el botón de Mover */
+[data-testid="column"]:nth-child(6) div.stButton > button[key*="mv_ok"] {
+    background: rgba(13, 110, 253, 0.1) !important;
+    color: var(--accent-primary) !important;
+    border: 1px solid rgba(13, 110, 253, 0.3) !important;
+}
+
+[data-testid="column"]:nth-child(6) div.stButton > button[key*="mv_ok"]:hover {
+    background: var(--accent-primary) !important;
+    color: var(--text-white) !important;
+    border-color: var(--accent-primary) !important;
+}
+
 /* ===== LOADING SCREEN ===== */
 .loading-screen {
     position: fixed;
