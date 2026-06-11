@@ -614,60 +614,82 @@ h1, h2, h3, h4, h5, h6 { color: var(--text-primary) !important; }
    ESTILIZADO MICRO Y SECTOR DE ALERTAS INMÓVIL
    ===================================================== */
 
-/* 1. Hachado general de la fila de inputs (Texto centrado a 28px) */
+/* 1. Unificación y Nivelación de la Fila de Inputs (Altura estricta 28px) */
+
+/* Cajas de texto (Dirección y Pedido) */
 .stTextInput input,
 .stNumberInput input {
     height: 28px !important;
+    min-height: 28px !important;
     padding: 2px 8px !important;
     font-size: 0.8rem !important;
+    border-radius: 4px !important;
+    box-sizing: border-box !important;
 }
 
-/* Corrección quirúrgica para selectores (Tipo y Banda) */
-.stSelectbox > div [data-baseweb="select"] {
+/* Selectores (Tipo y Banda) - Forzado de estructura externa */
+.stSelectbox > div > div {
     height: 28px !important;
     min-height: 28px !important;
+    border-radius: 4px !important;
+    box-sizing: border-box !important;
+}
+
+/* Forzado del contenedor de texto interno del selector */
+.stSelectbox > div [data-baseweb="select"] {
+    height: 26px !important; /* Ajuste fino interno por bordes */
+    min-height: 26px !important;
     display: flex !important;
     align-items: center !important;
     padding: 0 !important;
+    border: none !important;
 }
 
 .stSelectbox > div [data-baseweb="select"] > div {
     padding: 0 8px !important;
     font-size: 0.8rem !important;
-    line-height: 28px !important;
+    line-height: 26px !important;
 }
 
-/* Achicar las flechitas de los selectores para que no rompan el alto */
+/* Corrección de flechas e íconos para que no estiren la caja */
 .stSelectbox > div [data-baseweb="select"] button {
     padding: 0 !important;
     margin: 0 !important;
 }
 
+/* Etiquetas superiores unificadas */
 .stTextInput label,
 .stNumberInput label,
 .stSelectbox label {
     font-size: 0.7rem !important;
     margin-bottom: 2px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.2px !important;
 }
 
-/* Espaciador adaptado al nuevo alto micro del botón Agregar */
+/* 2. Alineación Vertical Perfecta del Botón AGREGAR */
 .spacer-btn-agregar {
-    height: 18px !important;
+    height: 14px !important; /* Ajuste micrométrico para nivelar con los inputs */
 }
 
 div.stButton > button#stSidebar { height: auto !important; }
 
-/* Reducción estricta del botón AGREGAR */
 div.stButton > button {
     height: 28px !important;
+    min-height: 28px !important;
     font-size: 0.75rem !important;
-    padding: 0 8px !important;
+    padding: 0 12px !important;
+    border-radius: 4px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 !important;
 }
 
-/* 2. Sistema de Alertas Absoluto e Inmóvil (Contenedor Altura Cero) */
+/* 3. Sistema de Alertas Absoluto e Inmóvil (Contenedor Altura Cero) */
 .wrapper-alertas-micro {
     position: absolute !important;
-    top: 18px !important;
+    top: 14px !important; /* Sincronizado con la nueva altura nivelada */
     left: 8px !important;
     width: 95% !important;
     height: 0px !important;
@@ -695,13 +717,13 @@ div.stButton > button {
     line-height: 1 !important;
 }
 
-/* Rediseño agresivo de botones de acción a tamaño micro (1/5 del original) */
+/* Rediseño agresivo de botones de acción a tamaño micro */
 [data-testid="column"]:nth-child(6) div.stButton > button {
     height: 20px !important;
     min-height: 20px !important;
     font-size: 0.62rem !important;
     font-weight: 700 !important;
-    padding: 0 4px !important;
+    padding: 0 6px !important;
     border-radius: 3px !important;
     box-shadow: none !important;
     margin-top: 2px !important;
