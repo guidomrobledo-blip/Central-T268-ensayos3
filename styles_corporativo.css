@@ -271,7 +271,7 @@ div.stButton > button[kind="primary"]:hover {
     background: var(--bg-primary) !important;
     border-radius: var(--radius-sm) !important;
     border: 1px solid var(--border-medium) !important;
-    height: 42px !important; /* Altura exacta de los botones colindantes */
+    height: 38px !important; /* REDUCIDO: Altura exacta de un botón estándar */
     padding: 0px !important;
     margin: 0px !important;
     overflow: hidden !important;
@@ -310,7 +310,7 @@ div.stButton > button[kind="primary"]:hover {
     margin: 0 !important;
 }
 
-/* Botón "Browse files" cuando está vacío (Alineación y tipografía corporativa) */
+/* Botón "Browse files" cuando está vacío */
 [data-testid="stFileUploader"] section button {
     background: transparent !important;
     color: var(--text-primary) !important;
@@ -322,17 +322,19 @@ div.stButton > button[kind="primary"]:hover {
     padding: 0 !important;
     height: 100% !important;
     width: 100% !important;
-    max-height: 42px !important;
+    max-height: 38px !important;
     cursor: pointer !important;
     box-shadow: none !important;
 }
 
-/* SOLUCIÓN RESILIENTE AL ZOOM: SELECTOR DIRECTO PARA EL ARCHIVO CARGADO */
+/* Selector para el archivo cargado: Rediseño plano sin salto de línea */
 [data-testid="stFileUploaderFileData"] {
-    display: block !important; /* Cambiado de flex a block para evitar colapsos por falta de ancho */
-    height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    height: 36px !important;
     width: 100% !important;
-    padding: 3px 6px !important; /* Margen interno controlado verticalmente */
+    padding: 0 8px !important;
     margin: 0 !important;
     position: absolute !important;
     top: 0 !important;
@@ -343,51 +345,44 @@ div.stButton > button[kind="primary"]:hover {
     overflow: hidden !important;
 }
 
-/* Caja de textos del archivo (Alineación vertical milimétrica) */
+/* Caja de textos del archivo */
 [data-testid="stFileUploaderFileData"] > div:first-child {
     background: transparent !important; 
     padding: 0 !important;
     margin: 0 !important;
-    display: block !important;
-    float: left !important; /* Desplazamiento a la izquierda inmune al espacio */
-    width: calc(100% - 24px) !important; /* Deja espacio exacto para la cruz a la derecha */
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    width: calc(100% - 24px) !important;
     height: 100% !important;
-    text-align: left !important;
 }
 
 /* Texto del nombre del documento cargado (shipping-1.xlsx) */
 [data-testid="stFileUploaderFileData"] span {
-    font-size: 0.68rem !important; /* Ligera reducción para asegurar que entre al 100% de zoom */
+    font-size: 0.75rem !important;
     color: var(--text-primary) !important;
-    line-height: 18px !important; /* Forzado de altura de línea fija */
-    display: block !important;
+    display: inline-block !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
     white-space: nowrap !important;
     font-weight: 500 !important;
-    margin: 0 !important;
-    padding: 0 !important;
 }
 
 /* Texto del tamaño del archivo (22.0KB) */
 [data-testid="stFileUploaderFileData"] small {
-    display: block !important; 
-    font-size: 0.55rem !important;
+    display: inline-block !important; 
+    font-size: 0.65rem !important;
     color: var(--text-muted) !important;
-    line-height: 12px !important; /* Forzado de altura de línea fija */
-    margin: 0 !important;
-    padding: 0 !important;
+    margin-left: 4px !important;
 }
 
-/* Botón de la cruz ('X') posicionado estático a la derecha para evitar saltos */
+/* Botón de la cruz ('X') */
 [data-testid="stFileUploaderFileData"] button {
     position: absolute !important;
-    right: 4px !important;
-    top: 10px !important; /* Centrado vertical matemático (40px - 20px) / 2 */
+    right: 6px !important;
+    top: 8px !important;
     width: 20px !important;
     height: 20px !important;
-    min-height: 20px !important;
-    max-height: 20px !important;
     padding: 0 !important;
     margin: 0 !important;
     background: transparent !important;
@@ -400,9 +395,18 @@ div.stButton > button[kind="primary"]:hover {
 }
 
 [data-testid="stFileUploaderFileData"] button:hover {
-    background: var(--danger-bg) !important;
+    background: rgba(255, 0, 0, 0.1) !important;
     border-radius: 50% !important;
 }
+
+/* NUEVO: Eliminar barra superior nativa y su holgura */
+[data-testid="stHeader"] {
+    display: none !important;
+}
+.stAppDeployDropdown {
+    display: none !important;
+}
+
 /* ===== INPUTS ===== */
 .stTextInput input,
 .stNumberInput input {
