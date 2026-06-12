@@ -324,10 +324,11 @@ with c5:
     st.markdown('<div style="height:26px;"></div>', unsafe_allow_html=True)
     btn_agregar_manual = st.button("AGREGAR", key="btn_add", use_container_width=True, type="primary")
 
-# Celda de Alertas Flotante (Sexta columna limpia)
+# Celda de Alertas en la sexta columna (VIVE EN LA MISMA FILA)
 with c6:
     st.markdown('<div class="wrapper-alertas-micro">', unsafe_allow_html=True)
     
+    # --- LOGICA AGREGAR / MOVER PEDIDO MANUAL ---
     if btn_agregar_manual:
         prefijos = {
             "Caja": "LC-", "Reclamo": "R-", "Reprogramado": "RP-",
@@ -357,31 +358,31 @@ with c6:
                 "estado": "Pendiente"
             })
             st.toast(f"Pedido {pedido_final} agregado", icon="✅")
-            time.sleep(0.4)
+            time.sleep(0.5)
             st.rerun()
 
-    # Renderizado micro y absoluto en caso de conflicto
-    if st.session_state.get("pedido_a_mover"):
+    # Si hay conflicto de movimiento, se renderiza de forma micro aquí adentro
+    if st.session_state.pedido_a_mover:
         datos = st.session_state.pedido_a_mover
         if datos["banda_actual"] == datos["banda_nueva"]:
-            st.markdown('<div class="micro-txt-warning">⚠️ YA EXISTE EN ESTA BANDA</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="micro-txt-warning">⚠️ Ya existe en esta banda.</div>', unsafe_allow_html=True)
             if st.button("OK", key="mv_close_err", use_container_width=True):
                 st.session_state.pedido_a_mover = None
                 st.rerun()
         else:
-            # Simplificamos el texto para que ocupe menos espacio físico
-            banda_corta = datos["banda_actual"].split(" ")[0]
-            st.markdown(f'<div class="micro-txt-warning">⚠️ YA EXISTE EN {banda_corta}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="micro-txt-warning">⚠️ Ya existe en banda {datos["banda_actual"].split(" ")[0]}</div>', unsafe_allow_html=True)
             
-            # Botones nativos de Streamlit pero pegados uno al lado del otro mediante CSS absoluto
-            st.button("MOVER", key="mv_ok", use_container_width=True)
-            st.button("X", key="mv_cancel", use_container_width=True)
-            
-            if st.session_state.get("mv_cancel"):
+            # Micro-botones alineados horizontalmente
+            sub_col_a, sub_col_b = st.columns(2)
+            with sub_col_a:
+                mover = st.button("MOVER", key="mv_ok")
+            with sub_col_b:
+                cancelar = st.button("X", key="mv_cancel")
+                
+            if cancelar:
                 st.session_state.pedido_a_mover = None
                 st.rerun()
-                
-            if st.session_state.get("mv_ok"):
+            if mover:
                 st.session_state.pedidos_manual = [
                     p for p in st.session_state.pedidos_manual
                     if p["pedido"] != datos["pedido"]
