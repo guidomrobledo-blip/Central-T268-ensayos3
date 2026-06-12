@@ -687,88 +687,68 @@ div.stButton > button {
 }
 
 /* =====================================================
-   MICRO-ALERTAS PANEL DE RUTEO (ABSOLUTO / FLOTANTE)
+   MICRO-ALERTAS PANEL DE RUTEO (OPERATIVO MULTI-COL)
    ===================================================== */
 
-/* Contenedor padre: No ocupa espacio vertical en el layout */
+/* Contenedor invisible para alinear los elementos con los inputs */
 .wrapper-alertas-micro {
-    position: absolute !important;
-    top: -12px !important; /* Lo eleva para alinearlo con el botón */
-    left: 10px !important;
-    width: 90% !important;
-    height: 0px !important; /* Altura CERO para que Streamlit crea que no hay nada */
-    margin: 0 !important;
-    padding: 0 !important;
-    z-index: 9999 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-end !important;
+    height: 64px !important; /* Mismo alto total que los inputs con sus labels */
+    padding-bottom: 2px !important;
+    box-sizing: border-box !important;
 }
 
-/* Forzar a los bloques internos de la col 6 a ser invisibles en el flujo */
-[data-testid="column"]:nth-child(6) [data-testid="stVerticalBlock"] {
-    gap: 0px !important;
-    padding: 0px !important;
-}
-
-/* El texto de advertencia */
+/* Texto de advertencia ultra compacto */
 .micro-txt-warning {
-    font-size: 0.68rem !important;
-    font-weight: 700 !important;
-    color: #FFC107 !important;
+    font-size: 0.72rem !important;
+    font-weight: 600 !important;
+    color: #FFC107 !important; /* Amarillo operativo de alerta */
     text-transform: uppercase !important;
-    letter-spacing: 0.3px !important;
-    margin: 0 0 4px 0 !important;
-    line-height: 1 !important;
-    display: block !important;
+    letter-spacing: 0.2px !important;
+    margin-bottom: 4px !important;
+    line-height: 1.1 !important;
+    white-space: nowrap !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-/* Estilo táctico ultra compacto para los botones dentro de la columna 6 */
+/* Modificadores quirúrgicos para los botones adentro de la sexta columna */
 [data-testid="column"]:nth-child(6) div.stButton > button {
-    height: 22px !important;
-    padding: 0 6px !important;
-    font-size: 0.65rem !important;
+    height: 24px !important; /* Altura ultra-reducida tipo tag */
+    padding: 0 4px !important;
+    font-size: 0.65rem !important; /* Letra bien chica */
     font-weight: 700 !important;
+    letter-spacing: 0px !important;
     border-radius: 3px !important;
-    box-shadow: none !important;
-    display: inline-block !important;
-    margin-right: 4px !important;
-    width: auto !important;
+    margin: 0 !important;
 }
 
-/* Botón OK */
-[data-testid="column"]:nth-child(6) div.stButton > button[key*="mv_close_err"] {
-    background: rgba(255, 193, 7, 0.1) !important;
-    color: #FFC107 !important;
-    border: 1px solid rgba(255, 193, 7, 0.3) !important;
-    width: 60px !important;
-}
-[data-testid="column"]:nth-child(6) div.stButton > button[key*="mv_close_err"]:hover {
-    background: #FFC107 !important;
-    color: #1F1F1F !important;
-}
-
-/* Botón Mover */
-[data-testid="column"]:nth-child(6) div.stButton > button[key*="mv_ok"] {
-    background: rgba(13, 110, 253, 0.1) !important;
-    color: var(--accent-primary) !important;
-    border: 1px solid rgba(13, 110, 253, 0.3) !important;
-    width: 65px !important;
-    float: left !important;
-}
-[data-testid="column"]:nth-child(6) div.stButton > button[key*="mv_ok"]:hover {
-    background: var(--accent-primary) !important;
-    color: var(--text-white) !important;
-}
-
-/* Botón Cancelar X */
+/* Estilo específico para el botón Cancelar ("X") */
 [data-testid="column"]:nth-child(6) div.stButton > button[key*="mv_cancel"] {
     background: rgba(197, 48, 48, 0.1) !important;
     color: var(--danger) !important;
     border: 1px solid rgba(197, 48, 48, 0.3) !important;
-    width: 32px !important;
-    float: left !important;
 }
+
 [data-testid="column"]:nth-child(6) div.stButton > button[key*="mv_cancel"]:hover {
     background: var(--danger) !important;
     color: var(--text-white) !important;
+    border-color: var(--danger) !important;
+}
+
+/* Estilo específico para el botón de Mover */
+[data-testid="column"]:nth-child(6) div.stButton > button[key*="mv_ok"] {
+    background: rgba(13, 110, 253, 0.1) !important;
+    color: var(--accent-primary) !important;
+    border: 1px solid rgba(13, 110, 253, 0.3) !important;
+}
+
+[data-testid="column"]:nth-child(6) div.stButton > button[key*="mv_ok"]:hover {
+    background: var(--accent-primary) !important;
+    color: var(--text-white) !important;
+    border-color: var(--accent-primary) !important;
 }
 /* ===== LOADING SCREEN ===== */
 .loading-screen {
