@@ -196,8 +196,9 @@ st.markdown(f"""
 # =====================================================
 # BARRA DE ACCIONES:  UPLOAD + PLANILLAS
 # =====================================================
-st.markdown('<div style="margin-top: -25px;"></div>', unsafe_allow_html=True)
+st.write("")
 
+# Seis columnas iguales para que todo tenga simetría visual
 bu, b1, b2, b3, b4, b5 = st.columns([1, 1, 1, 1, 1, 1])
 
 with bu:
@@ -300,27 +301,28 @@ else:
 st.markdown('<div class="section-divider"></div>', unsafe_allow_html=True)
 st.markdown('<div class="section-title">Panel de Ruteo</div>', unsafe_allow_html=True)
 
-# --- PANEL DE ENTRADA COMPACTO (Inputs hachados a la mitad y alertas integradas) ---
-c1, c2, c3, c4, c5, c6 = st.columns([2.2, 1.0, 1.0, 1.2, 1.0, 1.4])
+# --- FILA DE INPUTS HORIZONTAL: Direccion | Pedido | Tipo | Banda | Agregar ---
+c1, c2, c3, c4, c5 = st.columns([2.5, 1.6, 1.5, 1.6, 1])
 
 with c1:
-    dir_manual = st.text_input("Dirección", key="in_dir")
+    dir_manual = st.text_input("DIRECCIÓN", key="in_dir")
 with c2:
-    nro_manual = st.text_input("Pedido", key="in_nro")
+    nro_manual = st.text_input("NRO PEDIDO", key="in_nro")
 with c3:
     tipo_manual = st.selectbox(
-        "Tipo",
+        "TIPO",
         ["Caja", "Reclamo", "Reprogramado", "NonFood", "Transferencia"],
         key="in_tipo"
     )
 with c4:
     banda_manual = st.selectbox(
-        "Banda",
+        "BANDA HORARIA",
         ["10:00 a 14:00", "14:00 a 18:00", "18:00 a 21:00"],
         key="in_banda"
     )
 with c5:
-    st.markdown('<div class="spacer-btn-agregar"></div>', unsafe_allow_html=True)
+    # Espacio para alinear el botón físicamente con los inputs de al lado
+    st.markdown('<div style="height:28px;"></div>', unsafe_allow_html=True)
     btn_agregar_manual = st.button("AGREGAR", key="btn_add", use_container_width=True, type="primary")
 
 # Celda de Alertas Optimizada (Cero impacto vertical, botones en línea horizontal)
