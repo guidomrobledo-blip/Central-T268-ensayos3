@@ -301,8 +301,8 @@ else:
 st.markdown('<div class="section-divider"></div>', unsafe_allow_html=True)
 st.markdown('<div class="section-title">Panel de Ruteo</div>', unsafe_allow_html=True)
 
-# --- FILA DE INPUTS HORIZONTAL: Direccion | Pedido | Tipo | Banda | Agregar ---
-c1, c2, c3, c4, c5 = st.columns([2.5, 1.6, 1.5, 1.6, 1])
+# --- FILA DE INPUTS HORIZONTAL CORREGIDA: Se agrega la columna c6 para las alertas ---
+c1, c2, c3, c4, c5, c6 = st.columns([2.5, 1.6, 1.5, 1.6, 1.2, 1.8])
 
 with c1:
     dir_manual = st.text_input("DIRECCIÓN", key="in_dir")
@@ -325,7 +325,7 @@ with c5:
     st.markdown('<div style="height:28px;"></div>', unsafe_allow_html=True)
     btn_agregar_manual = st.button("AGREGAR", key="btn_add", use_container_width=True, type="primary")
 
-# Celda de Alertas Optimizada (Cero impacto vertical, botones en línea horizontal)
+# Celda de Alertas Optimizada (Ahora c6 está correctamente definida arriba)
 with c6:
     st.markdown('<div class="wrapper-alertas-micro">', unsafe_allow_html=True)
     
@@ -360,7 +360,6 @@ with c6:
             st.toast(f"Pedido {pedido_final} agregado", icon="✅")
             time.sleep(0.4)
             st.rerun()
-
     # Renderizado absoluto y micro en caso de conflicto
     if st.session_state.get("pedido_a_mover"):
         datos = st.session_state.pedido_a_mover
