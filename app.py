@@ -301,31 +301,30 @@ else:
 st.markdown('<div class="section-divider"></div>', unsafe_allow_html=True)
 st.markdown('<div class="section-title">Panel de Ruteo</div>', unsafe_allow_html=True)
 
-# --- FILA DE INPUTS HORIZONTAL CORREGIDA: Se agrega la columna c6 para las alertas ---
-c1, c2, c3, c4, c5, c6 = st.columns([2.5, 1.6, 1.5, 1.6, 1.2, 1.8])
+# --- FILA DE INPUTS HORIZONTAL: Direccion | Pedido | Tipo | Banda | Agregar | Alertas ---
+c1, c2, c3, c4, c5, c6 = st.columns([3.2, 1.2, 1.0, 1.3, 1.3, 2.0])
 
 with c1:
-    dir_manual = st.text_input("DIRECCIÓN", key="in_dir")
+    dir_manual = st.text_input("Dirección", key="in_dir")
 with c2:
-    nro_manual = st.text_input("NRO PEDIDO", key="in_nro")
+    nro_manual = st.text_input("Nro Pedido", key="in_nro")
 with c3:
     tipo_manual = st.selectbox(
-        "TIPO",
+        "Tipo",
         ["Caja", "Reclamo", "Reprogramado", "NonFood", "Transferencia"],
         key="in_tipo"
     )
 with c4:
     banda_manual = st.selectbox(
-        "BANDA HORARIA",
+        "Banda horaria",
         ["10:00 a 14:00", "14:00 a 18:00", "18:00 a 21:00"],
         key="in_banda"
     )
 with c5:
-    # Espacio para alinear el botón físicamente con los inputs de al lado
-    st.markdown('<div style="height:28px;"></div>', unsafe_allow_html=True)
+    st.markdown('<div style="height:26px;"></div>', unsafe_allow_html=True)
     btn_agregar_manual = st.button("AGREGAR", key="btn_add", use_container_width=True, type="primary")
 
-# Celda de Alertas Optimizada (Ahora c6 está correctamente definida arriba)
+# Celda de Alertas Flotante (Sexta columna limpia)
 with c6:
     st.markdown('<div class="wrapper-alertas-micro">', unsafe_allow_html=True)
     
@@ -360,29 +359,29 @@ with c6:
             st.toast(f"Pedido {pedido_final} agregado", icon="✅")
             time.sleep(0.4)
             st.rerun()
-    # Renderizado absoluto y micro en caso de conflicto
+
+    # Renderizado micro y absoluto en caso de conflicto
     if st.session_state.get("pedido_a_mover"):
         datos = st.session_state.pedido_a_mover
         if datos["banda_actual"] == datos["banda_nueva"]:
-            st.markdown('<div class="micro-txt-warning">⚠️ YA EXISTE ACÁ</div>', unsafe_allow_html=True)
+            st.markdown('<div class="micro-txt-warning">⚠️ YA EXISTE EN ESTA BANDA</div>', unsafe_allow_html=True)
             if st.button("OK", key="mv_close_err", use_container_width=True):
                 st.session_state.pedido_a_mover = None
                 st.rerun()
         else:
+            # Simplificamos el texto para que ocupe menos espacio físico
             banda_corta = datos["banda_actual"].split(" ")[0]
-            st.markdown(f'<div class="micro-txt-warning">⚠️ EXISTE EN {banda_corta}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="micro-txt-warning">⚠️ YA EXISTE EN {banda_corta}</div>', unsafe_allow_html=True)
             
-            # Sub-columnas ultra-ajustadas para obligar a los botones a estar uno al lado del otro
-            sub_c1, sub_c2 = st.columns([1.5, 1.0])
-            with sub_c1:
-                mover = st.button("MOVER", key="mv_ok", use_container_width=True)
-            with sub_c2:
-                cancelar = st.button("X", key="mv_cancel", use_container_width=True)
-                
-            if cancelar:
+            # Botones nativos de Streamlit pero pegados uno al lado del otro mediante CSS absoluto
+            st.button("MOVER", key="mv_ok", use_container_width=True)
+            st.button("X", key="mv_cancel", use_container_width=True)
+            
+            if st.session_state.get("mv_cancel"):
                 st.session_state.pedido_a_mover = None
                 st.rerun()
-            if mover:
+                
+            if st.session_state.get("mv_ok"):
                 st.session_state.pedidos_manual = [
                     p for p in st.session_state.pedidos_manual
                     if p["pedido"] != datos["pedido"]
