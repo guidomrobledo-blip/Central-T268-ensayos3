@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
-import logic_clientes, logic_faltantes, logic_domicilios, logic_informe, logic_seguridad
+import logic_clientes, logic_domicilios, logic_informe, logic_seguridad
 import os
 import json
 import hashlib
@@ -158,8 +158,8 @@ hoy_ar = fecha_ar_ahora.date()
 manana_ar_obj = hoy_ar + timedelta(days=1)
 manana_txt = manana_ar_obj.strftime("%d/%m/%Y")
 
-DATA_FILE = "pedidos_mensuales.json"
-DIAS_SEMANA_ES = {0: "Lun", 1: "Mar", 2: "Mie", 3: "Jue", 4: "Vie", 5: "Sab", 6: "Dom"}
+DATA_FILE = "datos_mensuales.json"
+DIAS_SEMANA_ES = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
 
 # =====================================================
 # LOADING SCREEN
@@ -173,13 +173,13 @@ if loading_logo_base64:
     """, unsafe_allow_html=True)
 
 # =====================================================
-# HEADER GRANDE (Optimizado: Logo Izquierda | Textos Derecha)
+# BLOQUE 1 - HEADER FIJO (Logo Izquierda | Textos Derecha)
 # =====================================================
 logo_base64 = get_image_base64("carrefour+logo.png")
 if logo_base64:
     logo_html = f'<img src="data:image/png;base64,{logo_base64}" class="header-logo" alt="Carrefour">'
 else:
-    logo_html = '<span style="color:#FFFFFF;font-weight:700;">Carrefour</span>'
+    logo_html = '<span style="color:#e2e8f0;font-weight:700;">Carrefour</span>'
 
 st.markdown(f"""
     <div class="header-container">
@@ -194,12 +194,12 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # =====================================================
-# BARRA DE ACCIONES:  UPLOAD + PLANILLAS
+# BLOQUE 2 - BARRA DE CONTROL MINIMALISTA:  UPLOAD + PLANILLAS
 # =====================================================
-st.write("")
+st.markdown('<div class="control-bar">', unsafe_allow_html=True)
 
-# Seis columnas iguales para que todo tenga simetría visual
-bu, b1, b2, b3, b4, b5 = st.columns([1, 1, 1, 1, 1, 1])
+# Cinco columnas iguales (se eliminó Planilla Faltantes)
+bu, b1, b2, b4, b5 = st.columns([1, 1, 1, 1, 1])
 
 with bu:
     archivo_cdp = st.file_uploader(
@@ -212,8 +212,6 @@ with b1:
     btn_1 = st.button("PLANILLA CLIENTES", key="top_1", use_container_width=True)
 with b2:
     btn_seguridad = st.button("PLANILLA SEGURIDAD", key="top_seg", use_container_width=True)
-with b3:
-    btn_2 = st.button("PLANILLA FALTANTES", key="top_2", use_container_width=True)
 with b4:
     btn_3 = st.button("PLANILLA LOGISTICA", key="top_3", use_container_width=True)
 with b5:
@@ -222,6 +220,8 @@ with b5:
         "https://docs.google.com/spreadsheets/d/1v0Rls8fg_uIGfhA1t3CzINq3VfAUvPY3DY8_m_ZSmM8/edit#gid=0",
         use_container_width=True
     )
+
+st.markdown('</div>', unsafe_allow_html=True)
 
 # =====================================================
 # PROCESAR ARCHIVO CARGADO
@@ -272,6 +272,9 @@ df_clean = st.session_state.df_clean
 fecha_tit = st.session_state.fecha_tit
 
 if df_clean is not None:
+    # Barra de descargas dinámicas integrada al extremo derecho del menú
+    st.markdown('<div class="download-bar">', unsafe_allow_html=True)
+
     if btn_1:
         with st.spinner("Generando reporte..."):
             # CORREGIDO: Se quitó 'fecha_tit' porque esta función no lo acepta
@@ -283,20 +286,18 @@ if df_clean is not None:
             pdf = logic_seguridad.generar_pdf_seguridad(df_clean, fecha_tit)
         st.download_button("DESCARGAR PDF SEGURIDAD", bytes(pdf), f"Seguridad_{fecha_tit}.pdf")
 
-    if btn_2:
-        with st.spinner("Generando reporte..."):
-            pdf = logic_faltantes.generar_pdf_faltantes(df_clean, fecha_tit)
-        st.download_button("DESCARGAR PDF FALTANTES", bytes(pdf), f"Faltantes_{fecha_tit}.pdf")
-
     if btn_3:
         with st.spinner("Generando reporte..."):
             pdf = logic_domicilios.generar_pdf_domicilios(df_clean, fecha_tit)
         st.download_button("DESCARGAR PDF LOGISTICA", bytes(pdf), f"Domicilios_{fecha_tit}.pdf")
+
+    st.markdown('</div>', unsafe_allow_html=True)
 else:
     st.session_state.df_clean = None
     st.session_state.fecha_tit = None
+
 # =====================================================
-# PANEL DE RUTEO
+# BLOQUE 3 - PANEL DE RUTEO
 # =====================================================
 st.markdown('<div class="section-divider"></div>', unsafe_allow_html=True)
 st.markdown('<div class="section-title">Panel de Ruteo</div>', unsafe_allow_html=True)
@@ -327,7 +328,7 @@ with c5:
 # Celda de Alertas en la sexta columna (VIVE EN LA MISMA FILA)
 with c6:
     st.markdown('<div class="wrapper-alertas-micro">', unsafe_allow_html=True)
-    
+
     # --- LOGICA AGREGAR / MOVER PEDIDO MANUAL ---
     if btn_agregar_manual:
         prefijos = {
@@ -366,19 +367,19 @@ with c6:
         datos = st.session_state.pedido_a_mover
         if datos["banda_actual"] == datos["banda_nueva"]:
             st.markdown(f'<div class="micro-txt-warning">⚠️ Ya existe en esta banda.</div>', unsafe_allow_html=True)
-            if st.button("OK", key="mv_close_err", use_container_width=True):
+            if st.button("OK", key="ok_misma", use_container_width=True):
                 st.session_state.pedido_a_mover = None
                 st.rerun()
         else:
             st.markdown(f'<div class="micro-txt-warning">⚠️ Ya existe en banda {datos["banda_actual"].split(" ")[0]}</div>', unsafe_allow_html=True)
-            
+
             # Micro-botones alineados horizontalmente
             sub_col_a, sub_col_b = st.columns(2)
             with sub_col_a:
                 mover = st.button("MOVER", key="mv_ok")
             with sub_col_b:
                 cancelar = st.button("X", key="mv_cancel")
-                
+
             if cancelar:
                 st.session_state.pedido_a_mover = None
                 st.rerun()
@@ -397,11 +398,11 @@ with c6:
                 st.toast(f"Pedido movido a {datos['banda_nueva'].split(' ')[0]}", icon="🚚")
                 st.session_state.pedido_a_mover = None
                 st.rerun()
-                
+
     st.markdown('</div>', unsafe_allow_html=True)
 
 # =====================================================
-# TRES COLUMNAS DE BANDA HORARIA (tipo Excel, siempre visibles)
+# BLOQUE 4 - TRES COLUMNAS DE BANDA HORARIA (tipo Excel, siempre visibles)
 # =====================================================
 BANDAS_FIJAS = [
     ("10 a 14 hs", ["10:00 a 14:00"]),
@@ -469,7 +470,7 @@ for col, (label, claves) in zip(cols_bandas, BANDAS_FIJAS):
             )
 
 # =====================================================
-# FOOTER
+# BLOQUE 5 - FOOTER FIJO
 # =====================================================
 st.markdown('''
     <div class="footer">
