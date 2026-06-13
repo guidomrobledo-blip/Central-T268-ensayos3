@@ -1,48 +1,58 @@
 /* =====================================================
-   PANEL OPERACIONES CARREFOUR - ESTILO CORPORATIVO
-   Minimalista / Operativo  (basado en boceto)
+   PANEL OPERACIONES CARREFOUR - DARK MINIMALIST PREMIUM
+   Dashboard Operativo / Viewport-Fit / Inmune al Modo Sistema
    ===================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-/* ===== VARIABLES ===== */
+/* ===== VARIABLES (PALETA OSCURA FORZADA) ===== */
 :root {
-    --bg-primary: #FFFFFF;
-    --bg-secondary: #F4F6F8;
-    --bg-tertiary: #ECEFF2;
-    --bg-header: #2B2B2B;
-    --bg-header-2: #1F1F1F;
+    color-scheme: dark only;
 
-    --text-primary: #1F2933;
-    --text-secondary: #52606D;
-    --text-muted: #7B8794;
-    --text-light: #9AA5B1;
-    --text-white: #FFFFFF;
+    /* Fondos */
+    --bg-app: #12141c;          /* Fondo general de la app */
+    --bg-block: #1f212e;        /* Bloques sólidos: headers, tarjetas, inputs */
+    --bg-bar: #1a1b26;          /* Barra de menú minimalista */
+    --bg-elevated: #262a3a;     /* Hover / celdas elevadas */
+    --bg-input: #262a3a;        /* Fondo de inputs/selects */
 
-    --border-light: #E4E7EB;
-    --border-medium: #CBD2D9;
-    --border-dark: #9AA5B1;
+    /* Texto */
+    --text-primary: #e2e8f0;    /* Blanco tiza */
+    --text-secondary: #cbd5e1;
+    --text-muted: #94a3b8;      /* Gris apagado */
+    --text-light: #64748b;
 
-    --accent-primary: #0D6EFD;
-    --accent-primary-hover: #0B5ED7;
-    --accent-green: #2E7D32;
-    --accent-green-hover: #256628;
-    --accent-blue-soft: #6C8CFF;
+    /* Bordes */
+    --border-light: #2a2d3c;
+    --border-medium: #353a4d;
+    --border-dark: #475569;
 
-    --success: #198754;
-    --success-bg: #E6F4EA;
-    --warning: #B7791F;
-    --warning-bg: #FCF4E6;
-    --danger: #C53030;
-    --danger-bg: #FBEAEA;
-    --info: #0B5ED7;
-    --info-bg: #EAF1FE;
+    /* Acentos */
+    --accent-primary: #0d6efd;       /* Azul eléctrico */
+    --accent-primary-hover: #00b4d8; /* Cyan hover */
+    --accent-cyan: #00b4d8;
+    --accent-green: #2e7d32;         /* Verde esmeralda (cargar / agregar) */
+    --accent-green-hover: #3a9d3f;
 
-    --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
-    --shadow-md: 0 2px 6px rgba(15, 23, 42, 0.08);
+    /* Estados */
+    --success: #34d399;
+    --success-bg: rgba(52, 211, 153, 0.12);
+    --warning: #fbbf24;
+    --warning-bg: rgba(251, 191, 36, 0.12);
+    --danger: #f87171;
+    --danger-bg: rgba(248, 113, 113, 0.12);
+    --info: #38bdf8;
+    --info-bg: rgba(56, 189, 248, 0.12);
 
-    --radius-sm: 4px;
-    --radius-md: 6px;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.5);
+
+    --radius-sm: 5px;
+    --radius-md: 8px;
+
+    /* Alturas fijas de bloques */
+    --h-header: 50px;
+    --h-footer: 35px;
 }
 
 /* ===== RESET STREAMLIT ===== */
@@ -50,210 +60,196 @@
 footer {visibility: hidden;}
 header {visibility: hidden;}
 
-/* ===== APP BACKGROUND ===== */
-.stApp {
-    background: var(--bg-secondary) !important;
+[data-testid="stHeader"] { display: none !important; }
+.stAppDeployDropdown { display: none !important; }
+[data-testid="stToolbar"] { display: none !important; }
+
+/* ===== APP BACKGROUND (FORZADO OSCURO) ===== */
+html, body, .stApp {
+    background: var(--bg-app) !important;
+    color: var(--text-primary) !important;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
 }
 
-/* ===== LAYOUT ANCHO COMPLETO ===== */
-.block-container {
-    padding: 38px 2rem 2rem 2rem !important; /* Reducido al límite operativo */
-    max-width: 100% !important;
-    background: var(--bg-secondary);
+/* ===== VIEWPORT FIT: BLOQUEO DE PANTALLA COMPLETA ===== */
+.stApp {
+    height: 100vh !important;
+    overflow: hidden !important;
 }
 
-.block-container > div:first-child {
-    margin-top: 0 !important;
+[data-testid="stAppViewContainer"] {
+    overflow: hidden !important;
+}
+
+[data-testid="stMain"] {
+    overflow: hidden !important;
+}
+
+.main .block-container,
+.block-container {
+    padding: calc(var(--h-header) + 14px) 2rem var(--h-footer) 2rem !important;
+    max-width: 100% !important;
+    height: 100vh !important;
+    overflow: hidden !important;
+    background: var(--bg-app);
 }
 
 @media (min-width: 1400px) {
     .block-container {
-        padding: 38px 3rem 2rem 3rem !important;
+        padding: calc(var(--h-header) + 14px) 3rem var(--h-footer) 3rem !important;
     }
 }
 
-/* Eliminar por completo el separador antiguo */
-.header-divider {
-    display: none !important;
-}
+.block-container > div:first-child { margin-top: 0 !important; }
 
-/* Corrección quirúrgica: Elimina el espacio que Streamlit mete por defecto antes de las columnas */
 [data-testid="stHorizontalBlock"] {
-    margin-top: 0px !important;
-    padding-top: 0px !important;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
 }
 
-/* NUEVO: Elimina el encabezado transparente nativo de Streamlit que empuja todo hacia abajo */
-[data-testid="stHeader"] {
-    display: none !important;
-}
-
-/* NUEVO: Fuerza a la aplicación a ignorar el margen de despliegue superior */
-.stAppDeployDropdown {
-    display: none !important;
-}
-
-/* ===== HEADER PEQUEÑO ===== */
+/* ============================================================
+   BLOQUE 1 - HEADER FIJO
+   ============================================================ */
 .header-container {
-    background: linear-gradient(
-        135deg,
-        var(--bg-header) 0%,
-        var(--bg-header-2) 100%
-    );
-
-    /* Fijado absoluto en la parte superior inmune al scroll */
+    background: var(--bg-block);
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
     z-index: 99999 !important;
-
-    /* Un poquito más alto y cómodo */
     padding: 10px 24px;
-    height: 50px;
-
-    /* Extensión absoluta de extremo a extremo sin márgenes */
+    height: var(--h-header);
     width: 100vw !important;
     margin: 0 !important;
     box-sizing: border-box;
-
-    /* Distribución: Logo a la izquierda, textos a la derecha */
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
-
-    box-shadow: 0 2px 4px rgba(0,0,0,.2);
+    border-bottom: 1px solid var(--border-medium);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
 }
 
-.header-left {
-    display: flex;
-    align-items: center;
-}
+.header-left { display: flex; align-items: center; }
 
-/* El logo escala proporcionalmente a la nueva altura del header */
 .header-logo {
     height: 24px !important;
     width: auto !important;
     display: block !important;
 }
 
-/* Contenedor de textos alineados a la derecha */
 .header-right {
     display: flex;
     flex-direction: column;
-    align-items: flex-end; /* Alinea los bloques al extremo derecho */
-    text-align: right; /* Alinea el texto a la derecha */
-    gap: 4px;
+    align-items: flex-end;
+    text-align: right;
+    gap: 3px;
 }
 
-/* Corrección de proporción: Título principal más grande y destacado */
 .title-main {
-    font-size: 0.85rem !important; 
+    font-size: 0.85rem !important;
     line-height: 1.1 !important;
     margin: 0 !important;
     padding: 0 !important;
     font-weight: 700 !important;
     letter-spacing: 0.5px;
+    color: var(--text-primary) !important;
 }
 
-.title-main::after {
-    display: none;
-}
+.title-main::after { display: none; }
+.title-main, .title-main span { color: var(--text-primary) !important; }
 
-.title-main,
-.title-main span {
-    color: var(--text-white) !important;
-}
-
-/* Subtítulo un escalón más chico para mantener jerarquía visual */
 .subtitle-main {
     font-size: 0.68rem !important;
-    color: var(--text-light) !important;
+    color: var(--text-muted) !important;
     margin: 0 !important;
     padding: 0 !important;
     line-height: 1 !important;
     font-weight: 500 !important;
 }
 
-/* Linea fina bajo header (separador del boceto) */
-.header-divider {
-    height: 1px;
-    background: var(--border-medium);
+/* Separadores */
+.header-divider { display: none !important; }
 
-    margin-left: calc(-50vw + 50%);
-    margin-right: calc(-50vw + 50%);
-}
-
-/* Separador del Panel de Ruteo */
 .section-divider {
     height: 1px;
     background: var(--border-light);
-    margin: 18px 0 8px 0;
+    margin: 14px 0 6px 0;
 }
 
-/* ===== TITULO DE SECCION CENTRADO ===== */
 .section-title {
     text-align: center;
     color: var(--text-primary);
     font-weight: 600;
-    font-size: 1.1em;
+    font-size: 1.0em;
     letter-spacing: 1px;
     text-transform: uppercase;
-    margin: 4px 0 18px 0;
+    margin: 2px 0 12px 0;
 }
 
-/* ===== BARRA DE ACCIONES (botones superiores) ===== */
+/* ============================================================
+   BLOQUE 2 - BARRA DE CONTROL MINIMALISTA (MENU PLANO)
+   ============================================================ */
+.control-bar {
+    background: var(--bg-bar);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-light);
+    margin-bottom: 4px;
+}
+
+/* Botones planos tipo menú nativo (sin marco / sin caja) */
 div.stButton > button {
-    background: var(--bg-primary) !important;
+    background: transparent !important;
+    border: none !important;
     border-radius: var(--radius-sm) !important;
-    height: 42px !important;
+    height: 40px !important;
     font-weight: 600 !important;
     font-size: 0.78em !important;
     text-transform: uppercase !important;
     letter-spacing: 0.4px !important;
-    color: var(--text-primary) !important;
-    border: 1px solid var(--border-medium) !important;
-    box-shadow: var(--shadow-sm) !important;
-    transition: all 0.15s ease !important;
+    color: var(--text-secondary) !important;
+    box-shadow: none !important;
+    transition: color 0.15s ease, background 0.15s ease !important;
     padding: 0 12px !important;
 }
 
 div.stButton > button:hover {
-    background: var(--bg-tertiary) !important;
-    border-color: var(--text-primary) !important;
-    box-shadow: var(--shadow-md) !important;
+    background: transparent !important;
+    color: var(--accent-cyan) !important;
+    border: none !important;
+    box-shadow: none !important;
     transform: none !important;
 }
 
-div.stButton > button:active { background: var(--bg-secondary) !important; }
-div.stButton > button:disabled { opacity: 0.5 !important; cursor: not-allowed !important; }
+div.stButton > button:active { color: var(--accent-primary) !important; }
+div.stButton > button:disabled { opacity: 0.4 !important; cursor: not-allowed !important; }
 
-/* Boton "Agregar / Cargar" verde del boceto */
-div.stButton > button[kind="primary"],
-.btn-cargar div.stButton > button {
+/* Boton primario "AGREGAR" verde esmeralda (se mantiene como acción) */
+div.stButton > button[kind="primary"] {
     background: var(--accent-green) !important;
-    color: var(--text-white) !important;
-    border-color: var(--accent-green) !important;
+    color: #ffffff !important;
+    border: 1px solid var(--accent-green) !important;
+    border-radius: var(--radius-sm) !important;
+    box-shadow: var(--shadow-sm) !important;
 }
 
 div.stButton > button[kind="primary"]:hover {
     background: var(--accent-green-hover) !important;
+    color: #ffffff !important;
     border-color: var(--accent-green-hover) !important;
 }
 
-/* Link Button (Planilla MEC) */
+/* Link Button (Planilla MEC) como texto plano flotante */
 .stLinkButton > a {
-    background: var(--bg-primary) !important;
+    background: transparent !important;
+    border: none !important;
     border-radius: var(--radius-sm) !important;
-    height: 42px !important;
+    height: 40px !important;
     font-weight: 600 !important;
     font-size: 0.78em !important;
     text-transform: uppercase !important;
     letter-spacing: 0.4px !important;
-    color: var(--text-primary) !important;
-    border: 1px solid var(--border-medium) !important;
-    box-shadow: var(--shadow-sm) !important;
-    transition: all 0.15s ease !important;
+    color: var(--text-secondary) !important;
+    box-shadow: none !important;
+    transition: color 0.15s ease !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -261,42 +257,39 @@ div.stButton > button[kind="primary"]:hover {
 }
 
 .stLinkButton > a:hover {
-    background: var(--bg-tertiary) !important;
-    border-color: var(--text-primary) !important;
+    background: transparent !important;
+    color: var(--accent-cyan) !important;
     text-decoration: none !important;
 }
 
-/* ===== FILE UPLOADER ULTRA COMPACTO (TAMAÑO BOTÓN) ===== */
+/* ===== FILE UPLOADER COMO TEXTO PLANO "CARGAR" ===== */
 [data-testid="stFileUploader"] {
-    background: var(--bg-primary) !important;
+    background: transparent !important;
     border-radius: var(--radius-sm) !important;
-    border: 1px solid var(--border-medium) !important;
-    height: 38px !important; /* REDUCIDO: Altura exacta de un botón estándar */
-    padding: 0px !important;
-    margin: 0px !important;
+    border: none !important;
+    height: 40px !important;
+    padding: 0 !important;
+    margin: 0 !important;
     overflow: hidden !important;
     display: flex !important;
     align-items: center !important;
-    box-shadow: var(--shadow-sm) !important;
+    box-shadow: none !important;
     transition: all 0.15s ease !important;
     position: relative !important;
 }
 
 [data-testid="stFileUploader"]:hover {
-    border-color: var(--text-primary) !important;
-    background: var(--bg-tertiary) !important;
-    box-shadow: var(--shadow-md) !important;
+    background: transparent !important;
+    box-shadow: none !important;
 }
 
-/* Limpieza absoluta de textos distractores de arrastre */
-[data-testid="stFileUploader"] section > div ~ div, 
-[data-testid="stFileUploader"] text, 
+[data-testid="stFileUploader"] section > div ~ div,
+[data-testid="stFileUploader"] text,
 [data-testid="stFileUploader"] p,
 [data-testid="stFileUploaderDropzone"] svg {
     display: none !important;
 }
 
-/* Control total de la zona interna de drop */
 [data-testid="stFileUploaderDropzone"] {
     background: transparent !important;
     border: none !important;
@@ -310,44 +303,58 @@ div.stButton > button[kind="primary"]:hover {
     margin: 0 !important;
 }
 
-/* Botón "Browse files" cuando está vacío */
+/* Botón "Browse files" -> texto plano "CARGAR" verde esmeralda */
 [data-testid="stFileUploader"] section button {
     background: transparent !important;
-    color: var(--text-primary) !important;
+    color: var(--accent-green) !important;
     border: none !important;
-    font-weight: 600 !important;
+    font-weight: 700 !important;
     font-size: 0.78em !important;
     text-transform: uppercase !important;
     letter-spacing: 0.4px !important;
     padding: 0 !important;
     height: 100% !important;
     width: 100% !important;
-    max-height: 38px !important;
+    max-height: 40px !important;
     cursor: pointer !important;
     box-shadow: none !important;
+    font-size: 0 !important; /* oculta el texto nativo "Browse files" */
 }
 
-/* Selector para el archivo cargado: Rediseño plano sin salto de línea */
+[data-testid="stFileUploader"] section button::before {
+    content: "CARGAR";
+    font-size: 0.78rem;
+    color: var(--accent-green);
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    transition: color 0.15s ease;
+}
+
+[data-testid="stFileUploader"] section button:hover::before {
+    color: var(--accent-green-hover);
+}
+
+/* Archivo cargado: chip plano */
 [data-testid="stFileUploaderFileData"] {
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
-    height: 36px !important;
+    height: 38px !important;
     width: 100% !important;
     padding: 0 8px !important;
     margin: 0 !important;
     position: absolute !important;
     top: 0 !important;
     left: 0 !important;
-    background: var(--bg-primary) !important;
+    background: var(--bg-elevated) !important;
+    border-radius: var(--radius-sm) !important;
     box-sizing: border-box !important;
     z-index: 10 !important;
     overflow: hidden !important;
 }
 
-/* Caja de textos del archivo */
 [data-testid="stFileUploaderFileData"] > div:first-child {
-    background: transparent !important; 
+    background: transparent !important;
     padding: 0 !important;
     margin: 0 !important;
     display: flex !important;
@@ -357,7 +364,6 @@ div.stButton > button[kind="primary"]:hover {
     height: 100% !important;
 }
 
-/* Texto del nombre del documento cargado (shipping-1.xlsx) */
 [data-testid="stFileUploaderFileData"] span {
     font-size: 0.75rem !important;
     color: var(--text-primary) !important;
@@ -368,19 +374,17 @@ div.stButton > button[kind="primary"]:hover {
     font-weight: 500 !important;
 }
 
-/* Texto del tamaño del archivo (22.0KB) */
 [data-testid="stFileUploaderFileData"] small {
-    display: inline-block !important; 
+    display: inline-block !important;
     font-size: 0.65rem !important;
     color: var(--text-muted) !important;
     margin-left: 4px !important;
 }
 
-/* Botón de la cruz ('X') */
 [data-testid="stFileUploaderFileData"] button {
     position: absolute !important;
     right: 6px !important;
-    top: 8px !important;
+    top: 9px !important;
     width: 20px !important;
     height: 20px !important;
     padding: 0 !important;
@@ -395,35 +399,59 @@ div.stButton > button[kind="primary"]:hover {
 }
 
 [data-testid="stFileUploaderFileData"] button:hover {
-    background: rgba(255, 0, 0, 0.1) !important;
+    background: rgba(248, 113, 113, 0.15) !important;
     border-radius: 50% !important;
 }
 
-/* NUEVO: Eliminar barra superior nativa y su holgura */
-[data-testid="stHeader"] {
-    display: none !important;
-}
-.stAppDeployDropdown {
-    display: none !important;
+/* ===== BARRA DE DESCARGAS DINAMICAS (extremo derecho) ===== */
+.download-bar {
+    display: flex;
+    justify-content: flex-end;
+    margin: 2px 0 0 0;
 }
 
-/* ===== INPUTS ===== */
+.stDownloadButton > button {
+    background: transparent !important;
+    border: 1px solid var(--accent-cyan) !important;
+    border-radius: var(--radius-sm) !important;
+    color: var(--accent-cyan) !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.4px !important;
+    font-size: 0.72em !important;
+    height: 32px !important;
+    box-shadow: none !important;
+    transition: all 0.15s ease !important;
+}
+
+.stDownloadButton > button:hover {
+    background: var(--accent-cyan) !important;
+    color: #0b1220 !important;
+    box-shadow: var(--shadow-sm) !important;
+    transform: none !important;
+}
+
+/* ============================================================
+   BLOQUE 3 - INPUTS / SELECTBOX (FORMULARIO DE RUTEO)
+   ============================================================ */
 .stTextInput input,
 .stNumberInput input {
-    background: var(--bg-primary) !important;
+    background: var(--bg-input) !important;
     border: 1px solid var(--border-medium) !important;
     border-radius: var(--radius-sm) !important;
     color: var(--text-primary) !important;
     font-family: 'Inter', sans-serif !important;
-    font-size: 0.9em !important;
-    padding: 8px 12px !important;
-    height: 38px !important;
+    height: 28px !important;
+    min-height: 28px !important;
+    padding: 2px 8px !important;
+    font-size: 0.8rem !important;
+    box-sizing: border-box !important;
 }
 
 .stTextInput input:focus,
 .stNumberInput input:focus {
-    border-color: var(--accent-primary) !important;
-    box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.15) !important;
+    border-color: var(--accent-cyan) !important;
+    box-shadow: 0 0 0 2px rgba(0, 180, 216, 0.2) !important;
     outline: none !important;
 }
 
@@ -433,40 +461,72 @@ div.stButton > button[kind="primary"]:hover {
 .stTextInput label,
 .stNumberInput label,
 .stSelectbox label {
-    color: var(--text-secondary) !important;
+    color: var(--text-muted) !important;
     font-weight: 500 !important;
-    font-size: 0.8em !important;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
+    font-size: 0.7rem !important;
+    margin-bottom: 2px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.2px !important;
 }
 
-/* ===== SELECT BOX ===== */
+/* Select box oscuro */
 .stSelectbox > div > div {
-    background: var(--bg-primary) !important;
+    background: var(--bg-input) !important;
     border: 1px solid var(--border-medium) !important;
     border-radius: var(--radius-sm) !important;
     color: var(--text-primary) !important;
-    font-size: 0.9em !important;
+    font-size: 0.8rem !important;
+    height: 28px !important;
+    min-height: 28px !important;
+    box-sizing: border-box !important;
 }
 
-.stSelectbox > div > div:hover { border-color: var(--border-dark) !important; }
+.stSelectbox > div > div:hover { border-color: var(--accent-cyan) !important; }
 
+.stSelectbox > div [data-baseweb="select"] {
+    height: 26px !important;
+    min-height: 26px !important;
+    display: flex !important;
+    align-items: center !important;
+    padding: 0 !important;
+    border: none !important;
+    background: transparent !important;
+}
+
+.stSelectbox > div [data-baseweb="select"] > div {
+    padding: 0 8px !important;
+    font-size: 0.8rem !important;
+    line-height: 26px !important;
+    color: var(--text-primary) !important;
+    background: transparent !important;
+}
+
+.stSelectbox > div [data-baseweb="select"] button {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.stSelectbox svg { fill: var(--text-muted) !important; color: var(--text-muted) !important; }
+
+/* Popover del dropdown */
 [data-baseweb="popover"] {
-    background: var(--bg-primary) !important;
+    background: var(--bg-block) !important;
     border: 1px solid var(--border-medium) !important;
     border-radius: var(--radius-sm) !important;
     box-shadow: var(--shadow-md) !important;
 }
 
-[data-baseweb="menu"] { background: var(--bg-primary) !important; }
+[data-baseweb="menu"] { background: var(--bg-block) !important; }
 [data-baseweb="menu"] li { color: var(--text-primary) !important; }
-[data-baseweb="menu"] li:hover { background: var(--bg-secondary) !important; }
+[data-baseweb="menu"] li:hover { background: var(--bg-elevated) !important; }
 
-/* ===== COLUMNAS DE BANDA HORARIA (tipo Excel) ===== */
+/* ============================================================
+   BLOQUE 4 - BANDAS HORARIAS (TIPO EXCEL, SCROLL INTERNO)
+   ============================================================ */
 .banda-header {
-    background: var(--bg-tertiary);
+    background: var(--bg-block);
     border: 1px solid var(--border-medium);
-    border-bottom: 2px solid var(--text-primary);
+    border-bottom: 2px solid var(--accent-primary);
     border-radius: var(--radius-sm) var(--radius-sm) 0 0;
     padding: 8px 12px;
     font-weight: 600;
@@ -481,35 +541,45 @@ div.stButton > button[kind="primary"]:hover {
 
 .banda-header .conteo {
     font-weight: 500;
-    color: var(--text-muted);
+    color: var(--accent-cyan);
     text-transform: none;
     letter-spacing: 0;
     font-size: 0.92em;
+    background: rgba(0, 180, 216, 0.12);
+    padding: 1px 8px;
+    border-radius: 10px;
 }
 
 .banda-vacia {
     border: 1px solid var(--border-light);
     border-top: none;
-    background: var(--bg-primary);
-    color: var(--text-light);
+    background: var(--bg-block);
+    color: var(--text-muted);
     font-size: 0.8em;
     text-align: center;
     padding: 24px 12px;
     border-radius: 0 0 var(--radius-sm) var(--radius-sm);
 }
 
-/* ===== DATAFRAME / TABLAS ===== */
+/* DataFrame oscuro con scroll interno controlado */
 [data-testid="stDataFrame"] {
     border: 1px solid var(--border-light);
     border-top: none;
     border-radius: 0 0 var(--radius-sm) var(--radius-sm);
-    overflow: hidden;
+    overflow: auto !important;
+    max-height: 60vh !important;
+    background: var(--bg-block) !important;
+}
+
+[data-testid="stDataFrame"] * {
+    background-color: transparent !important;
+    color: var(--text-primary) !important;
 }
 
 [data-testid="stDataFrame"] table { font-size: 0.82em !important; }
 
 [data-testid="stDataFrame"] th {
-    background: var(--bg-tertiary) !important;
+    background: var(--bg-elevated) !important;
     color: var(--text-primary) !important;
     font-weight: 600 !important;
     text-transform: uppercase !important;
@@ -525,7 +595,10 @@ div.stButton > button[kind="primary"]:hover {
     border-bottom: 1px solid var(--border-light) !important;
 }
 
-[data-testid="stDataFrame"] tr:hover td { background: var(--bg-secondary) !important; }
+[data-testid="stDataFrame"] tr:hover td { background: var(--bg-elevated) !important; }
+
+/* Canvas-based glide grid (Streamlit nuevo) fondo oscuro */
+[data-testid="stDataFrameResizable"] { background: var(--bg-block) !important; }
 
 /* ===== ALERTS ===== */
 .stSuccess {
@@ -560,36 +633,16 @@ div.stButton > button[kind="primary"]:hover {
     color: var(--danger) !important;
 }
 
-/* ===== DOWNLOAD BUTTON ===== */
-.stDownloadButton > button {
-    background: var(--accent-primary) !important;
-    border: none !important;
-    border-radius: var(--radius-sm) !important;
-    color: var(--text-white) !important;
-    font-weight: 600 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.4px !important;
-    font-size: 0.78em !important;
-    box-shadow: var(--shadow-sm) !important;
-    transition: all 0.15s ease !important;
-}
-
-.stDownloadButton > button:hover {
-    background: var(--accent-primary-hover) !important;
-    box-shadow: var(--shadow-md) !important;
-    transform: none !important;
-}
-
 /* ===== SPINNER ===== */
 .stSpinner > div {
-    border-color: var(--accent-primary) transparent transparent transparent !important;
+    border-color: var(--accent-cyan) transparent transparent transparent !important;
 }
 
 /* ===== SCROLLBAR ===== */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: var(--bg-secondary); }
-::-webkit-scrollbar-thumb { background: var(--border-medium); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: var(--border-dark); }
+::-webkit-scrollbar-track { background: var(--bg-app); }
+::-webkit-scrollbar-thumb { background: var(--border-dark); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-light); }
 
 /* ===== HEADINGS ===== */
 h1, h2, h3, h4, h5, h6 { color: var(--text-primary) !important; }
@@ -597,114 +650,43 @@ h1, h2, h3, h4, h5, h6 { color: var(--text-primary) !important; }
 /* ===== COLUMN GAPS ===== */
 [data-testid="column"] { padding: 0 8px; }
 
-/* ===== FOOTER ===== */
+/* ============================================================
+   BLOQUE 5 - FOOTER FIJO ABAJO
+   ============================================================ */
 .footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
     text-align: center;
-    padding: 16px;
+    padding: 0;
+    height: var(--h-footer);
+    line-height: var(--h-footer);
     color: var(--text-muted);
-    font-size: 0.72em;
+    font-size: 0.7em;
     letter-spacing: 0.6px;
-    border-top: 1px solid var(--border-light);
-    margin-top: 28px;
-    background: var(--bg-primary);
+    border-top: 1px solid var(--border-medium);
+    background: var(--bg-block);
     text-transform: uppercase;
-}
-
-/* =====================================================
-   ESTILIZADO MICRO Y SECTOR DE ALERTAS INMÓVIL
-   ===================================================== */
-
-/* 1. Unificación y Nivelación de la Fila de Inputs (Altura estricta 28px) */
-
-/* Cajas de texto (Dirección y Pedido) */
-.stTextInput input,
-.stNumberInput input {
-    height: 28px !important;
-    min-height: 28px !important;
-    padding: 2px 8px !important;
-    font-size: 0.8rem !important;
-    border-radius: 4px !important;
-    box-sizing: border-box !important;
-}
-
-/* Selectores (Tipo y Banda) - Forzado de estructura externa */
-.stSelectbox > div > div {
-    height: 28px !important;
-    min-height: 28px !important;
-    border-radius: 4px !important;
-    box-sizing: border-box !important;
-}
-
-/* Forzado del contenedor de texto interno del selector */
-.stSelectbox > div [data-baseweb="select"] {
-    height: 26px !important; /* Ajuste fino interno por bordes */
-    min-height: 26px !important;
-    display: flex !important;
-    align-items: center !important;
-    padding: 0 !important;
-    border: none !important;
-}
-
-.stSelectbox > div [data-baseweb="select"] > div {
-    padding: 0 8px !important;
-    font-size: 0.8rem !important;
-    line-height: 26px !important;
-}
-
-/* Corrección de flechas e íconos para que no estiren la caja */
-.stSelectbox > div [data-baseweb="select"] button {
-    padding: 0 !important;
-    margin: 0 !important;
-}
-
-/* Etiquetas superiores unificadas */
-.stTextInput label,
-.stNumberInput label,
-.stSelectbox label {
-    font-size: 0.7rem !important;
-    margin-bottom: 2px !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.2px !important;
-}
-
-/* 2. Alineación Vertical Perfecta del Botón AGREGAR */
-.spacer-btn-agregar {
-    height: 14px !important; /* Ajuste micrométrico para nivelar con los inputs */
-}
-
-div.stButton > button#stSidebar { height: auto !important; }
-
-div.stButton > button {
-    height: 28px !important;
-    min-height: 28px !important;
-    font-size: 0.75rem !important;
-    padding: 0 12px !important;
-    border-radius: 4px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    margin: 0 !important;
+    z-index: 9999;
 }
 
 /* =====================================================
    MICRO-ALERTAS PANEL DE RUTEO (OPERATIVO MULTI-COL)
    ===================================================== */
-
-/* Contenedor invisible para alinear los elementos con los inputs */
 .wrapper-alertas-micro {
     display: flex !important;
     flex-direction: column !important;
     justify-content: flex-end !important;
-    height: 64px !important; /* Mismo alto total que los inputs con sus labels */
+    height: 64px !important;
     padding-bottom: 2px !important;
     box-sizing: border-box !important;
 }
 
-/* Texto de advertencia ultra compacto */
 .micro-txt-warning {
     font-size: 0.72rem !important;
     font-weight: 600 !important;
-    color: #FFC107 !important; /* Amarillo operativo de alerta */
+    color: var(--warning) !important;
     text-transform: uppercase !important;
     letter-spacing: 0.2px !important;
     margin-bottom: 4px !important;
@@ -714,52 +696,51 @@ div.stButton > button {
     text-overflow: ellipsis;
 }
 
-/* Modificadores quirúrgicos para los botones adentro de la sexta columna */
+/* Micro-botones dentro de la sexta columna */
 [data-testid="column"]:nth-child(6) div.stButton > button {
-    height: 24px !important; /* Altura ultra-reducida tipo tag */
+    height: 24px !important;
     padding: 0 4px !important;
-    font-size: 0.65rem !important; /* Letra bien chica */
+    font-size: 0.65rem !important;
     font-weight: 700 !important;
     letter-spacing: 0px !important;
     border-radius: 3px !important;
     margin: 0 !important;
 }
 
-/* Estilo específico para el botón Cancelar ("X") */
 [data-testid="column"]:nth-child(6) div.stButton > button[key*="mv_cancel"] {
-    background: rgba(197, 48, 48, 0.1) !important;
+    background: var(--danger-bg) !important;
     color: var(--danger) !important;
-    border: 1px solid rgba(197, 48, 48, 0.3) !important;
+    border: 1px solid rgba(248, 113, 113, 0.4) !important;
 }
 
 [data-testid="column"]:nth-child(6) div.stButton > button[key*="mv_cancel"]:hover {
     background: var(--danger) !important;
-    color: var(--text-white) !important;
+    color: #0b1220 !important;
     border-color: var(--danger) !important;
 }
 
-/* Estilo específico para el botón de Mover */
 [data-testid="column"]:nth-child(6) div.stButton > button[key*="mv_ok"] {
-    background: rgba(13, 110, 253, 0.1) !important;
-    color: var(--accent-primary) !important;
-    border: 1px solid rgba(13, 110, 253, 0.3) !important;
+    background: var(--info-bg) !important;
+    color: var(--accent-cyan) !important;
+    border: 1px solid rgba(0, 180, 216, 0.4) !important;
 }
 
 [data-testid="column"]:nth-child(6) div.stButton > button[key*="mv_ok"]:hover {
-    background: var(--accent-primary) !important;
-    color: var(--text-white) !important;
-    border-color: var(--accent-primary) !important;
+    background: var(--accent-cyan) !important;
+    color: #0b1220 !important;
+    border-color: var(--accent-cyan) !important;
 }
+
 /* ===== LOADING SCREEN ===== */
 .loading-screen {
     position: fixed;
     top: 0; left: 0;
     width: 100vw; height: 100vh;
-    background: var(--bg-header);
+    background: var(--bg-app);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 9999;
+    z-index: 999999;
     animation: fadeOut 0.3s ease-out 0.8s forwards;
 }
 
