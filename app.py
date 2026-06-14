@@ -19,7 +19,6 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Inicialización de Estados en Session State
 if "pedidos_manual" not in st.session_state:
     st.session_state.pedidos_manual = []
 if "pedido_a_mover" not in st.session_state:
@@ -30,7 +29,7 @@ if "fecha_tit" not in st.session_state:
     st.session_state.fecha_tit = None
 
 # =====================================================
-# FUNCIONES DE UTILIDAD Y PERSISTENCIA (Declaradas al inicio)
+# FUNCIONES DE UTILIDAD Y PERSISTENCIA
 # =====================================================
 def cargar_css(path):
     try:
@@ -149,7 +148,7 @@ def registrar_pedidos_cdp(archivo_bytes, df):
     return datos, True
 
 # =====================================================
-# EJECUCIÓN INICIAL: CARGA DE ESTILOS Y TIEMPO
+# EJECUCIÓN INICIAL
 # =====================================================
 cargar_css("styles_corporativo.css")
 
@@ -173,7 +172,7 @@ if loading_logo_base64:
     """, unsafe_allow_html=True)
 
 # =====================================================
-# BLOQUE 1 - HEADER FIJO (Logo Izquierda | Textos Derecha)
+# BLOQUE 1 - HEADER FIJO
 # =====================================================
 logo_base64 = get_image_base64("carrefour+logo.png")
 if logo_base64:
@@ -194,12 +193,12 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # =====================================================
-# BLOQUE 2 - BARRA DE CONTROL MINIMALISTA:  UPLOAD + PLANILLAS
+# BLOQUE 2 - BARRA DE CONTROL: UPLOAD + PLANILLAS + DESCARGAR PDF
 # =====================================================
 st.markdown('<div class="control-bar">', unsafe_allow_html=True)
 
-# Cinco columnas iguales (se eliminó Planilla Faltantes)
-bu, b1, b2, b4, b5 = st.columns([1, 1, 1, 1, 1])
+# 6 columnas: upload | clientes | seguridad | logistica | MEC | descargar PDF
+bu, b1, b2, b4, b5, b_pdf = st.columns([1, 1, 1, 1, 1, 1])
 
 with bu:
     archivo_cdp = st.file_uploader(
@@ -219,6 +218,14 @@ with b5:
         "PLANILLA MEC",
         "https://docs.google.com/spreadsheets/d/1v0Rls8fg_uIGfhA1t3CzINq3VfAUvPY3DY8_m_ZSmM8/edit#gid=0",
         use_container_width=True
+    )
+with b_pdf:
+    # Botón DESCARGAR PDF siempre visible en la barra; activo solo si hay datos
+    btn_pdf_bar = st.button(
+        "DESCARGAR PDF",
+        key="btn_pdf_bar",
+        use_container_width=True,
+        disabled=(st.session_state.df_clean is None)
     )
 
 st.markdown('</div>', unsafe_allow_html=True)
@@ -271,13 +278,12 @@ if archivo_cdp:
 df_clean = st.session_state.df_clean
 fecha_tit = st.session_state.fecha_tit
 
+# =====================================================
+# DESCARGAS (se activan desde botones de la barra)
+# =====================================================
 if df_clean is not None:
-    # Barra de descargas dinámicas integrada al extremo derecho del menú
-    st.markdown('<div class="download-bar">', unsafe_allow_html=True)
-
     if btn_1:
         with st.spinner("Generando reporte..."):
-            # CORREGIDO: Se quitó 'fecha_tit' porque esta función no lo acepta
             pdf = logic_clientes.generar_pdf_clientes(df_clean)
         st.download_button("DESCARGAR PDF CLIENTES", bytes(pdf), f"Clientes_{fecha_tit}.pdf")
 
@@ -291,18 +297,18 @@ if df_clean is not None:
             pdf = logic_domicilios.generar_pdf_domicilios(df_clean, fecha_tit)
         st.download_button("DESCARGAR PDF LOGISTICA", bytes(pdf), f"Domicilios_{fecha_tit}.pdf")
 
-    st.markdown('</div>', unsafe_allow_html=True)
+    if btn_pdf_bar:
+        # Acción por defecto del botón PDF de la barra: genera planilla clientes
+        with st.spinner("Generando PDF..."):
+            pdf = logic_clientes.generar_pdf_clientes(df_clean)
+        st.download_button("⬇ DESCARGAR", bytes(pdf), f"Clientes_{fecha_tit}.pdf", key="dl_bar")
 else:
     st.session_state.df_clean = None
     st.session_state.fecha_tit = None
 
 # =====================================================
-# BLOQUE 3 - PANEL DE RUTEO
+# BLOQUE 3 - PANEL DE RUTEO (sin título ni separador)
 # =====================================================
-st.markdown('<div class="section-divider"></div>', unsafe_allow_html=True)
-st.markdown('<div class="section-title">Panel de Ruteo</div>', unsafe_allow_html=True)
-
-# --- FILA DE INPUTS HORIZONTAL: Direccion | Pedido | Tipo | Banda | Agregar | Alertas ---
 c1, c2, c3, c4, c5, c6 = st.columns([3.2, 1.2, 1.0, 1.3, 1.3, 2.0])
 
 with c1:
@@ -325,11 +331,9 @@ with c5:
     st.markdown('<div style="height:26px;"></div>', unsafe_allow_html=True)
     btn_agregar_manual = st.button("AGREGAR", key="btn_add", use_container_width=True, type="primary")
 
-# Celda de Alertas en la sexta columna (VIVE EN LA MISMA FILA)
 with c6:
     st.markdown('<div class="wrapper-alertas-micro">', unsafe_allow_html=True)
 
-    # --- LOGICA AGREGAR / MOVER PEDIDO MANUAL ---
     if btn_agregar_manual:
         prefijos = {
             "Caja": "LC-", "Reclamo": "R-", "Reprogramado": "RP-",
@@ -362,7 +366,6 @@ with c6:
             time.sleep(0.5)
             st.rerun()
 
-    # Si hay conflicto de movimiento, se renderiza de forma micro aquí adentro
     if st.session_state.pedido_a_mover:
         datos = st.session_state.pedido_a_mover
         if datos["banda_actual"] == datos["banda_nueva"]:
@@ -372,8 +375,6 @@ with c6:
                 st.rerun()
         else:
             st.markdown(f'<div class="micro-txt-warning">⚠️ Ya existe en banda {datos["banda_actual"].split(" ")[0]}</div>', unsafe_allow_html=True)
-
-            # Micro-botones alineados horizontalmente
             sub_col_a, sub_col_b = st.columns(2)
             with sub_col_a:
                 mover = st.button("MOVER", key="mv_ok")
@@ -402,7 +403,7 @@ with c6:
     st.markdown('</div>', unsafe_allow_html=True)
 
 # =====================================================
-# BLOQUE 4 - TRES COLUMNAS DE BANDA HORARIA (tipo Excel, siempre visibles)
+# BLOQUE 4 - TRES COLUMNAS DE BANDA HORARIA
 # =====================================================
 BANDAS_FIJAS = [
     ("10 a 14 hs", ["10:00 a 14:00"]),
@@ -411,10 +412,7 @@ BANDAS_FIJAS = [
 ]
 
 def construir_tabla_banda(claves_banda):
-    """Arma la tabla de una banda combinando ecommerce + manuales."""
     filas = []
-
-    # Pedidos ecommerce (desde el archivo)
     if df_clean is not None:
         df_rutas = df_clean[
             df_clean["MODALIDAD DE ENTREGA"].str.contains("Domicilio", case=False, na=False)
@@ -430,8 +428,6 @@ def construir_tabla_banda(claves_banda):
             })
 
     ecommerce = len(filas)
-
-    # Pedidos manuales
     manuales = 0
     for pedido in st.session_state.pedidos_manual:
         if pedido["banda"] in claves_banda:
@@ -446,12 +442,13 @@ def construir_tabla_banda(claves_banda):
 
     return pd.DataFrame(filas), ecommerce, manuales
 
+# Contenedor del bloque 4 con clase para altura calculada via CSS
+st.markdown('<div class="bloque-bandas">', unsafe_allow_html=True)
 cols_bandas = st.columns(3, gap="medium")
 
 for col, (label, claves) in zip(cols_bandas, BANDAS_FIJAS):
     with col:
         tabla, ecommerce, manuales = construir_tabla_banda(claves)
-
         conteo = f"{ecommerce} ecomm"
         if manuales > 0:
             conteo += f" · {manuales} manual"
@@ -468,6 +465,8 @@ for col, (label, claves) in zip(cols_bandas, BANDAS_FIJAS):
                 '<div class="banda-vacia">Sin pedidos cargados</div>',
                 unsafe_allow_html=True
             )
+
+st.markdown('</div>', unsafe_allow_html=True)
 
 # =====================================================
 # BLOQUE 5 - FOOTER FIJO
