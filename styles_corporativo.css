@@ -1,140 +1,108 @@
 /* =====================================================
-   PANEL OPERACIONES CARREFOUR - DARK MINIMALIST PREMIUM
-   Dashboard Operativo / Viewport-Fit / Inmune al Modo Sistema
+   PANEL OPERACIONES CARREFOUR - DARK MINIMALIST "PIZARRA Y ACERO"
+   Consola operativa rígida / Viewport-Fit 100vh / Inmune al modo del sistema
    ===================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-/* ===== VARIABLES (PALETA OSCURA FORZADA) ===== */
+/* ===== PALETA CORPORATIVA FORZADA (inmune a light/dark del SO) ===== */
 :root {
     color-scheme: dark only;
 
     /* Fondos */
-    --bg-app: #12141c;          /* Fondo general de la app */
-    --bg-block: #1f212e;        /* Bloques sólidos: headers, tarjetas, inputs */
-    --bg-bar: #1a1b26;          /* Barra de menú minimalista */
-    --bg-elevated: #262a3a;     /* Hover / celdas elevadas */
-    --bg-input: #262a3a;        /* Fondo de inputs/selects */
+    --bg-app: #242830;          /* Fondo de la aplicación (.stApp) */
+    --bg-block: #313842;        /* Bloques fijos y contenedores sólidos */
+    --bg-elevated: #3a424d;     /* Inputs, celdas y superficies elevadas */
 
     /* Texto */
-    --text-primary: #e2e8f0;    /* Blanco tiza */
-    --text-secondary: #cbd5e1;
-    --text-muted: #94a3b8;      /* Gris apagado */
-    --text-light: #64748b;
-
-    /* Bordes */
-    --border-light: #2a2d3c;
-    --border-medium: #353a4d;
-    --border-dark: #475569;
+    --text-primary: #eef2f6;    /* Texto principal alta legibilidad */
+    --text-secondary: #d8dee7;  /* Texto secundario / badges */
+    --text-muted: #a9b4c2;      /* Texto auxiliar / muted */
 
     /* Acentos */
-    --accent-primary: #0d6efd;       /* Azul eléctrico */
-    --accent-primary-hover: #00b4d8; /* Cyan hover */
-    --accent-cyan: #00b4d8;
-    --accent-green: #2e7d32;         /* Verde esmeralda (cargar / agregar) */
-    --accent-green-hover: #3a9d3f;
+    --blue: #6baed6;            /* Azul principal: líneas / bordes sutiles */
+    --cyan: #8ccfd9;            /* Celeste secundario */
+    --green: #6ea796;           /* Verde operativo: "cargar" y "AGREGAR" */
+    --green-hover: #5d9285;
 
-    /* Estados */
-    --success: #34d399;
-    --success-bg: rgba(52, 211, 153, 0.12);
-    --warning: #fbbf24;
-    --warning-bg: rgba(251, 191, 36, 0.12);
-    --danger: #f87171;
-    --danger-bg: rgba(248, 113, 113, 0.12);
-    --info: #38bdf8;
-    --info-bg: rgba(56, 189, 248, 0.12);
+    /* Bordes */
+    --border: #404956;
+    --border-strong: #4d5765;
 
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-    --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.5);
+    /* Estados (versión apagada acorde al tema) */
+    --warning: #e0b352;
+    --danger: #d97a7a;
 
-    --radius-sm: 5px;
-    --radius-md: 8px;
-
-    /* Alturas proporcionales estrictas */
+    /* Geometría vertical (proporciones del viewport) */
     --h-header: 5vh;
-    --h-menu: 5vh;
-    --h-captura: 7vh;
-    --h-tablero: 78vh;
     --h-footer: 5vh;
+    --h-top-stack: 130px;       /* Header + menú + carga manual consolidados */
+
+    --radius: 6px;
 }
 
 /* ===== RESET STREAMLIT ===== */
-#MainMenu {visibility: hidden;}
-footer {visibility: hidden;}
-header {visibility: hidden;}
-
+#MainMenu, footer, header { visibility: hidden; }
 [data-testid="stHeader"] { display: none !important; }
-.stAppDeployDropdown { display: none !important; }
 [data-testid="stToolbar"] { display: none !important; }
+.stAppDeployDropdown { display: none !important; }
+.stAppViewContainer .main { overflow: visible !important; }
 
-/* ===== APP BACKGROUND (FORZADO OSCURO) ===== */
+/* ===== APP: ocupa al menos toda la pantalla, pero NUNCA recorta el contenido =====
+   (Forzar height:100vh + overflow:hidden recortaba el Bloque 4 entero. Ahora el
+   documento fluye y, si hace falta, scrollea; las tablas tienen su scroll interno.) */
 html, body, .stApp {
     background: var(--bg-app) !important;
     color: var(--text-primary) !important;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    min-height: 100vh !important;
+    overflow-x: hidden !important;
 }
 
-/* ===== VIEWPORT FIT: ELIMINACIÓN DE GAP FANTASMA ===== */
-html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
-    max-height: 100vh !important;
-    height: 100vh !important;
-    overflow: hidden !important;
-}
-
-/* El bloque contenedor maestro de Streamlit */
-.main .block-container,
+/* La consola se extiende al alto de pantalla; deja aire para header/footer fijos */
 .block-container {
-    padding: 0px !important; /* Eliminamos paddings que empujen contenido */
+    min-height: 100vh !important;
     max-width: 100% !important;
-    height: 100vh !important;
-    max-height: 100vh !important;
-    overflow: hidden !important;
-    background: var(--bg-app);
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: flex-start !important;
-    gap: 0px !important;
-}
-
-/* EXTREMADAMENTE CRÍTICO: Destruir los espacios / márgenes por defecto de las celdas de Streamlit */
-[data-testid="stVerticalBlockBorderWrapper"],
-[data-testid="stVerticalBlock"] {
-    gap: 0px !important;
-    padding: 0px !important;
-    margin: 0px !important;
+    background: var(--bg-app) !important;
+    padding: calc(var(--h-header) + 14px) 1.4rem calc(var(--h-footer) + 18px) 1.4rem !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
 }
 
 .block-container > div:first-child { margin-top: 0 !important; }
 
+/* Eliminar la holgura que Streamlit mete antes de cada fila de columnas */
 [data-testid="stHorizontalBlock"] {
     margin-top: 0 !important;
     padding-top: 0 !important;
-    align-items: center !important;
-    gap: 8px !important;
+    gap: 0.6rem !important;
+    align-items: flex-end !important;   /* Controles alineados a la base de la fila */
 }
 
-/* ============================================================
-   BLOQUE 1 - HEADER ESTÁTICO (5% ALTO)
-   ============================================================ */
-.bloque-header {
-    height: var(--h-header) !important;
-    min-height: 42px !important;
-    max-height: 50px !important;
+[data-testid="stVerticalBlock"] { gap: 0.35rem !important; }
+
+/* Compactar separaciones verticales nativas */
+[data-testid="stElementContainer"] { margin: 0 !important; }
+
+/* =====================================================
+   BLOQUE 1 - HEADER FIJO (~5vh)
+   ===================================================== */
+.header-container {
     background: var(--bg-block);
-    padding: 0px 24px;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 99999 !important;
+    width: 100vw !important;
+    height: var(--h-header) !important;
+    min-height: 44px !important;
+    margin: 0 !important;
+    padding: 0 24px !important;
     box-sizing: border-box;
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
-    border-bottom: 1px solid var(--border-medium);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
-}
-
-.header-container {
-    display: flex !important;
-    width: 100%;
-    justify-content: space-between !important;
-    align-items: center !important;
+    border-bottom: 1px solid var(--border);
 }
 
 .header-left { display: flex; align-items: center; }
@@ -150,24 +118,23 @@ html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
     flex-direction: column;
     align-items: flex-end;
     text-align: right;
-    gap: 3px;
+    gap: 2px;
 }
 
 .title-main {
-    font-size: 14px !important;
-    line-height: 1.1 !important;
+    font-size: 0.84rem !important;
+    line-height: 1.05 !important;
     margin: 0 !important;
     padding: 0 !important;
     font-weight: 700 !important;
     letter-spacing: 0.5px;
     color: var(--text-primary) !important;
 }
-
 .title-main::after { display: none; }
 .title-main, .title-main span { color: var(--text-primary) !important; }
 
 .subtitle-main {
-    font-size: 11px !important;
+    font-size: 0.66rem !important;
     color: var(--text-muted) !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -175,106 +142,93 @@ html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
     font-weight: 500 !important;
 }
 
-/* Separadores inactivos */
-.header-divider, .section-divider, .section-title { display: none !important; }
-
-/* ============================================================
-   BLOQUE 2 - BARRA DE CONTROL / MENÚ PLANO (5% ALTO)
-   ============================================================ */
-.bloque-menu {
-    height: var(--h-menu) !important;
-    min-height: 42px !important;
-    max-height: 50px !important;
-    background: var(--bg-bar);
-    border-bottom: 1px solid var(--border-light);
-    display: flex !important;
-    align-items: center !important;
-    padding: 0 12px !important; /* Alineación limpia con el header */
-    box-sizing: border-box !important;
+/* Separador fino entre menú y carga manual */
+.section-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 6px 0 4px 0;
 }
 
-/* Forzar que los contenedores internos del bloque se estiren al 100% */
-.bloque-menu > div, .bloque-menu [data-testid="stHorizontalBlock"] {
-    width: 100% !important;
-}
+/* =====================================================
+   BLOQUE 2 - BARRA DE CONTROL MINIMALISTA
+   Controles agrupados a la IZQUIERDA, sin estiramiento.
+   ===================================================== */
+.control-bar { margin: 0 !important; padding: 0 !important; }
 
-/* Botones planos tipo menú de consola (sin marco / sin caja de fondo) */
-.bloque-menu div.stButton > button,
-.bloque-menu button[data-testid="stBaseButton-secondary"] {
+/* Botones de menú: texto plano, compactos, NO ocupan todo el ancho */
+div.stButton > button,
+.stLinkButton > a {
     background: transparent !important;
-    border: none !important;
-    border-radius: var(--radius-sm) !important;
+    border: 1px solid transparent !important;
+    border-radius: var(--radius) !important;
     height: 32px !important;
+    min-height: 32px !important;
     font-weight: 600 !important;
-    font-size: 12px !important;
+    font-size: 0.74rem !important;
     text-transform: uppercase !important;
     letter-spacing: 0.4px !important;
     color: var(--text-secondary) !important;
     box-shadow: none !important;
-    transition: color 0.15s ease, background 0.15s ease !important;
-    padding: 0 12px !important;
-}
-
-.bloque-menu div.stButton > button:hover,
-.bloque-menu button[data-testid="stBaseButton-secondary"]:hover {
-    background: rgba(255, 255, 255, 0.05) !important;
-    color: var(--accent-cyan) !important;
-    border: none !important;
-}
-
-/* Link Button (Planilla MEC) adaptado al menú plano */
-.bloque-menu .stLinkButton > a {
-    background: transparent !important;
-    border: none !important;
-    border-radius: var(--radius-sm) !important;
-    height: 32px !important;
-    font-weight: 600 !important;
-    font-size: 12px !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.4px !important;
-    color: var(--text-secondary) !important;
-    box-shadow: none !important;
-    transition: color 0.15s ease !important;
+    transition: all 0.15s ease !important;
+    padding: 0 10px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     text-decoration: none !important;
+    white-space: nowrap !important;
 }
 
-.bloque-menu .stLinkButton > a:hover {
-    background: rgba(255, 255, 255, 0.05) !important;
-    color: var(--accent-cyan) !important;
+div.stButton > button:hover,
+.stLinkButton > a:hover {
+    background: var(--bg-elevated) !important;
+    border-color: var(--border-strong) !important;
+    color: var(--cyan) !important;
+    transform: none !important;
 }
 
-/* ===== REDISEÑO TOTAL DEL UPLOADER: TEXTO PLANO "CARGAR" ===== */
+div.stButton > button:active { background: var(--bg-block) !important; }
+div.stButton > button:disabled { opacity: 0.4 !important; cursor: not-allowed !important; }
+
+/* Botón AGREGAR (primary) y acentos verdes operativos */
+div.stButton > button[kind="primary"] {
+    background: var(--green) !important;
+    color: #11221d !important;
+    border-color: var(--green) !important;
+    font-weight: 700 !important;
+}
+div.stButton > button[kind="primary"]:hover {
+    background: var(--green-hover) !important;
+    border-color: var(--green-hover) !important;
+    color: #11221d !important;
+}
+
+/* =====================================================
+   FILE UPLOADER -> botón de texto plano "Upload (cargar)"
+   La palabra "cargar" debe quedar en VERDE operativo.
+   ===================================================== */
 [data-testid="stFileUploader"] {
     background: transparent !important;
-    border: none !important;
+    border: 1px solid transparent !important;
+    border-radius: var(--radius) !important;
     height: 32px !important;
-    width: auto !important;
-    max-width: 120px !important;
     padding: 0 !important;
     margin: 0 !important;
     overflow: hidden !important;
     display: flex !important;
     align-items: center !important;
-    box-shadow: none !important;
+    transition: all 0.15s ease !important;
     position: relative !important;
 }
-
-[data-testid="stFileUploader"] section {
-    padding: 0 !important;
-    border: none !important;
-    background: transparent !important;
-    display: flex !important;
-    justify-content: flex-start !important;
+[data-testid="stFileUploader"]:hover {
+    border-color: var(--border-strong) !important;
+    background: var(--bg-elevated) !important;
 }
 
+/* Ocultar toda la dropzone gigante y textos "Browse files / Drag and drop" */
 [data-testid="stFileUploader"] section > div ~ div,
-[data-testid="stFileUploader"] text,
 [data-testid="stFileUploader"] p,
-[data-testid="stFileUploaderDropzone"] svg,
-[data-testid="stFileUploaderDropzone"] > div:not(button) {
+[data-testid="stFileUploaderDropzoneInstructions"],
+[data-testid="stFileUploaderDropzone"] svg {
     display: none !important;
 }
 
@@ -284,297 +238,370 @@ html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
     padding: 0 8px !important;
     height: 100% !important;
     width: 100% !important;
+    min-width: 120px !important;
     display: flex !important;
+    flex-direction: row !important;
     align-items: center !important;
+    justify-content: center !important;
+    flex-wrap: nowrap !important;
+    white-space: nowrap !important;
     cursor: pointer !important;
+    margin: 0 !important;
 }
 
+/* El botón nativo se transforma en la etiqueta plana */
 [data-testid="stFileUploader"] section button {
     background: transparent !important;
-    color: var(--accent-green) !important;
     border: none !important;
-    font-weight: 700 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.4px !important;
-    padding: 4px 8px !important;
+    font-weight: 600 !important;
+    font-size: 0 !important;          /* oculta el texto nativo "Browse files" */
+    padding: 0 !important;
     height: 100% !important;
     width: 100% !important;
+    max-height: 32px !important;
+    cursor: pointer !important;
     box-shadow: none !important;
-    font-size: 0 !important;
+    position: relative !important;
 }
 
-[data-testid="stFileUploader"] section button::before {
-    content: "CARGAR" !important;
-    font-size: 12px !important;
-    color: var(--accent-green) !important;
-    font-weight: 700 !important;
-    letter-spacing: 0.4px !important;
+/* Etiqueta "Upload" + "cargar" reconstruida por CSS */
+[data-testid="stFileUploaderDropzone"]::before {
+    content: "UPLOAD ";
+    color: var(--text-secondary);
+    font-size: 0.74rem;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+}
+[data-testid="stFileUploaderDropzone"]::after {
+    content: "(cargar)";
+    color: var(--green);              /* VERDE OPERATIVO sobre "cargar" */
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    margin-left: 4px;
 }
 
-[data-testid="stFileUploader"] section button:hover::before {
-    color: var(--accent-green-hover) !important;
-}
-
+/* Archivo cargado: chip plano, una sola línea */
 [data-testid="stFileUploaderFileData"] {
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
-    height: 32px !important;
+    height: 30px !important;
     width: 100% !important;
     padding: 0 8px !important;
+    margin: 0 !important;
     position: absolute !important;
     top: 0 !important;
     left: 0 !important;
     background: var(--bg-elevated) !important;
-    border-radius: var(--radius-sm) !important;
+    box-sizing: border-box !important;
     z-index: 10 !important;
+    overflow: hidden !important;
+    border-radius: var(--radius) !important;
+}
+[data-testid="stFileUploaderFileData"] > div:first-child {
+    background: transparent !important;
+    padding: 0 !important; margin: 0 !important;
+    display: flex !important; align-items: center !important;
+    gap: 6px !important;
+    width: calc(100% - 24px) !important;
+    height: 100% !important;
+}
+[data-testid="stFileUploaderFileData"] span {
+    font-size: 0.72rem !important;
+    color: var(--text-primary) !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    font-weight: 500 !important;
+}
+[data-testid="stFileUploaderFileData"] small {
+    font-size: 0.62rem !important;
+    color: var(--text-muted) !important;
+    margin-left: 4px !important;
+}
+[data-testid="stFileUploaderFileData"] button {
+    position: absolute !important;
+    right: 6px !important; top: 5px !important;
+    width: 20px !important; height: 20px !important;
+    padding: 0 !important; margin: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    color: var(--danger) !important;
+    display: flex !important; align-items: center !important; justify-content: center !important;
+    box-shadow: none !important;
+}
+[data-testid="stFileUploaderFileData"] button:hover {
+    background: rgba(217, 122, 122, 0.15) !important;
+    border-radius: 50% !important;
 }
 
-/* Descargas extremas */
-.zona-reservada-descargas {
-    display: flex;
-    justify-content: flex-end;
-    gap: 6px;
-    width: 100%;
-}
+/* =====================================================
+   ZONA RESERVADA DE DESCARGAS (extremo derecho Bloque 2)
+   ===================================================== */
+.download-bar { width: 100%; }
 
 .stDownloadButton > button {
-    background: transparent !important;
-    border: 1px solid var(--accent-cyan) !important;
-    border-radius: var(--radius-sm) !important;
-    color: var(--accent-cyan) !important;
-    font-weight: 600 !important;
+    background: var(--blue) !important;
+    border: none !important;
+    border-radius: var(--radius) !important;
+    color: #10202b !important;
+    font-weight: 700 !important;
     text-transform: uppercase !important;
-    font-size: 11px !important;
-    height: 28px !important;
-    padding: 0px 10px !important;
+    letter-spacing: 0.4px !important;
+    font-size: 0.7rem !important;
+    height: 30px !important;
+    min-height: 30px !important;
+    box-shadow: none !important;
+    transition: all 0.15s ease !important;
 }
-
 .stDownloadButton > button:hover {
-    background: var(--accent-cyan) !important;
-    color: #0b1220 !important;
+    background: var(--cyan) !important;
+    transform: none !important;
 }
 
-/* ============================================================
-   BLOQUE 3 - FORMULARIO DE CAPTURA MANUAL (7% ALTO)
-   ============================================================ */
-.bloque-captura {
-    height: var(--h-captura) !important;
-    min-height: 52px !important;
-    max-height: 65px !important;
-    background: var(--bg-block);
-    border-bottom: 1px solid var(--border-medium);
-    display: flex !important;
-    align-items: center !important;
-    padding: 0 12px !important;
+/* =====================================================
+   BLOQUE 3 - CAPTURA MANUAL (inputs compactos, alineados a la izquierda)
+   ===================================================== */
+.stTextInput input,
+.stNumberInput input {
+    background: var(--bg-elevated) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: var(--radius) !important;
+    color: var(--text-primary) !important;
+    font-family: 'Inter', sans-serif !important;
+    height: 30px !important;
+    min-height: 30px !important;
+    padding: 2px 10px !important;
+    font-size: 0.8rem !important;
     box-sizing: border-box !important;
 }
-
-.bloque-captura > div, .bloque-captura [data-testid="stHorizontalBlock"] {
-    width: 100% !important;
+.stTextInput input:focus,
+.stNumberInput input:focus {
+    border-color: var(--blue) !important;
+    box-shadow: 0 0 0 2px rgba(107, 174, 214, 0.20) !important;
+    outline: none !important;
 }
+.stTextInput input::placeholder,
+.stNumberInput input::placeholder { color: var(--text-muted) !important; }
 
-.bloque-captura .stTextInput input,
-.bloque-captura .stNumberInput input {
-    background: var(--bg-input) !important;
-    border: 1px solid var(--border-medium) !important;
-    border-radius: var(--radius-sm) !important;
-    color: var(--text-primary) !important;
-    height: 32px !important;
-    padding: 4px 8px !important;
-    font-size: 12px !important;
-}
-
-.bloque-captura .stSelectbox > div > div {
-    background: var(--bg-input) !important;
-    border: 1px solid var(--border-medium) !important;
-    border-radius: var(--radius-sm) !important;
-    height: 32px !important;
-}
-
-.bloque-captura .stSelectbox > div [data-baseweb="select"] {
-    height: 30px !important;
-}
-
-/* Botón primario AGREGAR */
-.bloque-captura div.stButton > button[kind="primary"],
-.bloque-captura button[data-testid="stBaseButton-primary"] {
-    background: var(--accent-green) !important;
-    color: #ffffff !important;
-    border: none !important;
-    border-radius: var(--radius-sm) !important;
-    height: 32px !important;
-    font-size: 12px !important;
-    font-weight: 700 !important;
-    box-shadow: var(--shadow-sm) !important;
-}
-
-.bloque-captura div.stButton > button[kind="primary"]:hover,
-.bloque-captura button[data-testid="stBaseButton-primary"]:hover {
-    background: var(--accent-green-hover) !important;
-}
-
-.bloque-captura label {
+.stTextInput label,
+.stNumberInput label,
+.stSelectbox label {
     color: var(--text-muted) !important;
     font-weight: 500 !important;
-    font-size: 11px !important;
-    margin-bottom: 2px !important;
+    font-size: 0.68rem !important;
     text-transform: uppercase !important;
+    letter-spacing: 0.3px !important;
+    margin-bottom: 2px !important;
 }
 
-/* ============================================================
-   BLOQUE 4 - TABLERO DE DATOS ALTA DENSIDAD (78% ALTO)
-   ============================================================ */
-.bloque-tablero {
-    height: var(--h-tablero) !important;
-    min-height: calc(78vh) !important;
-    padding: 8px 12px !important; /* Agregamos margen lateral interno limpio */
+/* Selectbox oscuro y compacto */
+.stSelectbox > div > div {
+    background: var(--bg-elevated) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: var(--radius) !important;
+    color: var(--text-primary) !important;
+    font-size: 0.8rem !important;
+    height: 30px !important;
+    min-height: 30px !important;
     box-sizing: border-box !important;
-    background: var(--bg-app);
-    overflow: hidden !important; 
-    display: block !important; /* Asegura renderizado de bloque puro */
 }
-
-.banda-header {
-    background: var(--bg-block);
-    border: 1px solid var(--border-medium);
-    border-bottom: 2px solid var(--accent-primary);
-    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
-    padding: 6px 10px;
-    font-weight: 700;
-    font-size: 13px;
-    color: var(--text-primary);
-    text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+.stSelectbox > div > div:hover { border-color: var(--border-strong) !important; }
+.stSelectbox > div [data-baseweb="select"] {
+    height: 28px !important; min-height: 28px !important;
+    display: flex !important; align-items: center !important;
+    padding: 0 !important; border: none !important;
 }
-
-.banda-header .conteo {
-    font-weight: 600;
-    color: var(--accent-cyan);
-    font-size: 11px;
-    background: rgba(0, 180, 216, 0.12);
-    padding: 2px 6px;
-    border-radius: 3px;
-}
-
-.banda-vacia {
-    border: 1px solid var(--border-light);
-    border-top: none;
-    background: var(--bg-block);
-    color: var(--text-muted);
-    font-size: 12px;
-    text-align: center;
-    padding: 40px 10px;
-    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
-    height: calc(78vh - 55px) !important;
-}
-
-/* Forzar la visualización estricta del DataFrame */
-.bloque-tablero [data-testid="stDataFrame"],
-.bloque-tablero [data-testid="stDataFrameResizable"],
-.bloque-tablero [data-testid="stDataFrame"] > div {
-    border: 1px solid var(--border-light) !important;
-    border-top: none !important;
-    border-radius: 0 0 var(--radius-sm) var(--radius-sm) !important;
-    background: var(--bg-block) !important;
-    height: calc(78vh - 55px) !important; /* Recalculado para que quepa perfecto */
-    max-height: calc(78vh - 55px) !important;
-    display: block !important;
-    overflow: auto !important;
-}
-
-.bloque-tablero [data-testid="stDataFrame"] * {
+.stSelectbox > div [data-baseweb="select"] > div {
+    padding: 0 8px !important;
+    font-size: 0.8rem !important;
+    line-height: 28px !important;
     color: var(--text-primary) !important;
 }
+.stSelectbox svg { fill: var(--text-muted) !important; }
 
-/* ============================================================
-   BLOQUE 5 - FOOTER CONGELADO ABAJO (5% ALTO)
-   ============================================================ */
-.bloque-footer, .footer {
-    position: fixed !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    width: 100vw !important;
-    text-align: center !important;
-    padding: 0 !important;
-    height: var(--h-footer) !important;
-    min-height: 32px !important;
-    max-height: 40px !important;
-    line-height: calc(var(--h-footer) + 2px) !important;
-    color: var(--text-muted) !important;
-    font-size: 11px !important;
-    font-weight: 600 !important;
-    letter-spacing: 1px !important;
-    border-top: 1px solid var(--border-medium) !important;
+/* Popover del selectbox en modo oscuro */
+[data-baseweb="popover"] {
     background: var(--bg-block) !important;
-    text-transform: uppercase !important;
-    z-index: 9999 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
+    border: 1px solid var(--border) !important;
+    border-radius: var(--radius) !important;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.4) !important;
 }
+[data-baseweb="menu"] { background: var(--bg-block) !important; }
+[data-baseweb="menu"] li { color: var(--text-secondary) !important; }
+[data-baseweb="menu"] li:hover { background: var(--bg-elevated) !important; color: var(--text-primary) !important; }
 
-/* ===== CONFIGURACIÓN MICRO-ALERTAS FILA 6 ===== */
-.zona-reservada-alertas {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: flex-end !important;
-    width: 100%;
-    height: 32px;
-}
-
+/* =====================================================
+   ZONA RESERVADA DE ALERTAS (columna 6 del Bloque 3, permanente)
+   ===================================================== */
 .wrapper-alertas-micro {
     display: flex !important;
     flex-direction: column !important;
     justify-content: flex-end !important;
-    height: 32px !important;
+    height: 52px !important;
+    padding-bottom: 2px !important;
+    box-sizing: border-box !important;
 }
 
 .micro-txt-warning {
-    font-size: 11px !important;
+    font-size: 0.72rem !important;
     font-weight: 600 !important;
-    color: var(--accent-cyan) !important;
+    color: var(--warning) !important;
     text-transform: uppercase !important;
     letter-spacing: 0.2px !important;
-    margin-right: 8px !important;
+    margin-bottom: 4px !important;
+    line-height: 1.1 !important;
+    white-space: nowrap !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
+/* Micro-botones de la zona de alertas (columna 6) */
 [data-testid="column"]:nth-child(6) div.stButton > button {
     height: 24px !important;
     padding: 0 6px !important;
-    font-size: 11px !important;
+    font-size: 0.65rem !important;
     font-weight: 700 !important;
-    border-radius: 3px !important;
+    letter-spacing: 0 !important;
+    border-radius: 4px !important;
+    margin: 0 !important;
+}
+[data-testid="column"]:nth-child(6) div.stButton > button[kind="secondary"] {
+    border: 1px solid var(--border-strong) !important;
 }
 
-[data-testid="column"]:nth-child(6) div.stButton > button[key*="mv_cancel"] {
-    background: var(--danger-bg) !important;
-    color: var(--danger) !important;
-    border: 1px solid rgba(248, 113, 113, 0.4) !important;
+/* =====================================================
+   BLOQUE 4 - TABLERO DE PEDIDOS (78% alto, scroll interno por tabla)
+   ===================================================== */
+.banda-header {
+    background: var(--bg-block);
+    border: 1px solid var(--border);
+    border-bottom: 2px solid var(--blue);
+    border-radius: var(--radius) var(--radius) 0 0;
+    padding: 8px 12px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.banda-header .conteo {
+    font-weight: 500;
+    color: var(--cyan);
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 0.78rem;
 }
 
-[data-testid="column"]:nth-child(6) div.stButton > button[key*="mv_ok"] {
-    background: var(--info-bg) !important;
-    color: var(--accent-cyan) !important;
-    border: 1px solid rgba(0, 180, 216, 0.4) !important;
+.banda-vacia {
+    border: 1px solid var(--border);
+    border-top: none;
+    background: var(--bg-block);
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    text-align: center;
+    padding: 40px 12px;
+    border-radius: 0 0 var(--radius) var(--radius);
 }
 
-/* Popovers y Scrollbars */
-[data-baseweb="popover"] { background: var(--bg-block) !important; border: 1px solid var(--border-medium) !important; border-radius: var(--radius-sm) !important; }
-[data-baseweb="menu"] { background: var(--bg-block) !important; }
-[data-baseweb="menu"] li { color: var(--text-primary) !important; }
-[data-baseweb="menu"] li:hover { background: var(--bg-elevated) !important; }
+/* Dataframe oscuro con scroll INTERNO (la página general no scrollea) */
+[data-testid="stDataFrame"] {
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 var(--radius) var(--radius);
+    overflow: hidden;
+    background: var(--bg-block) !important;
+}
+[data-testid="stDataFrame"] * { color: var(--text-secondary) !important; }
+[data-testid="stDataFrame"] table { font-size: 0.8rem !important; background: var(--bg-block) !important; }
+[data-testid="stDataFrame"] th {
+    background: var(--bg-elevated) !important;
+    color: var(--text-primary) !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    font-size: 0.68rem !important;
+    letter-spacing: 0.3px !important;
+    padding: 8px 10px !important;
+    border-bottom: 1px solid var(--border-strong) !important;
+}
+[data-testid="stDataFrame"] td {
+    color: var(--text-secondary) !important;
+    padding: 6px 10px !important;
+    border-bottom: 1px solid var(--border) !important;
+    background: var(--bg-block) !important;
+}
+[data-testid="stDataFrame"] tr:hover td { background: var(--bg-elevated) !important; }
 
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: var(--bg-app); }
-::-webkit-scrollbar-thumb { background: var(--border-dark); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: var(--text-light); }
+/* =====================================================
+   ALERTAS NATIVAS (oscuras)
+   ===================================================== */
+.stSuccess, .stInfo, .stWarning, .stError {
+    border-radius: var(--radius) !important;
+    background: var(--bg-elevated) !important;
+    color: var(--text-primary) !important;
+    font-size: 0.78rem !important;
+    padding: 8px 12px !important;
+}
+.stSuccess { border-left: 4px solid var(--green) !important; }
+.stInfo    { border-left: 4px solid var(--blue) !important; }
+.stWarning { border-left: 4px solid var(--warning) !important; }
+.stError   { border-left: 4px solid var(--danger) !important; }
 
-/* Correcciones Alertas Estándar */
-.stSuccess { background: var(--success-bg) !important; border: 1px solid var(--success) !important; border-left: 4px solid var(--success) !important; color: var(--success) !important; }
-.stInfo { background: var(--info-bg) !important; border: 1px solid var(--info) !important; border-left: 4px solid var(--info) !important; color: var(--info) !important; }
-.stWarning { background: var(--warning-bg) !important; border: 1px solid var(--warning) !important; border-left: 4px solid var(--warning) !important; color: var(--warning) !important; }
-.stError { background: var(--danger-bg) !important; border: 1px solid var(--danger) !important; border-left: 4px solid var(--danger) !important; color: var(--danger) !important; }
-.stSpinner > div { border-color: var(--accent-cyan) transparent transparent transparent !important; }
+/* ===== SPINNER ===== */
+.stSpinner > div { border-color: var(--blue) transparent transparent transparent !important; }
+
+/* ===== SCROLLBARS (oscuras) ===== */
+::-webkit-scrollbar { width: 9px; height: 9px; }
+::-webkit-scrollbar-track { background: var(--bg-block); }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 5px; }
+::-webkit-scrollbar-thumb:hover { background: var(--blue); }
+
+/* ===== HEADINGS ===== */
+h1, h2, h3, h4, h5, h6 { color: var(--text-primary) !important; }
+
+/* ===== COLUMN GAPS ===== */
+[data-testid="column"] { padding: 0 6px; }
+
+/* =====================================================
+   BLOQUE 5 - FOOTER FIJO (~5vh, pegado a la base)
+   ===================================================== */
+.footer {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    z-index: 99999 !important;
+    height: var(--h-footer) !important;
+    min-height: 30px !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    letter-spacing: 0.6px;
+    border-top: 1px solid var(--border);
+    background: var(--bg-block);
+    text-transform: uppercase;
+}
+
+/* ===== LOADING SCREEN ===== */
+.loading-screen {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: var(--bg-app);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999999;
+    animation: fadeOut 0.3s ease-out 0.8s forwards;
+}
+.loading-logo { filter: brightness(0) invert(1); }
+@keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
