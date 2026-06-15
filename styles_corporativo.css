@@ -5,31 +5,36 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-/* ===== VARIABLES ===== */
+/* ===== VARIABLES (PALETA OSCURA FORZADA) ===== */
 :root {
     color-scheme: dark only;
 
-    --bg-app: #12141c;
-    --bg-block: #1f212e;
-    --bg-bar: #1a1b26;
-    --bg-elevated: #262a3a;
-    --bg-input: #262a3a;
+    /* Fondos */
+    --bg-app: #12141c;          /* Fondo general de la app */
+    --bg-block: #1f212e;        /* Bloques sólidos: headers, tarjetas, inputs */
+    --bg-bar: #1a1b26;          /* Barra de menú minimalista */
+    --bg-elevated: #262a3a;     /* Hover / celdas elevadas */
+    --bg-input: #262a3a;        /* Fondo de inputs/selects */
 
-    --text-primary: #e2e8f0;
+    /* Texto */
+    --text-primary: #e2e8f0;    /* Blanco tiza */
     --text-secondary: #cbd5e1;
-    --text-muted: #94a3b8;
+    --text-muted: #94a3b8;      /* Gris apagado */
     --text-light: #64748b;
 
+    /* Bordes */
     --border-light: #2a2d3c;
     --border-medium: #353a4d;
     --border-dark: #475569;
 
-    --accent-primary: #0d6efd;
-    --accent-primary-hover: #00b4d8;
+    /* Acentos */
+    --accent-primary: #0d6efd;       /* Azul eléctrico */
+    --accent-primary-hover: #00b4d8; /* Cyan hover */
     --accent-cyan: #00b4d8;
-    --accent-green: #2e7d32;
+    --accent-green: #2e7d32;         /* Verde esmeralda (cargar / agregar) */
     --accent-green-hover: #3a9d3f;
 
+    /* Estados */
     --success: #34d399;
     --success-bg: rgba(52, 211, 153, 0.12);
     --warning: #fbbf24;
@@ -45,10 +50,8 @@
     --radius-sm: 5px;
     --radius-md: 8px;
 
-    /* Alturas fijas — ajustá estos valores si el header/footer miden distinto en tu pantalla */
+    /* Alturas fijas de bloques */
     --h-header: 50px;
-    --h-bar: 48px;      /* altura de la barra de control bloque 2 */
-    --h-ruteo: 80px;    /* altura aproximada del bloque 3 (formulario de ruteo) */
     --h-footer: 35px;
 }
 
@@ -61,14 +64,14 @@ header {visibility: hidden;}
 .stAppDeployDropdown { display: none !important; }
 [data-testid="stToolbar"] { display: none !important; }
 
-/* ===== FONDO ===== */
+/* ===== APP BACKGROUND (FORZADO OSCURO) ===== */
 html, body, .stApp {
     background: var(--bg-app) !important;
     color: var(--text-primary) !important;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
 }
 
-/* ===== VIEWPORT FIT ===== */
+/* ===== VIEWPORT FIT: BLOQUEO DE PANTALLA COMPLETA ===== */
 .stApp {
     height: 100vh !important;
     overflow: hidden !important;
@@ -84,17 +87,16 @@ html, body, .stApp {
 
 .main .block-container,
 .block-container {
-    padding: calc(var(--h-header) + 10px) 2rem var(--h-footer) 2rem !important;
+    padding: calc(var(--h-header) + 14px) 2rem var(--h-footer) 2rem !important;
     max-width: 100% !important;
     height: 100vh !important;
     overflow: hidden !important;
     background: var(--bg-app);
-    box-sizing: border-box !important;
 }
 
 @media (min-width: 1400px) {
     .block-container {
-        padding: calc(var(--h-header) + 10px) 3rem var(--h-footer) 3rem !important;
+        padding: calc(var(--h-header) + 14px) 3rem var(--h-footer) 3rem !important;
     }
 }
 
@@ -164,25 +166,36 @@ html, body, .stApp {
     font-weight: 500 !important;
 }
 
-/* Separadores — ELIMINADOS del flujo visible */
+/* Separadores */
 .header-divider { display: none !important; }
-.section-divider { display: none !important; }
-.section-title { display: none !important; }
+
+.section-divider {
+    height: 1px;
+    background: var(--border-light);
+    margin: 14px 0 6px 0;
+}
+
+.section-title {
+    text-align: center;
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 1.0em;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin: 2px 0 12px 0;
+}
 
 /* ============================================================
-   BLOQUE 2 - BARRA DE CONTROL MINIMALISTA
+   BLOQUE 2 - BARRA DE CONTROL MINIMALISTA (MENU PLANO)
    ============================================================ */
 .control-bar {
     background: var(--bg-bar);
     border-radius: var(--radius-sm);
     border: 1px solid var(--border-light);
-    margin-bottom: 6px;
-    height: var(--h-bar);
-    display: flex;
-    align-items: center;
+    margin-bottom: 4px;
 }
 
-/* Botones planos tipo menú */
+/* Botones planos tipo menú nativo (sin marco / sin caja) */
 div.stButton > button {
     background: transparent !important;
     border: none !important;
@@ -209,7 +222,7 @@ div.stButton > button:hover {
 div.stButton > button:active { color: var(--accent-primary) !important; }
 div.stButton > button:disabled { opacity: 0.4 !important; cursor: not-allowed !important; }
 
-/* Botón AGREGAR verde */
+/* Boton primario "AGREGAR" verde esmeralda (se mantiene como acción) */
 div.stButton > button[kind="primary"] {
     background: var(--accent-green) !important;
     color: #ffffff !important;
@@ -224,7 +237,7 @@ div.stButton > button[kind="primary"]:hover {
     border-color: var(--accent-green-hover) !important;
 }
 
-/* Link Button (Planilla MEC) */
+/* Link Button (Planilla MEC) como texto plano flotante */
 .stLinkButton > a {
     background: transparent !important;
     border: none !important;
@@ -290,11 +303,13 @@ div.stButton > button[kind="primary"]:hover {
     margin: 0 !important;
 }
 
+/* Botón "Browse files" -> texto plano "CARGAR" verde esmeralda */
 [data-testid="stFileUploader"] section button {
     background: transparent !important;
     color: var(--accent-green) !important;
     border: none !important;
     font-weight: 700 !important;
+    font-size: 0.78em !important;
     text-transform: uppercase !important;
     letter-spacing: 0.4px !important;
     padding: 0 !important;
@@ -303,7 +318,7 @@ div.stButton > button[kind="primary"]:hover {
     max-height: 40px !important;
     cursor: pointer !important;
     box-shadow: none !important;
-    font-size: 0 !important;
+    font-size: 0 !important; /* oculta el texto nativo "Browse files" */
 }
 
 [data-testid="stFileUploader"] section button::before {
@@ -319,6 +334,7 @@ div.stButton > button[kind="primary"]:hover {
     color: var(--accent-green-hover);
 }
 
+/* Archivo cargado: chip plano */
 [data-testid="stFileUploaderFileData"] {
     display: flex !important;
     align-items: center !important;
@@ -387,7 +403,7 @@ div.stButton > button[kind="primary"]:hover {
     border-radius: 50% !important;
 }
 
-/* ===== BARRA DE DESCARGAS DINAMICAS ===== */
+/* ===== BARRA DE DESCARGAS DINAMICAS (extremo derecho) ===== */
 .download-bar {
     display: flex;
     justify-content: flex-end;
@@ -416,7 +432,7 @@ div.stButton > button[kind="primary"]:hover {
 }
 
 /* ============================================================
-   BLOQUE 3 - INPUTS / SELECTBOX
+   BLOQUE 3 - INPUTS / SELECTBOX (FORMULARIO DE RUTEO)
    ============================================================ */
 .stTextInput input,
 .stNumberInput input {
@@ -453,6 +469,7 @@ div.stButton > button[kind="primary"]:hover {
     letter-spacing: 0.2px !important;
 }
 
+/* Select box oscuro */
 .stSelectbox > div > div {
     background: var(--bg-input) !important;
     border: 1px solid var(--border-medium) !important;
@@ -491,6 +508,7 @@ div.stButton > button[kind="primary"]:hover {
 
 .stSelectbox svg { fill: var(--text-muted) !important; color: var(--text-muted) !important; }
 
+/* Popover del dropdown */
 [data-baseweb="popover"] {
     background: var(--bg-block) !important;
     border: 1px solid var(--border-medium) !important;
@@ -503,40 +521,8 @@ div.stButton > button[kind="primary"]:hover {
 [data-baseweb="menu"] li:hover { background: var(--bg-elevated) !important; }
 
 /* ============================================================
-   BLOQUE 4 - BANDAS HORARIAS
-   Ocupa todo el espacio disponible entre bloque 3 y footer
+   BLOQUE 4 - BANDAS HORARIAS (TIPO EXCEL, SCROLL INTERNO)
    ============================================================ */
-
-/* Contenedor del bloque 4: altura calculada restando header + bar + ruteo + footer */
-.bloque-bandas {
-    height: calc(100vh - var(--h-header) - var(--h-bar) - var(--h-ruteo) - var(--h-footer) - 40px);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-}
-
-/* Las columnas dentro del bloque 4 deben crecer para llenar el contenedor */
-.bloque-bandas [data-testid="stHorizontalBlock"] {
-    flex: 1 !important;
-    height: 100% !important;
-    align-items: stretch !important;
-}
-
-.bloque-bandas [data-testid="column"] {
-    display: flex !important;
-    flex-direction: column !important;
-    height: 100% !important;
-    overflow: hidden !important;
-}
-
-/* El dataframe ocupa el espacio restante dentro de su columna */
-.bloque-bandas [data-testid="stDataFrame"] {
-    flex: 1 !important;
-    max-height: none !important;   /* anula el 60vh anterior */
-    height: 100% !important;
-    overflow: auto !important;
-}
-
 .banda-header {
     background: var(--bg-block);
     border: 1px solid var(--border-medium);
@@ -551,7 +537,6 @@ div.stButton > button[kind="primary"]:hover {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex-shrink: 0;
 }
 
 .banda-header .conteo {
@@ -574,15 +559,15 @@ div.stButton > button[kind="primary"]:hover {
     text-align: center;
     padding: 24px 12px;
     border-radius: 0 0 var(--radius-sm) var(--radius-sm);
-    flex: 1;
 }
 
-/* DataFrame oscuro */
+/* DataFrame oscuro con scroll interno controlado */
 [data-testid="stDataFrame"] {
     border: 1px solid var(--border-light);
     border-top: none;
     border-radius: 0 0 var(--radius-sm) var(--radius-sm);
     overflow: auto !important;
+    max-height: 60vh !important;
     background: var(--bg-block) !important;
 }
 
@@ -612,6 +597,7 @@ div.stButton > button[kind="primary"]:hover {
 
 [data-testid="stDataFrame"] tr:hover td { background: var(--bg-elevated) !important; }
 
+/* Canvas-based glide grid (Streamlit nuevo) fondo oscuro */
 [data-testid="stDataFrameResizable"] { background: var(--bg-block) !important; }
 
 /* ===== ALERTS ===== */
@@ -665,7 +651,7 @@ h1, h2, h3, h4, h5, h6 { color: var(--text-primary) !important; }
 [data-testid="column"] { padding: 0 8px; }
 
 /* ============================================================
-   BLOQUE 5 - FOOTER FIJO
+   BLOQUE 5 - FOOTER FIJO ABAJO
    ============================================================ */
 .footer {
     position: fixed;
@@ -686,7 +672,7 @@ h1, h2, h3, h4, h5, h6 { color: var(--text-primary) !important; }
 }
 
 /* =====================================================
-   MICRO-ALERTAS PANEL DE RUTEO
+   MICRO-ALERTAS PANEL DE RUTEO (OPERATIVO MULTI-COL)
    ===================================================== */
 .wrapper-alertas-micro {
     display: flex !important;
@@ -710,6 +696,7 @@ h1, h2, h3, h4, h5, h6 { color: var(--text-primary) !important; }
     text-overflow: ellipsis;
 }
 
+/* Micro-botones dentro de la sexta columna */
 [data-testid="column"]:nth-child(6) div.stButton > button {
     height: 24px !important;
     padding: 0 4px !important;
