@@ -10,7 +10,7 @@ import base64
 import time
 
 # =====================================================
-# CONFIGURACION
+# CONFIGURACION GLOBAL E INMUNE
 # =====================================================
 st.set_page_config(
     page_title="Panel Operaciones Online Carrefour",
@@ -30,7 +30,7 @@ if "fecha_tit" not in st.session_state:
     st.session_state.fecha_tit = None
 
 # =====================================================
-# FUNCIONES DE UTILIDAD Y PERSISTENCIA (Declaradas al inicio)
+# FUNCIONES DE UTILIDAD Y PERSISTENCIA
 # =====================================================
 def cargar_css(path):
     try:
@@ -68,11 +68,6 @@ def guardar_datos_mensuales(datos):
     except Exception:
         pass
 
-def reiniciar_contador_mensual():
-    datos = {"mes": hoy_ar.strftime("%Y-%m"), "pedidos_por_dia": {}, "archivos_procesados": [], "modalidades": {"DOMICILIOS": 0, "DRIVE": 0, "SUCURSAL": 0}}
-    guardar_datos_mensuales(datos)
-    return datos
-
 def obtener_hash_archivo(archivo_bytes):
     return hashlib.md5(archivo_bytes).hexdigest()
 
@@ -106,12 +101,6 @@ def contar_modalidades(df):
         for col in df.columns:
             col_upper = str(col).upper().strip()
             if "MODALIDAD" in col_upper and "FECHA" not in col_upper:
-                col_modalidad = col
-                break
-    if col_modalidad is None:
-        for col in df.columns:
-            col_upper = str(col).upper().strip()
-            if ("TIPO" in col_upper and "ENTREGA" in col_upper) or "CANAL" in col_upper:
                 col_modalidad = col
                 break
     if col_modalidad is not None:
@@ -148,18 +137,13 @@ def registrar_pedidos_cdp(archivo_bytes, df):
     guardar_datos_mensuales(datos)
     return datos, True
 
-# =====================================================
-# EJECUCIÓN INICIAL: CARGA DE ESTILOS Y TIEMPO
-# =====================================================
-cargar_css("styles_corporativo.css")
-
+# Carga de Tiempos y Parámetros Iniciales
 fecha_ar_ahora = datetime.utcnow() - timedelta(hours=3)
 hoy_ar = fecha_ar_ahora.date()
-manana_ar_obj = hoy_ar + timedelta(days=1)
-manana_txt = manana_ar_obj.strftime("%d/%m/%Y")
-
 DATA_FILE = "datos_mensuales.json"
-DIAS_SEMANA_ES = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
+
+# Inyección de estilos CSS Corporativos Avanzados
+cargar_css("styles_corporativo.css")
 
 # =====================================================
 # LOADING SCREEN
@@ -173,78 +157,52 @@ if loading_logo_base64:
     """, unsafe_allow_html=True)
 
 # =====================================================
-# BLOQUE 1 - HEADER FIJO (Logo Izquierda | Textos Derecha)
+# BLOQUE 1 - HEADER OPERATIVO FIJO (5% Alto)
 # =====================================================
 logo_base64 = get_image_base64("carrefour+logo.png")
-if logo_base64:
-    logo_html = f'<img src="data:image/png;base64,{logo_base64}" class="header-logo" alt="Carrefour">'
-else:
-    logo_html = '<span style="color:#e2e8f0;font-weight:700;">Carrefour</span>'
+logo_html = f'<img src="data:image/png;base64,{logo_base64}" class="header-logo" alt="Carrefour">' if logo_base64 else '<span style="color:#eef2f6;font-weight:700;">Carrefour</span>'
 
 st.markdown(f"""
-    <div class="header-container">
-        <div class="header-left">
-            {logo_html}
-        </div>
-        <div class="header-right">
-            <h1 class="title-main">PANEL DE OPERACIONES CARREFOUR ONLINE</h1>
-            <p class="subtitle-main">Tienda 268 - Rosario&nbsp;&nbsp;|&nbsp;&nbsp;{hoy_ar.strftime("%d/%m/%Y")}</p>
+    <div class="bloque-header">
+        <div class="header-container">
+            <div class="header-left">{logo_html}</div>
+            <div class="header-right">
+                <h1 class="title-main">PANEL DE OPERACIONES CARREFOUR ONLINE</h1>
+                <p class="subtitle-main">Tienda 268 - Rosario&nbsp;&nbsp;|&nbsp;&nbsp;{hoy_ar.strftime("%d/%m/%Y")}</p>
+            </div>
         </div>
     </div>
 """, unsafe_allow_html=True)
 
 # =====================================================
-# BLOQUE 2 - BARRA DE CONTROL MINIMALISTA:  UPLOAD + PLANILLAS
+# BLOQUE 2 - BARRA DE ACCIONES Y DESCARGAS RESERVADAS (5% Alto)
 # =====================================================
-st.markdown('<div class="control-bar">', unsafe_allow_html=True)
+# Envolvemos toda la estructura en un div de clase control-bar-wrapper para congelar su geometría
+st.markdown('<div class="bloque-menu">', unsafe_allow_html=True)
+cols_menu = st.columns([1.2, 1.2, 1.2, 1.2, 1.2, 3.0]) # El último bloque estirado contiene la ZONA RESERVADA DE DESCARGAS
 
-# Cinco columnas iguales (se eliminó Planilla Faltantes)
-bu, b1, b2, b4, b5 = st.columns([1, 1, 1, 1, 1])
-
-with bu:
-    archivo_cdp = st.file_uploader(
-        "Upload (cargar)",
-        type=["xlsx"],
-        key="uploader_cdp",
-        label_visibility="collapsed"
-    )
-with b1:
+with cols_menu[0]:
+    archivo_cdp = st.file_uploader("Upload (cargar)", type=["xlsx"], key="uploader_cdp", label_visibility="collapsed")
+with cols_menu[1]:
     btn_1 = st.button("PLANILLA CLIENTES", key="top_1", use_container_width=True)
-with b2:
+with cols_menu[2]:
     btn_seguridad = st.button("PLANILLA SEGURIDAD", key="top_seg", use_container_width=True)
-with b4:
+with cols_menu[3]:
     btn_3 = st.button("PLANILLA LOGISTICA", key="top_3", use_container_width=True)
-with b5:
-    st.link_button(
-        "PLANILLA MEC",
-        "https://docs.google.com/spreadsheets/d/1v0Rls8fg_uIGfhA1t3CzINq3VfAUvPY3DY8_m_ZSmM8/edit#gid=0",
-        use_container_width=True
-    )
+with cols_menu[4]:
+    st.link_button("PLANILLA MEC", "https://docs.google.com/spreadsheets/d/1v0Rls8fg_uIGfhA1t3CzINq3VfAUvPY3DY8_m_ZSmM8/edit#gid=0", use_container_width=True)
 
-st.markdown('</div>', unsafe_allow_html=True)
-
-# =====================================================
-# PROCESAR ARCHIVO CARGADO
-# =====================================================
+# LÓGICA DE PROCESAMIENTO LOGÍSTICO
 if archivo_cdp:
     archivo_cdp_bytes = archivo_cdp.read()
     archivo_cdp.seek(0)
-
     if st.session_state.df_clean is None:
         with st.spinner("Procesando archivo..."):
             df_raw = pd.read_excel(archivo_cdp)
-
-            columnas_janis = [
-                "displayId", "shippingType", "dropoffStreet", "dropoffNumber",
-                "scheduleStart", "scheduleEnd", "receiverFullname", "receiverPhone"
-            ]
-            es_janis = all(col in df_raw.columns for col in columnas_janis)
-
-            if es_janis:
+            columnas_janis = ["displayId", "shippingType", "dropoffStreet", "dropoffNumber", "scheduleStart", "scheduleEnd", "receiverFullname", "receiverPhone"]
+            if all(col in df_raw.columns for col in columnas_janis):
                 df_janis = pd.DataFrame()
-                df_janis["NUMERO PEDIDO"] = (
-                    df_raw["orderCommerceIds"].astype(str).str.split("-").str[0]
-                )
+                df_janis["NUMERO PEDIDO"] = df_raw["orderCommerceIds"].astype(str).str.split("-").str[0]
                 df_janis["MODALIDAD DE ENTREGA"] = df_raw["carrierName"].replace({
                     "Envío a Domicilio 0268 - Hiper Rosario Pueyrredón": "Domicilio",
                     "Drive 0268 - Hiper Rosario Pueyrredón": "Drive",
@@ -263,7 +221,6 @@ if archivo_cdp:
                 df_raw = df_janis.copy()
 
             df_raw['FECHA ENTREGA'] = pd.to_datetime(df_raw['FECHA ENTREGA'], dayfirst=True, errors='coerce')
-
             st.session_state.df_clean, st.session_state.fecha_tit = logic_clientes.motor_limpieza(df_raw)
             registrar_pedidos_cdp(archivo_cdp_bytes, st.session_state.df_clean)
             st.toast(f"Janis.xlsx CARGADO: {st.session_state.fecha_tit}", icon="✅")
@@ -271,139 +228,97 @@ if archivo_cdp:
 df_clean = st.session_state.df_clean
 fecha_tit = st.session_state.fecha_tit
 
-if df_clean is not None:
-    # Barra de descargas dinámicas integrada al extremo derecho del menú
-    st.markdown('<div class="download-bar">', unsafe_allow_html=True)
-
-    if btn_1:
-        with st.spinner("Generando reporte..."):
-            # CORREGIDO: Se quitó 'fecha_tit' porque esta función no lo acepta
-            pdf = logic_clientes.generar_pdf_clientes(df_clean)
-        st.download_button("DESCARGAR PDF CLIENTES", bytes(pdf), f"Clientes_{fecha_tit}.pdf")
-
-    if btn_seguridad:
-        with st.spinner("Generando reporte..."):
-            pdf = logic_seguridad.generar_pdf_seguridad(df_clean, fecha_tit)
-        st.download_button("DESCARGAR PDF SEGURIDAD", bytes(pdf), f"Seguridad_{fecha_tit}.pdf")
-
-    if btn_3:
-        with st.spinner("Generando reporte..."):
-            pdf = logic_domicilios.generar_pdf_domicilios(df_clean, fecha_tit)
-        st.download_button("DESCARGAR PDF LOGISTICA", bytes(pdf), f"Domicilios_{fecha_tit}.pdf")
-
+# ZONA RESERVADA DE DESCARGAS (Columna Extremo Derecho - Inmóvil)
+with cols_menu[5]:
+    st.markdown('<div class="zona-reservada-descargas">', unsafe_allow_html=True)
+    if df_clean is not None:
+        sub_descargas = st.columns(3)
+        with sub_descargas[0]:
+            if btn_1:
+                pdf1 = logic_clientes.generar_pdf_clientes(df_clean)
+                st.download_button("DESCARGAR CLIENTES", bytes(pdf1), f"Clientes_{fecha_tit}.pdf", key="dl_c")
+        with sub_descargas[1]:
+            if btn_seguridad:
+                pdf2 = logic_seguridad.generar_pdf_seguridad(df_clean, fecha_tit)
+                st.download_button("DESCARGAR SEGURIDAD", bytes(pdf2), f"Seguridad_{fecha_tit}.pdf", key="dl_s")
+        with sub_descargas[2]:
+            if btn_3:
+                pdf3 = logic_domicilios.generar_pdf_domicilios(df_clean, fecha_tit)
+                st.download_button("DESCARGAR LOGISTICA", bytes(pdf3), f"Domicilios_{fecha_tit}.pdf", key="dl_l")
     st.markdown('</div>', unsafe_allow_html=True)
-else:
-    st.session_state.df_clean = None
-    st.session_state.fecha_tit = None
+
+st.markdown('</div>', unsafe_allow_html=True)
 
 # =====================================================
-# BLOQUE 3 - PANEL DE RUTEO
+# BLOQUE 3 - CAPTURA MANUAL Y ZONA DE ALERTAS MICRO (7% Alto)
 # =====================================================
-st.markdown('<div class="section-divider"></div>', unsafe_allow_html=True)
-st.markdown('<div class="section-title">Panel de Ruteo</div>', unsafe_allow_html=True)
+st.markdown('<div class="bloque-captura">', unsafe_allow_html=True)
+cols_captura = st.columns([2.5, 1.0, 1.0, 1.2, 1.0, 2.3])
 
-# --- FILA DE INPUTS HORIZONTAL: Direccion | Pedido | Tipo | Banda | Agregar | Alertas ---
-c1, c2, c3, c4, c5, c6 = st.columns([3.2, 1.2, 1.0, 1.3, 1.3, 2.0])
-
-with c1:
-    dir_manual = st.text_input("Dirección", key="in_dir")
-with c2:
-    nro_manual = st.text_input("Nro Pedido", key="in_nro")
-with c3:
-    tipo_manual = st.selectbox(
-        "Tipo",
-        ["Caja", "Reclamo", "Reprogramado", "NonFood", "Transferencia"],
-        key="in_tipo"
-    )
-with c4:
-    banda_manual = st.selectbox(
-        "Banda horaria",
-        ["10:00 a 14:00", "14:00 a 18:00", "18:00 a 21:00"],
-        key="in_banda"
-    )
-with c5:
-    st.markdown('<div style="height:26px;"></div>', unsafe_allow_html=True)
+with cols_captura[0]:
+    dir_manual = st.text_input("Dirección", key="in_dir", label_visibility="collapsed", placeholder="Dirección...")
+with cols_captura[1]:
+    nro_manual = st.text_input("Nro Pedido", key="in_nro", label_visibility="collapsed", placeholder="Pedido...")
+with cols_captura[2]:
+    tipo_manual = st.selectbox("Tipo", ["Caja", "Reclamo", "Reprogramado", "NonFood", "Transferencia"], key="in_tipo", label_visibility="collapsed")
+with cols_captura[3]:
+    banda_manual = st.selectbox("Banda horaria", ["10:00 a 14:00", "14:00 a 18:00", "18:00 a 21:00"], key="in_banda", label_visibility="collapsed")
+with cols_captura[4]:
     btn_agregar_manual = st.button("AGREGAR", key="btn_add", use_container_width=True, type="primary")
 
-# Celda de Alertas en la sexta columna (VIVE EN LA MISMA FILA)
-with c6:
-    st.markdown('<div class="wrapper-alertas-micro">', unsafe_allow_html=True)
-
-    # --- LOGICA AGREGAR / MOVER PEDIDO MANUAL ---
+# LÓGICA DE PROCESAMIENTO MANUAL / INTERCAMBIO
+with cols_captura[5]:
+    st.markdown('<div class="zona-reservada-alertas">', unsafe_allow_html=True)
     if btn_agregar_manual:
-        prefijos = {
-            "Caja": "LC-", "Reclamo": "R-", "Reprogramado": "RP-",
-            "NonFood": "NF-", "Transferencia": "TR-"
-        }
+        prefijos = {"Caja": "LC-", "Reclamo": "R-", "Reprogramado": "RP-", "NonFood": "NF-", "Transferencia": "TR-"}
         pedido_final = f"{prefijos[tipo_manual]}{nro_manual}"
-        pedido_existente = None
-        for pedido in st.session_state.pedidos_manual:
-            if pedido["pedido"] == pedido_final:
-                pedido_existente = pedido
-                break
+        pedido_existente = next((p for p in st.session_state.pedidos_manual if p["pedido"] == pedido_final), None)
 
         if pedido_existente:
             st.session_state.pedido_a_mover = {
-                "pedido": pedido_final,
-                "direccion": dir_manual,
-                "tipo": tipo_manual,
-                "banda_actual": pedido_existente["banda"],
-                "banda_nueva": banda_manual
+                "pedido": pedido_final, "direccion": dir_manual, "tipo": tipo_manual,
+                "banda_actual": pedido_existente["banda"], "banda_nueva": banda_manual
             }
         else:
             st.session_state.pedidos_manual.append({
-                "direccion": dir_manual,
-                "pedido": pedido_final,
-                "tipo": tipo_manual,
-                "banda": banda_manual,
-                "estado": "Pendiente"
+                "direccion": dir_manual, "pedido": pedido_final, "tipo": tipo_manual, "banda": banda_manual, "estado": "Pendiente"
             })
             st.toast(f"Pedido {pedido_final} agregado", icon="✅")
-            time.sleep(0.5)
+            time.sleep(0.3)
             st.rerun()
 
-    # Si hay conflicto de movimiento, se renderiza de forma micro aquí adentro
     if st.session_state.pedido_a_mover:
         datos = st.session_state.pedido_a_mover
         if datos["banda_actual"] == datos["banda_nueva"]:
-            st.markdown(f'<div class="micro-txt-warning">⚠️ Ya existe en esta banda.</div>', unsafe_allow_html=True)
-            if st.button("OK", key="ok_misma", use_container_width=True):
+            st.markdown('<span class="micro-txt-warning">⚠️ Ya existe en esta banda.</span>', unsafe_allow_html=True)
+            if st.button("OK", key="ok_misma"):
                 st.session_state.pedido_a_mover = None
                 st.rerun()
         else:
-            st.markdown(f'<div class="micro-txt-warning">⚠️ Ya existe en banda {datos["banda_actual"].split(" ")[0]}</div>', unsafe_allow_html=True)
-
-            # Micro-botones alineados horizontalmente
-            sub_col_a, sub_col_b = st.columns(2)
-            with sub_col_a:
-                mover = st.button("MOVER", key="mv_ok")
-            with sub_col_b:
-                cancelar = st.button("X", key="mv_cancel")
-
-            if cancelar:
-                st.session_state.pedido_a_mover = None
-                st.rerun()
-            if mover:
-                st.session_state.pedidos_manual = [
-                    p for p in st.session_state.pedidos_manual
-                    if p["pedido"] != datos["pedido"]
-                ]
-                st.session_state.pedidos_manual.append({
-                    "direccion": datos["direccion"],
-                    "pedido": datos["pedido"],
-                    "tipo": datos["tipo"],
-                    "banda": datos["banda_nueva"],
-                    "estado": "Pendiente"
-                })
-                st.toast(f"Pedido movido a {datos['banda_nueva'].split(' ')[0]}", icon="🚚")
-                st.session_state.pedido_a_mover = None
-                st.rerun()
-
+            st.markdown(f'<span class="micro-txt-warning">⚠️ Existe en banda {datos["banda_actual"].split(":")[0]}</span>', unsafe_allow_html=True)
+            sub_col_alertas = st.columns(2)
+            with sub_col_alertas[0]:
+                if st.button("MOVER", key="mv_ok", use_container_width=True):
+                    st.session_state.pedidos_manual = [p for p in st.session_state.pedidos_manual if p["pedido"] != datos["pedido"]]
+                    st.session_state.pedidos_manual.append({
+                        "direccion": datos["direccion"], "pedido": datos["pedido"], "tipo": datos["tipo"], "banda": datos["banda_nueva"], "estado": "Pendiente"
+                    })
+                    st.toast(f"Pedido movido", icon="🚚")
+                    st.session_state.pedido_a_mover = None
+                    st.rerun()
+            with sub_col_alertas[1]:
+                if st.button("X", key="mv_cancel", use_container_width=True):
+                    st.session_state.pedido_a_mover = None
+                    st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
 
+st.markdown('</div>', unsafe_allow_html=True)
+
 # =====================================================
-# BLOQUE 4 - TRES COLUMNAS DE BANDA HORARIA (tipo Excel, siempre visibles)
+# BLOQUE 4 - PANEL DE PEDIDOS DE ALTA DENSIDAD (78% Alto)
 # =====================================================
+st.markdown('<div class="bloque-tablero">', unsafe_allow_html=True)
+
 BANDAS_FIJAS = [
     ("10 a 14 hs", ["10:00 a 14:00"]),
     ("14 a 18 hs", ["14:00 a 18:00"]),
@@ -411,69 +326,38 @@ BANDAS_FIJAS = [
 ]
 
 def construir_tabla_banda(claves_banda):
-    """Arma la tabla de una banda combinando ecommerce + manuales."""
     filas = []
-
-    # Pedidos ecommerce (desde el archivo)
     if df_clean is not None:
-        df_rutas = df_clean[
-            df_clean["MODALIDAD DE ENTREGA"].str.contains("Domicilio", case=False, na=False)
-        ].copy()
+        df_rutas = df_clean[df_clean["MODALIDAD DE ENTREGA"].str.contains("Domicilio", case=False, na=False)].copy()
         df_banda = df_rutas[df_rutas["BANDA HORARIA"].isin(claves_banda)]
         for _, r in df_banda.iterrows():
-            filas.append({
-                "ORDEN": "-",
-                "DIRECCIÓN": r.get("DIRECCIÓN", ""),
-                "PEDIDO": r.get("NUMERO PEDIDO", ""),
-                "TIPO": "Ecommerce",
-                "ESTADO": "Pendiente"
-            })
-
+            filas.append({"ORDEN": "-", "DIRECCIÓN": r.get("DIRECCIÓN", ""), "PEDIDO": r.get("NUMERO PEDIDO", ""), "TIPO": "Ecommerce", "ESTADO": "Pendiente"})
     ecommerce = len(filas)
-
-    # Pedidos manuales
+    
     manuales = 0
     for pedido in st.session_state.pedidos_manual:
         if pedido["banda"] in claves_banda:
             manuales += 1
-            filas.append({
-                "ORDEN": "-",
-                "DIRECCIÓN": pedido["direccion"],
-                "PEDIDO": pedido["pedido"],
-                "TIPO": pedido["tipo"],
-                "ESTADO": pedido["estado"]
-            })
-
+            filas.append({"ORDEN": "-", "DIRECCIÓN": pedido["direccion"], "PEDIDO": pedido["pedido"], "TIPO": pedido["tipo"], "ESTADO": pedido["estado"]})
     return pd.DataFrame(filas), ecommerce, manuales
 
-cols_bandas = st.columns(3, gap="medium")
+cols_bandas = st.columns(3, gap="small")
 
 for col, (label, claves) in zip(cols_bandas, BANDAS_FIJAS):
     with col:
         tabla, ecommerce, manuales = construir_tabla_banda(claves)
-
-        conteo = f"{ecommerce} ecomm"
-        if manuales > 0:
-            conteo += f" · {manuales} manual"
-
-        st.markdown(
-            f'<div class="banda-header">{label}<span class="conteo">{conteo}</span></div>',
-            unsafe_allow_html=True
-        )
-
+        conteo = f"{ecommerce} ecomm" + (f" · {manuales} manual" if manuales > 0 else "")
+        
+        st.markdown(f'<div class="banda-header">{label}<span class="conteo">{conteo}</span></div>', unsafe_allow_html=True)
+        
         if not tabla.empty:
-            st.dataframe(tabla, use_container_width=True, hide_index=True, height=420)
+            st.dataframe(tabla, use_container_width=True, hide_index=True)
         else:
-            st.markdown(
-                '<div class="banda-vacia">Sin pedidos cargados</div>',
-                unsafe_allow_html=True
-            )
+            st.markdown('<div class="banda-vacia">Sin pedidos cargados</div>', unsafe_allow_html=True)
+
+st.markdown('</div>', unsafe_allow_html=True)
 
 # =====================================================
-# BLOQUE 5 - FOOTER FIJO
+# BLOQUE 5 - FOOTER FIJO (5% Alto)
 # =====================================================
-st.markdown('''
-    <div class="footer">
-        CENTRAL DE ARMADO T268 | CARREFOUR ONLINE | ROSARIO
-    </div>
-''', unsafe_allow_html=True)
+st.markdown('<div class="bloque-footer">CENTRAL DE ARMADO T268 | CARREFOUR ONLINE | ROSARIO</div>', unsafe_allow_html=True)
