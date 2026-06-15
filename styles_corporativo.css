@@ -50,8 +50,8 @@
     --radius-sm: 5px;
     --radius-md: 8px;
 
-    /* Alturas fijas estrictas de bloques para cumplir proporciones */
-    --h-header: 5vh;   /* Ajustado para el monitor de la central */
+    /* Alturas proporcionales estrictas */
+    --h-header: 5vh;
     --h-menu: 5vh;
     --h-captura: 7vh;
     --h-tablero: 78vh;
@@ -74,17 +74,17 @@ html, body, .stApp {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
 }
 
-/* ===== VIEWPORT FIT: INMUNIDAD CONTRA EL DESBORDE DE PANTALLA ===== */
+/* ===== VIEWPORT FIT: ELIMINACIÓN DE GAP FANTASMA ===== */
 html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
     max-height: 100vh !important;
     height: 100vh !important;
     overflow: hidden !important;
 }
 
-/* Contenedor central de Streamlit: Forzamos la alineación rígida a la izquierda */
+/* El bloque contenedor maestro de Streamlit */
 .main .block-container,
 .block-container {
-    padding: 0px 12px !important;
+    padding: 0px !important; /* Eliminamos paddings que empujen contenido */
     max-width: 100% !important;
     height: 100vh !important;
     max-height: 100vh !important;
@@ -94,6 +94,14 @@ html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
     flex-direction: column !important;
     justify-content: flex-start !important;
     gap: 0px !important;
+}
+
+/* EXTREMADAMENTE CRÍTICO: Destruir los espacios / márgenes por defecto de las celdas de Streamlit */
+[data-testid="stVerticalBlockBorderWrapper"],
+[data-testid="stVerticalBlock"] {
+    gap: 0px !important;
+    padding: 0px !important;
+    margin: 0px !important;
 }
 
 .block-container > div:first-child { margin-top: 0 !important; }
@@ -167,24 +175,8 @@ html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
     font-weight: 500 !important;
 }
 
-/* Separadores */
-.header-divider { display: none !important; }
-
-.section-divider {
-    height: 1px;
-    background: var(--border-light);
-    margin: 14px 0 6px 0;
-}
-
-.section-title {
-    text-align: center;
-    color: var(--text-primary);
-    font-weight: 600;
-    font-size: 1.0em;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin: 2px 0 12px 0;
-}
+/* Separadores inactivos */
+.header-divider, .section-divider, .section-title { display: none !important; }
 
 /* ============================================================
    BLOQUE 2 - BARRA DE CONTROL / MENÚ PLANO (5% ALTO)
@@ -197,7 +189,13 @@ html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
     border-bottom: 1px solid var(--border-light);
     display: flex !important;
     align-items: center !important;
-    padding: 0 5px;
+    padding: 0 12px !important; /* Alineación limpia con el header */
+    box-sizing: border-box !important;
+}
+
+/* Forzar que los contenedores internos del bloque se estiren al 100% */
+.bloque-menu > div, .bloque-menu [data-testid="stHorizontalBlock"] {
+    width: 100% !important;
 }
 
 /* Botones planos tipo menú de consola (sin marco / sin caja de fondo) */
@@ -215,18 +213,14 @@ html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
     box-shadow: none !important;
     transition: color 0.15s ease, background 0.15s ease !important;
     padding: 0 12px !important;
-    text-align: left !important;
 }
 
 .bloque-menu div.stButton > button:hover,
 .bloque-menu button[data-testid="stBaseButton-secondary"]:hover {
-    background: transparent !important;
+    background: rgba(255, 255, 255, 0.05) !important;
     color: var(--accent-cyan) !important;
     border: none !important;
-    box-shadow: none !important;
 }
-
-.bloque-menu div.stButton > button:active { color: var(--accent-primary) !important; }
 
 /* Link Button (Planilla MEC) adaptado al menú plano */
 .bloque-menu .stLinkButton > a {
@@ -248,11 +242,11 @@ html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
 }
 
 .bloque-menu .stLinkButton > a:hover {
-    background: transparent !important;
+    background: rgba(255, 255, 255, 0.05) !important;
     color: var(--accent-cyan) !important;
 }
 
-/* ===== REDISEÑO TOTAL DEL UPLOADER: TEXTO PLANO "CARGAR" VERDE OPERATIVO ===== */
+/* ===== REDISEÑO TOTAL DEL UPLOADER: TEXTO PLANO "CARGAR" ===== */
 [data-testid="stFileUploader"] {
     background: transparent !important;
     border: none !important;
@@ -295,7 +289,6 @@ html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
     cursor: pointer !important;
 }
 
-/* Forzado estricto de la palabra clave "CARGAR" en verde esmeralda operativo */
 [data-testid="stFileUploader"] section button {
     background: transparent !important;
     color: var(--accent-green) !important;
@@ -306,9 +299,8 @@ html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
     padding: 4px 8px !important;
     height: 100% !important;
     width: 100% !important;
-    cursor: pointer !important;
     box-shadow: none !important;
-    font-size: 0 !important; /* Oculta nativo 'Browse files' */
+    font-size: 0 !important;
 }
 
 [data-testid="stFileUploader"] section button::before {
@@ -323,7 +315,6 @@ html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
     color: var(--accent-green-hover) !important;
 }
 
-/* Mini chip contenedor para archivo ya cargado */
 [data-testid="stFileUploaderFileData"] {
     display: flex !important;
     align-items: center !important;
@@ -331,17 +322,15 @@ html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
     height: 32px !important;
     width: 100% !important;
     padding: 0 8px !important;
-    margin: 0 !important;
     position: absolute !important;
     top: 0 !important;
     left: 0 !important;
     background: var(--bg-elevated) !important;
     border-radius: var(--radius-sm) !important;
-    box-sizing: border-box !important;
     z-index: 10 !important;
 }
 
-/* Barra lateral derecha de descargas dinámicas */
+/* Descargas extremas */
 .zona-reservada-descargas {
     display: flex;
     justify-content: flex-end;
@@ -359,7 +348,6 @@ html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
     font-size: 11px !important;
     height: 28px !important;
     padding: 0px 10px !important;
-    box-shadow: none !important;
 }
 
 .stDownloadButton > button:hover {
@@ -378,7 +366,12 @@ html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
     border-bottom: 1px solid var(--border-medium);
     display: flex !important;
     align-items: center !important;
-    padding: 0 10px;
+    padding: 0 12px !important;
+    box-sizing: border-box !important;
+}
+
+.bloque-captura > div, .bloque-captura [data-testid="stHorizontalBlock"] {
+    width: 100% !important;
 }
 
 .bloque-captura .stTextInput input,
@@ -403,7 +396,7 @@ html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
     height: 30px !important;
 }
 
-/* Botón primario de AGREGAR (Manteniendo jerarquía de acción) */
+/* Botón primario AGREGAR */
 .bloque-captura div.stButton > button[kind="primary"],
 .bloque-captura button[data-testid="stBaseButton-primary"] {
     background: var(--accent-green) !important;
@@ -421,7 +414,6 @@ html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
     background: var(--accent-green-hover) !important;
 }
 
-/* Labels reducidos de alta densidad */
 .bloque-captura label {
     color: var(--text-muted) !important;
     font-weight: 500 !important;
@@ -435,9 +427,12 @@ html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
    ============================================================ */
 .bloque-tablero {
     height: var(--h-tablero) !important;
-    padding: 8px 0px !important;
+    min-height: calc(78vh) !important;
+    padding: 8px 12px !important; /* Agregamos margen lateral interno limpio */
+    box-sizing: border-box !important;
     background: var(--bg-app);
-    overflow: hidden !important; /* Congela el contenedor principal */
+    overflow: hidden !important; 
+    display: block !important; /* Asegura renderizado de bloque puro */
 }
 
 .banda-header {
@@ -473,26 +468,26 @@ html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
     text-align: center;
     padding: 40px 10px;
     border-radius: 0 0 var(--radius-sm) var(--radius-sm);
-    height: calc(78vh - 45px) !important;
+    height: calc(78vh - 55px) !important;
 }
 
-/* DataFrame Oscuro Inteligente con scroll interno estricto */
+/* Forzar la visualización estricta del DataFrame */
 .bloque-tablero [data-testid="stDataFrame"],
-.bloque-tablero [data-testid="stDataFrameResizable"] {
+.bloque-tablero [data-testid="stDataFrameResizable"],
+.bloque-tablero [data-testid="stDataFrame"] > div {
     border: 1px solid var(--border-light) !important;
     border-top: none !important;
     border-radius: 0 0 var(--radius-sm) var(--radius-sm) !important;
     background: var(--bg-block) !important;
-    height: calc(78vh - 45px) !important; /* Fuerza el scroll dentro de la grilla */
+    height: calc(78vh - 55px) !important; /* Recalculado para que quepa perfecto */
+    max-height: calc(78vh - 55px) !important;
+    display: block !important;
+    overflow: auto !important;
 }
 
 .bloque-tablero [data-testid="stDataFrame"] * {
-    background-color: transparent !important;
     color: var(--text-primary) !important;
 }
-
-/* Estilado estricto del motor Glide Data Grid nativo de Streamlit */
-[data-testid="stDataFrameResizable"] { background: var(--bg-block) !important; }
 
 /* ============================================================
    BLOQUE 5 - FOOTER CONGELADO ABAJO (5% ALTO)
@@ -521,9 +516,7 @@ html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
     justify-content: center !important;
 }
 
-/* ============================================================
-   ZONA DE ALERTAS Y MICRO-BOTONES (EXTREMO DERECHO / FILA 6)
-   ============================================================ */
+/* ===== CONFIGURACIÓN MICRO-ALERTAS FILA 6 ===== */
 .zona-reservada-alertas {
     display: flex !important;
     align-items: center !important;
@@ -542,13 +535,12 @@ html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
 .micro-txt-warning {
     font-size: 11px !important;
     font-weight: 600 !important;
-    color: var(--accent-cyan) !important; /* Celeste preventivo para evitar cansancio visual */
+    color: var(--accent-cyan) !important;
     text-transform: uppercase !important;
     letter-spacing: 0.2px !important;
     margin-right: 8px !important;
 }
 
-/* Micro-botones de acciones directas en la sexta columna */
 [data-testid="column"]:nth-child(6) div.stButton > button {
     height: 24px !important;
     padding: 0 6px !important;
@@ -563,40 +555,24 @@ html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
     border: 1px solid rgba(248, 113, 113, 0.4) !important;
 }
 
-[data-testid="column"]:nth-child(6) div.stButton > button[key*="mv_cancel"]:hover {
-    background: var(--danger) !important;
-    color: #0b1220 !important;
-}
-
 [data-testid="column"]:nth-child(6) div.stButton > button[key*="mv_ok"] {
     background: var(--info-bg) !important;
     color: var(--accent-cyan) !important;
     border: 1px solid rgba(0, 180, 216, 0.4) !important;
 }
 
-[data-testid="column"]:nth-child(6) div.stButton > button[key*="mv_ok"]:hover {
-    background: var(--accent-cyan) !important;
-    color: #0b1220 !important;
-}
-
-/* Popover del dropdown de Selectbox */
-[data-baseweb="popover"] {
-    background: var(--bg-block) !important;
-    border: 1px solid var(--border-medium) !important;
-    border-radius: var(--radius-sm) !important;
-    box-shadow: var(--shadow-md) !important;
-}
+/* Popovers y Scrollbars */
+[data-baseweb="popover"] { background: var(--bg-block) !important; border: 1px solid var(--border-medium) !important; border-radius: var(--radius-sm) !important; }
 [data-baseweb="menu"] { background: var(--bg-block) !important; }
 [data-baseweb="menu"] li { color: var(--text-primary) !important; }
 [data-baseweb="menu"] li:hover { background: var(--bg-elevated) !important; }
 
-/* ===== SCROLLBAR PERSONALIZADA ===== */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: var(--bg-app); }
 ::-webkit-scrollbar-thumb { background: var(--border-dark); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-light); }
 
-/* ===== CORRECCIONES DE ALERTAS DE SISTEMA ===== */
+/* Correcciones Alertas Estándar */
 .stSuccess { background: var(--success-bg) !important; border: 1px solid var(--success) !important; border-left: 4px solid var(--success) !important; color: var(--success) !important; }
 .stInfo { background: var(--info-bg) !important; border: 1px solid var(--info) !important; border-left: 4px solid var(--info) !important; color: var(--info) !important; }
 .stWarning { background: var(--warning-bg) !important; border: 1px solid var(--warning) !important; border-left: 4px solid var(--warning) !important; color: var(--warning) !important; }
