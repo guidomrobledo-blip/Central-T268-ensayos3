@@ -50,9 +50,12 @@
     --radius-sm: 5px;
     --radius-md: 8px;
 
-    /* Alturas fijas de bloques */
-    --h-header: 50px;
-    --h-footer: 35px;
+    /* Alturas fijas estrictas de bloques para cumplir proporciones */
+    --h-header: 5vh;   /* Ajustado para el monitor de la central */
+    --h-menu: 5vh;
+    --h-captura: 7vh;
+    --h-tablero: 78vh;
+    --h-footer: 5vh;
 }
 
 /* ===== RESET STREAMLIT ===== */
@@ -71,33 +74,26 @@ html, body, .stApp {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
 }
 
-/* ===== VIEWPORT FIT: BLOQUEO DE PANTALLA COMPLETA ===== */
-.stApp {
+/* ===== VIEWPORT FIT: INMUNIDAD CONTRA EL DESBORDE DE PANTALLA ===== */
+html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
+    max-height: 100vh !important;
     height: 100vh !important;
     overflow: hidden !important;
 }
 
-[data-testid="stAppViewContainer"] {
-    overflow: hidden !important;
-}
-
-[data-testid="stMain"] {
-    overflow: hidden !important;
-}
-
+/* Contenedor central de Streamlit: Forzamos la alineación rígida a la izquierda */
 .main .block-container,
 .block-container {
-    padding: calc(var(--h-header) + 14px) 2rem var(--h-footer) 2rem !important;
+    padding: 0px 12px !important;
     max-width: 100% !important;
     height: 100vh !important;
+    max-height: 100vh !important;
     overflow: hidden !important;
     background: var(--bg-app);
-}
-
-@media (min-width: 1400px) {
-    .block-container {
-        padding: calc(var(--h-header) + 14px) 3rem var(--h-footer) 3rem !important;
-    }
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    gap: 0px !important;
 }
 
 .block-container > div:first-child { margin-top: 0 !important; }
@@ -105,27 +101,32 @@ html, body, .stApp {
 [data-testid="stHorizontalBlock"] {
     margin-top: 0 !important;
     padding-top: 0 !important;
+    align-items: center !important;
+    gap: 8px !important;
 }
 
 /* ============================================================
-   BLOQUE 1 - HEADER FIJO
+   BLOQUE 1 - HEADER ESTÁTICO (5% ALTO)
    ============================================================ */
-.header-container {
+.bloque-header {
+    height: var(--h-header) !important;
+    min-height: 42px !important;
+    max-height: 50px !important;
     background: var(--bg-block);
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    z-index: 99999 !important;
-    padding: 10px 24px;
-    height: var(--h-header);
-    width: 100vw !important;
-    margin: 0 !important;
+    padding: 0px 24px;
     box-sizing: border-box;
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
     border-bottom: 1px solid var(--border-medium);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+}
+
+.header-container {
+    display: flex !important;
+    width: 100%;
+    justify-content: space-between !important;
+    align-items: center !important;
 }
 
 .header-left { display: flex; align-items: center; }
@@ -145,7 +146,7 @@ html, body, .stApp {
 }
 
 .title-main {
-    font-size: 0.85rem !important;
+    font-size: 14px !important;
     line-height: 1.1 !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -158,7 +159,7 @@ html, body, .stApp {
 .title-main, .title-main span { color: var(--text-primary) !important; }
 
 .subtitle-main {
-    font-size: 0.68rem !important;
+    font-size: 11px !important;
     color: var(--text-muted) !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -186,65 +187,55 @@ html, body, .stApp {
 }
 
 /* ============================================================
-   BLOQUE 2 - BARRA DE CONTROL MINIMALISTA (MENU PLANO)
+   BLOQUE 2 - BARRA DE CONTROL / MENÚ PLANO (5% ALTO)
    ============================================================ */
-.control-bar {
+.bloque-menu {
+    height: var(--h-menu) !important;
+    min-height: 42px !important;
+    max-height: 50px !important;
     background: var(--bg-bar);
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--border-light);
-    margin-bottom: 4px;
+    border-bottom: 1px solid var(--border-light);
+    display: flex !important;
+    align-items: center !important;
+    padding: 0 5px;
 }
 
-/* Botones planos tipo menú nativo (sin marco / sin caja) */
-div.stButton > button {
+/* Botones planos tipo menú de consola (sin marco / sin caja de fondo) */
+.bloque-menu div.stButton > button,
+.bloque-menu button[data-testid="stBaseButton-secondary"] {
     background: transparent !important;
     border: none !important;
     border-radius: var(--radius-sm) !important;
-    height: 40px !important;
+    height: 32px !important;
     font-weight: 600 !important;
-    font-size: 0.78em !important;
+    font-size: 12px !important;
     text-transform: uppercase !important;
     letter-spacing: 0.4px !important;
     color: var(--text-secondary) !important;
     box-shadow: none !important;
     transition: color 0.15s ease, background 0.15s ease !important;
     padding: 0 12px !important;
+    text-align: left !important;
 }
 
-div.stButton > button:hover {
+.bloque-menu div.stButton > button:hover,
+.bloque-menu button[data-testid="stBaseButton-secondary"]:hover {
     background: transparent !important;
     color: var(--accent-cyan) !important;
     border: none !important;
     box-shadow: none !important;
-    transform: none !important;
 }
 
-div.stButton > button:active { color: var(--accent-primary) !important; }
-div.stButton > button:disabled { opacity: 0.4 !important; cursor: not-allowed !important; }
+.bloque-menu div.stButton > button:active { color: var(--accent-primary) !important; }
 
-/* Boton primario "AGREGAR" verde esmeralda (se mantiene como acción) */
-div.stButton > button[kind="primary"] {
-    background: var(--accent-green) !important;
-    color: #ffffff !important;
-    border: 1px solid var(--accent-green) !important;
-    border-radius: var(--radius-sm) !important;
-    box-shadow: var(--shadow-sm) !important;
-}
-
-div.stButton > button[kind="primary"]:hover {
-    background: var(--accent-green-hover) !important;
-    color: #ffffff !important;
-    border-color: var(--accent-green-hover) !important;
-}
-
-/* Link Button (Planilla MEC) como texto plano flotante */
-.stLinkButton > a {
+/* Link Button (Planilla MEC) adaptado al menú plano */
+.bloque-menu .stLinkButton > a {
     background: transparent !important;
     border: none !important;
     border-radius: var(--radius-sm) !important;
-    height: 40px !important;
+    height: 32px !important;
     font-weight: 600 !important;
-    font-size: 0.78em !important;
+    font-size: 12px !important;
     text-transform: uppercase !important;
     letter-spacing: 0.4px !important;
     color: var(--text-secondary) !important;
@@ -256,37 +247,40 @@ div.stButton > button[kind="primary"]:hover {
     text-decoration: none !important;
 }
 
-.stLinkButton > a:hover {
+.bloque-menu .stLinkButton > a:hover {
     background: transparent !important;
     color: var(--accent-cyan) !important;
-    text-decoration: none !important;
 }
 
-/* ===== FILE UPLOADER COMO TEXTO PLANO "CARGAR" ===== */
+/* ===== REDISEÑO TOTAL DEL UPLOADER: TEXTO PLANO "CARGAR" VERDE OPERATIVO ===== */
 [data-testid="stFileUploader"] {
     background: transparent !important;
-    border-radius: var(--radius-sm) !important;
     border: none !important;
-    height: 40px !important;
+    height: 32px !important;
+    width: auto !important;
+    max-width: 120px !important;
     padding: 0 !important;
     margin: 0 !important;
     overflow: hidden !important;
     display: flex !important;
     align-items: center !important;
     box-shadow: none !important;
-    transition: all 0.15s ease !important;
     position: relative !important;
 }
 
-[data-testid="stFileUploader"]:hover {
+[data-testid="stFileUploader"] section {
+    padding: 0 !important;
+    border: none !important;
     background: transparent !important;
-    box-shadow: none !important;
+    display: flex !important;
+    justify-content: flex-start !important;
 }
 
 [data-testid="stFileUploader"] section > div ~ div,
 [data-testid="stFileUploader"] text,
 [data-testid="stFileUploader"] p,
-[data-testid="stFileUploaderDropzone"] svg {
+[data-testid="stFileUploaderDropzone"] svg,
+[data-testid="stFileUploaderDropzone"] > div:not(button) {
     display: none !important;
 }
 
@@ -298,48 +292,43 @@ div.stButton > button[kind="primary"]:hover {
     width: 100% !important;
     display: flex !important;
     align-items: center !important;
-    justify-content: center !important;
     cursor: pointer !important;
-    margin: 0 !important;
 }
 
-/* Botón "Browse files" -> texto plano "CARGAR" verde esmeralda */
+/* Forzado estricto de la palabra clave "CARGAR" en verde esmeralda operativo */
 [data-testid="stFileUploader"] section button {
     background: transparent !important;
     color: var(--accent-green) !important;
     border: none !important;
     font-weight: 700 !important;
-    font-size: 0.78em !important;
     text-transform: uppercase !important;
     letter-spacing: 0.4px !important;
-    padding: 0 !important;
+    padding: 4px 8px !important;
     height: 100% !important;
     width: 100% !important;
-    max-height: 40px !important;
     cursor: pointer !important;
     box-shadow: none !important;
-    font-size: 0 !important; /* oculta el texto nativo "Browse files" */
+    font-size: 0 !important; /* Oculta nativo 'Browse files' */
 }
 
 [data-testid="stFileUploader"] section button::before {
-    content: "CARGAR";
-    font-size: 0.78rem;
-    color: var(--accent-green);
-    font-weight: 700;
-    letter-spacing: 0.4px;
-    transition: color 0.15s ease;
+    content: "CARGAR" !important;
+    font-size: 12px !important;
+    color: var(--accent-green) !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.4px !important;
 }
 
 [data-testid="stFileUploader"] section button:hover::before {
-    color: var(--accent-green-hover);
+    color: var(--accent-green-hover) !important;
 }
 
-/* Archivo cargado: chip plano */
+/* Mini chip contenedor para archivo ya cargado */
 [data-testid="stFileUploaderFileData"] {
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
-    height: 38px !important;
+    height: 32px !important;
     width: 100% !important;
     padding: 0 8px !important;
     margin: 0 !important;
@@ -350,64 +339,14 @@ div.stButton > button[kind="primary"]:hover {
     border-radius: var(--radius-sm) !important;
     box-sizing: border-box !important;
     z-index: 10 !important;
-    overflow: hidden !important;
 }
 
-[data-testid="stFileUploaderFileData"] > div:first-child {
-    background: transparent !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    display: flex !important;
-    align-items: center !important;
-    gap: 6px !important;
-    width: calc(100% - 24px) !important;
-    height: 100% !important;
-}
-
-[data-testid="stFileUploaderFileData"] span {
-    font-size: 0.75rem !important;
-    color: var(--text-primary) !important;
-    display: inline-block !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    white-space: nowrap !important;
-    font-weight: 500 !important;
-}
-
-[data-testid="stFileUploaderFileData"] small {
-    display: inline-block !important;
-    font-size: 0.65rem !important;
-    color: var(--text-muted) !important;
-    margin-left: 4px !important;
-}
-
-[data-testid="stFileUploaderFileData"] button {
-    position: absolute !important;
-    right: 6px !important;
-    top: 9px !important;
-    width: 20px !important;
-    height: 20px !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    background: transparent !important;
-    border: none !important;
-    color: var(--danger) !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    box-shadow: none !important;
-}
-
-[data-testid="stFileUploaderFileData"] button:hover {
-    background: rgba(248, 113, 113, 0.15) !important;
-    border-radius: 50% !important;
-}
-
-/* ===== BARRA DE DESCARGAS DINAMICAS (extremo derecho) ===== */
-.download-bar {
+/* Barra lateral derecha de descargas dinámicas */
+.zona-reservada-descargas {
     display: flex;
     justify-content: flex-end;
-    margin: 2px 0 0 0;
+    gap: 6px;
+    width: 100%;
 }
 
 .stDownloadButton > button {
@@ -417,137 +356,112 @@ div.stButton > button[kind="primary"]:hover {
     color: var(--accent-cyan) !important;
     font-weight: 600 !important;
     text-transform: uppercase !important;
-    letter-spacing: 0.4px !important;
-    font-size: 0.72em !important;
-    height: 32px !important;
+    font-size: 11px !important;
+    height: 28px !important;
+    padding: 0px 10px !important;
     box-shadow: none !important;
-    transition: all 0.15s ease !important;
 }
 
 .stDownloadButton > button:hover {
     background: var(--accent-cyan) !important;
     color: #0b1220 !important;
-    box-shadow: var(--shadow-sm) !important;
-    transform: none !important;
 }
 
 /* ============================================================
-   BLOQUE 3 - INPUTS / SELECTBOX (FORMULARIO DE RUTEO)
+   BLOQUE 3 - FORMULARIO DE CAPTURA MANUAL (7% ALTO)
    ============================================================ */
-.stTextInput input,
-.stNumberInput input {
-    background: var(--bg-input) !important;
-    border: 1px solid var(--border-medium) !important;
-    border-radius: var(--radius-sm) !important;
-    color: var(--text-primary) !important;
-    font-family: 'Inter', sans-serif !important;
-    height: 28px !important;
-    min-height: 28px !important;
-    padding: 2px 8px !important;
-    font-size: 0.8rem !important;
-    box-sizing: border-box !important;
-}
-
-.stTextInput input:focus,
-.stNumberInput input:focus {
-    border-color: var(--accent-cyan) !important;
-    box-shadow: 0 0 0 2px rgba(0, 180, 216, 0.2) !important;
-    outline: none !important;
-}
-
-.stTextInput input::placeholder,
-.stNumberInput input::placeholder { color: var(--text-light) !important; }
-
-.stTextInput label,
-.stNumberInput label,
-.stSelectbox label {
-    color: var(--text-muted) !important;
-    font-weight: 500 !important;
-    font-size: 0.7rem !important;
-    margin-bottom: 2px !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.2px !important;
-}
-
-/* Select box oscuro */
-.stSelectbox > div > div {
-    background: var(--bg-input) !important;
-    border: 1px solid var(--border-medium) !important;
-    border-radius: var(--radius-sm) !important;
-    color: var(--text-primary) !important;
-    font-size: 0.8rem !important;
-    height: 28px !important;
-    min-height: 28px !important;
-    box-sizing: border-box !important;
-}
-
-.stSelectbox > div > div:hover { border-color: var(--accent-cyan) !important; }
-
-.stSelectbox > div [data-baseweb="select"] {
-    height: 26px !important;
-    min-height: 26px !important;
+.bloque-captura {
+    height: var(--h-captura) !important;
+    min-height: 52px !important;
+    max-height: 65px !important;
+    background: var(--bg-block);
+    border-bottom: 1px solid var(--border-medium);
     display: flex !important;
     align-items: center !important;
-    padding: 0 !important;
-    border: none !important;
-    background: transparent !important;
+    padding: 0 10px;
 }
 
-.stSelectbox > div [data-baseweb="select"] > div {
-    padding: 0 8px !important;
-    font-size: 0.8rem !important;
-    line-height: 26px !important;
-    color: var(--text-primary) !important;
-    background: transparent !important;
-}
-
-.stSelectbox > div [data-baseweb="select"] button {
-    padding: 0 !important;
-    margin: 0 !important;
-}
-
-.stSelectbox svg { fill: var(--text-muted) !important; color: var(--text-muted) !important; }
-
-/* Popover del dropdown */
-[data-baseweb="popover"] {
-    background: var(--bg-block) !important;
+.bloque-captura .stTextInput input,
+.bloque-captura .stNumberInput input {
+    background: var(--bg-input) !important;
     border: 1px solid var(--border-medium) !important;
     border-radius: var(--radius-sm) !important;
-    box-shadow: var(--shadow-md) !important;
+    color: var(--text-primary) !important;
+    height: 32px !important;
+    padding: 4px 8px !important;
+    font-size: 12px !important;
 }
 
-[data-baseweb="menu"] { background: var(--bg-block) !important; }
-[data-baseweb="menu"] li { color: var(--text-primary) !important; }
-[data-baseweb="menu"] li:hover { background: var(--bg-elevated) !important; }
+.bloque-captura .stSelectbox > div > div {
+    background: var(--bg-input) !important;
+    border: 1px solid var(--border-medium) !important;
+    border-radius: var(--radius-sm) !important;
+    height: 32px !important;
+}
+
+.bloque-captura .stSelectbox > div [data-baseweb="select"] {
+    height: 30px !important;
+}
+
+/* Botón primario de AGREGAR (Manteniendo jerarquía de acción) */
+.bloque-captura div.stButton > button[kind="primary"],
+.bloque-captura button[data-testid="stBaseButton-primary"] {
+    background: var(--accent-green) !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: var(--radius-sm) !important;
+    height: 32px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    box-shadow: var(--shadow-sm) !important;
+}
+
+.bloque-captura div.stButton > button[kind="primary"]:hover,
+.bloque-captura button[data-testid="stBaseButton-primary"]:hover {
+    background: var(--accent-green-hover) !important;
+}
+
+/* Labels reducidos de alta densidad */
+.bloque-captura label {
+    color: var(--text-muted) !important;
+    font-weight: 500 !important;
+    font-size: 11px !important;
+    margin-bottom: 2px !important;
+    text-transform: uppercase !important;
+}
 
 /* ============================================================
-   BLOQUE 4 - BANDAS HORARIAS (TIPO EXCEL, SCROLL INTERNO)
+   BLOQUE 4 - TABLERO DE DATOS ALTA DENSIDAD (78% ALTO)
    ============================================================ */
+.bloque-tablero {
+    height: var(--h-tablero) !important;
+    padding: 8px 0px !important;
+    background: var(--bg-app);
+    overflow: hidden !important; /* Congela el contenedor principal */
+}
+
 .banda-header {
     background: var(--bg-block);
     border: 1px solid var(--border-medium);
     border-bottom: 2px solid var(--accent-primary);
     border-radius: var(--radius-sm) var(--radius-sm) 0 0;
-    padding: 8px 12px;
-    font-weight: 600;
-    font-size: 0.82em;
+    padding: 6px 10px;
+    font-weight: 700;
+    font-size: 13px;
     color: var(--text-primary);
     text-transform: uppercase;
-    letter-spacing: 0.4px;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
 .banda-header .conteo {
-    font-weight: 500;
+    font-weight: 600;
     color: var(--accent-cyan);
-    text-transform: none;
-    letter-spacing: 0;
-    font-size: 0.92em;
+    font-size: 11px;
     background: rgba(0, 180, 216, 0.12);
-    padding: 1px 8px;
-    border-radius: 10px;
+    padding: 2px 6px;
+    border-radius: 3px;
 }
 
 .banda-vacia {
@@ -555,156 +469,92 @@ div.stButton > button[kind="primary"]:hover {
     border-top: none;
     background: var(--bg-block);
     color: var(--text-muted);
-    font-size: 0.8em;
+    font-size: 12px;
     text-align: center;
-    padding: 24px 12px;
+    padding: 40px 10px;
     border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+    height: calc(78vh - 45px) !important;
 }
 
-/* DataFrame oscuro con scroll interno controlado */
-[data-testid="stDataFrame"] {
-    border: 1px solid var(--border-light);
-    border-top: none;
-    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
-    overflow: auto !important;
-    max-height: 60vh !important;
+/* DataFrame Oscuro Inteligente con scroll interno estricto */
+.bloque-tablero [data-testid="stDataFrame"],
+.bloque-tablero [data-testid="stDataFrameResizable"] {
+    border: 1px solid var(--border-light) !important;
+    border-top: none !important;
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm) !important;
     background: var(--bg-block) !important;
+    height: calc(78vh - 45px) !important; /* Fuerza el scroll dentro de la grilla */
 }
 
-[data-testid="stDataFrame"] * {
+.bloque-tablero [data-testid="stDataFrame"] * {
     background-color: transparent !important;
     color: var(--text-primary) !important;
 }
 
-[data-testid="stDataFrame"] table { font-size: 0.82em !important; }
-
-[data-testid="stDataFrame"] th {
-    background: var(--bg-elevated) !important;
-    color: var(--text-primary) !important;
-    font-weight: 600 !important;
-    text-transform: uppercase !important;
-    font-size: 0.72em !important;
-    letter-spacing: 0.3px !important;
-    padding: 8px 10px !important;
-    border-bottom: 1px solid var(--border-medium) !important;
-}
-
-[data-testid="stDataFrame"] td {
-    color: var(--text-secondary) !important;
-    padding: 7px 10px !important;
-    border-bottom: 1px solid var(--border-light) !important;
-}
-
-[data-testid="stDataFrame"] tr:hover td { background: var(--bg-elevated) !important; }
-
-/* Canvas-based glide grid (Streamlit nuevo) fondo oscuro */
+/* Estilado estricto del motor Glide Data Grid nativo de Streamlit */
 [data-testid="stDataFrameResizable"] { background: var(--bg-block) !important; }
 
-/* ===== ALERTS ===== */
-.stSuccess {
-    background: var(--success-bg) !important;
-    border: 1px solid var(--success) !important;
-    border-left: 4px solid var(--success) !important;
-    border-radius: var(--radius-sm) !important;
-    color: var(--success) !important;
+/* ============================================================
+   BLOQUE 5 - FOOTER CONGELADO ABAJO (5% ALTO)
+   ============================================================ */
+.bloque-footer, .footer {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    text-align: center !important;
+    padding: 0 !important;
+    height: var(--h-footer) !important;
+    min-height: 32px !important;
+    max-height: 40px !important;
+    line-height: calc(var(--h-footer) + 2px) !important;
+    color: var(--text-muted) !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    letter-spacing: 1px !important;
+    border-top: 1px solid var(--border-medium) !important;
+    background: var(--bg-block) !important;
+    text-transform: uppercase !important;
+    z-index: 9999 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
-
-.stInfo {
-    background: var(--info-bg) !important;
-    border: 1px solid var(--info) !important;
-    border-left: 4px solid var(--info) !important;
-    border-radius: var(--radius-sm) !important;
-    color: var(--info) !important;
-}
-
-.stWarning {
-    background: var(--warning-bg) !important;
-    border: 1px solid var(--warning) !important;
-    border-left: 4px solid var(--warning) !important;
-    border-radius: var(--radius-sm) !important;
-    color: var(--warning) !important;
-}
-
-.stError {
-    background: var(--danger-bg) !important;
-    border: 1px solid var(--danger) !important;
-    border-left: 4px solid var(--danger) !important;
-    border-radius: var(--radius-sm) !important;
-    color: var(--danger) !important;
-}
-
-/* ===== SPINNER ===== */
-.stSpinner > div {
-    border-color: var(--accent-cyan) transparent transparent transparent !important;
-}
-
-/* ===== SCROLLBAR ===== */
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: var(--bg-app); }
-::-webkit-scrollbar-thumb { background: var(--border-dark); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: var(--text-light); }
-
-/* ===== HEADINGS ===== */
-h1, h2, h3, h4, h5, h6 { color: var(--text-primary) !important; }
-
-/* ===== COLUMN GAPS ===== */
-[data-testid="column"] { padding: 0 8px; }
 
 /* ============================================================
-   BLOQUE 5 - FOOTER FIJO ABAJO
+   ZONA DE ALERTAS Y MICRO-BOTONES (EXTREMO DERECHO / FILA 6)
    ============================================================ */
-.footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100vw;
-    text-align: center;
-    padding: 0;
-    height: var(--h-footer);
-    line-height: var(--h-footer);
-    color: var(--text-muted);
-    font-size: 0.7em;
-    letter-spacing: 0.6px;
-    border-top: 1px solid var(--border-medium);
-    background: var(--bg-block);
-    text-transform: uppercase;
-    z-index: 9999;
+.zona-reservada-alertas {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    width: 100%;
+    height: 32px;
 }
 
-/* =====================================================
-   MICRO-ALERTAS PANEL DE RUTEO (OPERATIVO MULTI-COL)
-   ===================================================== */
 .wrapper-alertas-micro {
     display: flex !important;
     flex-direction: column !important;
     justify-content: flex-end !important;
-    height: 64px !important;
-    padding-bottom: 2px !important;
-    box-sizing: border-box !important;
+    height: 32px !important;
 }
 
 .micro-txt-warning {
-    font-size: 0.72rem !important;
+    font-size: 11px !important;
     font-weight: 600 !important;
-    color: var(--warning) !important;
+    color: var(--accent-cyan) !important; /* Celeste preventivo para evitar cansancio visual */
     text-transform: uppercase !important;
     letter-spacing: 0.2px !important;
-    margin-bottom: 4px !important;
-    line-height: 1.1 !important;
-    white-space: nowrap !important;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    margin-right: 8px !important;
 }
 
-/* Micro-botones dentro de la sexta columna */
+/* Micro-botones de acciones directas en la sexta columna */
 [data-testid="column"]:nth-child(6) div.stButton > button {
     height: 24px !important;
-    padding: 0 4px !important;
-    font-size: 0.65rem !important;
+    padding: 0 6px !important;
+    font-size: 11px !important;
     font-weight: 700 !important;
-    letter-spacing: 0px !important;
     border-radius: 3px !important;
-    margin: 0 !important;
 }
 
 [data-testid="column"]:nth-child(6) div.stButton > button[key*="mv_cancel"] {
@@ -716,7 +566,6 @@ h1, h2, h3, h4, h5, h6 { color: var(--text-primary) !important; }
 [data-testid="column"]:nth-child(6) div.stButton > button[key*="mv_cancel"]:hover {
     background: var(--danger) !important;
     color: #0b1220 !important;
-    border-color: var(--danger) !important;
 }
 
 [data-testid="column"]:nth-child(6) div.stButton > button[key*="mv_ok"] {
@@ -728,22 +577,28 @@ h1, h2, h3, h4, h5, h6 { color: var(--text-primary) !important; }
 [data-testid="column"]:nth-child(6) div.stButton > button[key*="mv_ok"]:hover {
     background: var(--accent-cyan) !important;
     color: #0b1220 !important;
-    border-color: var(--accent-cyan) !important;
 }
 
-/* ===== LOADING SCREEN ===== */
-.loading-screen {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw; height: 100vh;
-    background: var(--bg-app);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 999999;
-    animation: fadeOut 0.3s ease-out 0.8s forwards;
+/* Popover del dropdown de Selectbox */
+[data-baseweb="popover"] {
+    background: var(--bg-block) !important;
+    border: 1px solid var(--border-medium) !important;
+    border-radius: var(--radius-sm) !important;
+    box-shadow: var(--shadow-md) !important;
 }
+[data-baseweb="menu"] { background: var(--bg-block) !important; }
+[data-baseweb="menu"] li { color: var(--text-primary) !important; }
+[data-baseweb="menu"] li:hover { background: var(--bg-elevated) !important; }
 
-.loading-logo { filter: brightness(0) invert(1); }
+/* ===== SCROLLBAR PERSONALIZADA ===== */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-app); }
+::-webkit-scrollbar-thumb { background: var(--border-dark); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-light); }
 
-@keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
+/* ===== CORRECCIONES DE ALERTAS DE SISTEMA ===== */
+.stSuccess { background: var(--success-bg) !important; border: 1px solid var(--success) !important; border-left: 4px solid var(--success) !important; color: var(--success) !important; }
+.stInfo { background: var(--info-bg) !important; border: 1px solid var(--info) !important; border-left: 4px solid var(--info) !important; color: var(--info) !important; }
+.stWarning { background: var(--warning-bg) !important; border: 1px solid var(--warning) !important; border-left: 4px solid var(--warning) !important; color: var(--warning) !important; }
+.stError { background: var(--danger-bg) !important; border: 1px solid var(--danger) !important; border-left: 4px solid var(--danger) !important; color: var(--danger) !important; }
+.stSpinner > div { border-color: var(--accent-cyan) transparent transparent transparent !important; }
