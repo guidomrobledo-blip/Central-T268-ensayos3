@@ -200,7 +200,7 @@ st.markdown('<div class="control-bar">', unsafe_allow_html=True)
 
 # 5 controles agrupados a la IZQUIERDA + spacer + ZONA DESCARGAS reservada a la derecha.
 # (Se eliminó Planilla Faltantes -> 5 columnas de acción en lugar de 6.)
-bu, b1, b2, b4, b5, b_sp, b_dl = st.columns([2.2, 1.0, 1.0, 1.0, 1.0, 0.1, 2.0])
+bu, b1, b2, b4, b5, b_sp, b_dl = st.columns([2.3, 1.0, 1.0, 1.0, 1.0, 0.1, 2.0])
 
 with bu:
     # 1. Determinamos la clase CSS según si hay un archivo cargado en el estado
