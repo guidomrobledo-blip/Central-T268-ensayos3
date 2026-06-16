@@ -286,21 +286,33 @@ div.stButton > button[kind="primary"]:hover {
     margin-left: 4px;
 }
 
-/* --- CASO 2: ARCHIVO YA CARGADO (Muestra máscara limpia sobre el widget) --- */
+/* --- CASO 2: ARCHIVO YA CARGADO --- */
+/* Forzamos al contenedor a mantener una sola línea limpia y centrada */
+.cargador-lleno [data-testid="stFileUploaderDropzone"] {
+    flex-direction: row !important;
+    justify-content: center !important;
+    align-items: center !important;
+    height: 100% !important;
+}
+
 .cargador-lleno [data-testid="stFileUploaderDropzone"]::before {
     content: "archivo cargado";
-    color: var(--cyan);
+    color: var(--cyan);               /* Celeste de acento */
     font-size: 0.74rem;
     font-weight: 700;
     letter-spacing: 0.4px;
     text-transform: uppercase;
-}
-.cargador-lleno [data-testid="stFileUploaderDropzone"]::after {
-    content: "" !important;
-    margin-left: 0 !important;
+    display: inline-block !important;
+    line-height: 32px !important;    /* Lo alinea verticalmente al centro del botón */
 }
 
-/* Ocultamos por completo el chip con los datos nativos del archivo */
+/* Forzamos la anulación de cualquier residuo del after */
+.cargador-lleno [data-testid="stFileUploaderDropzone"]::after {
+    content: "" !important;
+    display: none !important;
+}
+
+/* Ocultamos por completo el chip con los datos nativos */
 .cargador-lleno [data-testid="stFileUploaderFileData"] {
     display: none !important;
 }
