@@ -200,7 +200,7 @@ st.markdown('<div class="control-bar">', unsafe_allow_html=True)
 
 # 5 controles agrupados a la IZQUIERDA + spacer + ZONA DESCARGAS reservada a la derecha.
 # (Se eliminó Planilla Faltantes -> 5 columnas de acción en lugar de 6.)
-bu, b1, b2, b4, b5, b_sp, b_dl = st.columns([1.6, 1.4, 1.5, 1.5, 1.1, 0.2, 2.0])
+bu, b1, b2, b4, b5, b_sp, b_dl = st.columns([1.3, 1.3, 1.3, 1.3, 1.1, 0.2, 2.0])
 
 with bu:
     archivo_cdp = st.file_uploader(
