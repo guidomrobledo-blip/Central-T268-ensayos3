@@ -264,8 +264,12 @@ div.stButton > button[kind="primary"]:hover {
     position: relative !important;
 }
 
-/* Etiqueta "Upload" + "cargar" reconstruida por CSS */
-[data-testid="stFileUploaderDropzone"]::before {
+/* =====================================================
+   MÁSCARA DINÁMICA SEGÚN ESTADO DE CARGA
+   ===================================================== */
+
+/* --- CASO 1: NINGÚN ARCHIVO CARGADO --- */
+.cargador-vacio [data-testid="stFileUploaderDropzone"]::before {
     content: "UPLOAD ";
     color: var(--text-secondary);
     font-size: 0.74rem;
@@ -273,68 +277,32 @@ div.stButton > button[kind="primary"]:hover {
     letter-spacing: 0.4px;
     text-transform: uppercase;
 }
-[data-testid="stFileUploaderDropzone"]::after {
+.cargador-vacio [data-testid="stFileUploaderDropzone"]::after {
     content: "(cargar)";
-    color: var(--green);              /* VERDE OPERATIVO sobre "cargar" */
+    color: var(--green);
     font-size: 0.74rem;
     font-weight: 700;
     letter-spacing: 0.4px;
     margin-left: 4px;
 }
 
-/* Archivo cargado: chip plano, una sola línea */
-[data-testid="stFileUploaderFileData"] {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    height: 30px !important;
-    width: 100% !important;
-    padding: 0 8px !important;
-    margin: 0 !important;
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    background: var(--bg-elevated) !important;
-    box-sizing: border-box !important;
-    z-index: 10 !important;
-    overflow: hidden !important;
-    border-radius: var(--radius) !important;
+/* --- CASO 2: ARCHIVO YA CARGADO (Muestra máscara limpia sobre el widget) --- */
+.cargador-lleno [data-testid="stFileUploaderDropzone"]::before {
+    content: "archivo cargado";
+    color: var(--cyan);
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
 }
-[data-testid="stFileUploaderFileData"] > div:first-child {
-    background: transparent !important;
-    padding: 0 !important; margin: 0 !important;
-    display: flex !important; align-items: center !important;
-    gap: 6px !important;
-    width: calc(100% - 24px) !important;
-    height: 100% !important;
+.cargador-lleno [data-testid="stFileUploaderDropzone"]::after {
+    content: "" !important;
+    margin-left: 0 !important;
 }
-[data-testid="stFileUploaderFileData"] span {
-    font-size: 0.72rem !important;
-    color: var(--text-primary) !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    white-space: nowrap !important;
-    font-weight: 500 !important;
-}
-[data-testid="stFileUploaderFileData"] small {
-    font-size: 0.62rem !important;
-    color: var(--text-muted) !important;
-    margin-left: 4px !important;
-}
-[data-testid="stFileUploaderFileData"] button {
-    position: absolute !important;
-    right: 6px !important; top: 5px !important;
-    width: 20px !important; height: 20px !important;
-    padding: 0 !important; margin: 0 !important;
-    background: transparent !important;
-    border: none !important;
-    color: var(--danger) !important;
-    display: flex !important; align-items: center !important; justify-content: center !important;
-    box-shadow: none !important;
-}
-[data-testid="stFileUploaderFileData"] button:hover {
-    background: rgba(217, 122, 122, 0.15) !important;
-    border-radius: 50% !important;
+
+/* Ocultamos por completo el chip con los datos nativos del archivo */
+.cargador-lleno [data-testid="stFileUploaderFileData"] {
+    display: none !important;
 }
 
 /* =====================================================
