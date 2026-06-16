@@ -203,28 +203,28 @@ div.stButton > button[kind="primary"]:hover {
 }
 
 /* =====================================================
-   FILE UPLOADER -> botón de texto plano "Upload (cargar)"
-   La palabra "cargar" debe quedar en VERDE operativo.
+    FILE UPLOADER -> SIN CONTENEDOR (SOLO TEXTO)
    ===================================================== */
 [data-testid="stFileUploader"] {
     background: transparent !important;
-    border: 1px solid transparent !important;
-    border-radius: var(--radius) !important;
+    border: none !important;
+    border-radius: 0 !important;
     height: 40px !important;
     padding: 0 !important;
     margin: 0 !important;
     overflow: hidden !important;
     display: flex !important;
     align-items: center !important;
-    transition: all 0.15s ease !important;
-    position: relative !important;
-}
-[data-testid="stFileUploader"]:hover {
-    border-color: var(--border-strong) !important;
-    background: var(--bg-elevated) !important;
+    justify-content: center !important;
+    box-shadow: none !important;
 }
 
-/* Ocultar toda la dropzone gigante y textos "Browse files / Drag and drop" */
+[data-testid="stFileUploader"]:hover {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
 [data-testid="stFileUploader"] section > div ~ div,
 [data-testid="stFileUploader"] p,
 [data-testid="stFileUploaderDropzoneInstructions"],
