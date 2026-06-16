@@ -305,7 +305,7 @@ with b_dl:
 st.markdown('<div class="section-divider"></div>', unsafe_allow_html=True)
 
 # --- FILA DE INPUTS HORIZONTAL: Direccion | Pedido | Tipo | Banda | Agregar | Alertas ---
-c1, c2, c3, c4, c5, c6 = st.columns([2.0, 1.1, 1.0, 1.0, 1.0, 2.0])
+c1, c2, c3, c4, c5, c6 = st.columns([1.7, 1.1, 1.0, 1.0, 1.0, 2.0])
 
 with c1:
     dir_manual = st.text_input("Dirección", key="in_dir")
