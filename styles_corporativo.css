@@ -286,13 +286,11 @@ div.stButton > button[kind="primary"]:hover {
     margin-left: 4px;
 }
 
-/* --- CASO 2: ARCHIVO YA CARGADO --- */
-/* Forzamos al contenedor a mantener una sola línea limpia y centrada */
+/* --- CASO 2: ARCHIVO YA CARGADO (MÁSCARA RÍGIDA ABSOLUTA) --- */
 .cargador-lleno [data-testid="stFileUploaderDropzone"] {
-    flex-direction: row !important;
-    justify-content: center !important;
-    align-items: center !important;
+    position: relative !important;
     height: 100% !important;
+    width: 100% !important;
 }
 
 .cargador-lleno [data-testid="stFileUploaderDropzone"]::before {
@@ -302,21 +300,24 @@ div.stButton > button[kind="primary"]:hover {
     font-weight: 700;
     letter-spacing: 0.4px;
     text-transform: uppercase;
-    display: inline-block !important;
-    line-height: 32px !important;    /* Lo alinea verticalmente al centro del botón */
+    
+    /* Capa flotante absoluta centradora */
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important; /* Centrado perfecto X e Y */
+    white-space: nowrap !important;
+    width: auto !important;
 }
 
-/* Forzamos la anulación de cualquier residuo del after */
+/* Anulamos por completo cualquier otro residuo */
 .cargador-lleno [data-testid="stFileUploaderDropzone"]::after {
     content: "" !important;
     display: none !important;
 }
-
-/* Ocultamos por completo el chip con los datos nativos */
 .cargador-lleno [data-testid="stFileUploaderFileData"] {
     display: none !important;
 }
-
 /* =====================================================
    ZONA RESERVADA DE DESCARGAS (extremo derecho Bloque 2)
    ===================================================== */
