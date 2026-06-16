@@ -203,12 +203,23 @@ st.markdown('<div class="control-bar">', unsafe_allow_html=True)
 bu, b1, b2, b4, b5, b_sp, b_dl = st.columns([1.1, 1.0, 1.0, 1.0, 1.0, 0.1, 2.0])
 
 with bu:
+    # 1. Determinamos la clase CSS según si hay un archivo cargado en el estado
+    clase_cargador = "cargador-lleno" if st.session_state.df_clean is not None else "cargador-vacio"
+    
+    # 2. Inyectamos el contenedor de apertura con la clase dinámica
+    st.markdown(f'<div class="{clase_cargador}">', unsafe_allow_html=True)
+    
+    # 3. Renderizamos el componente nativo de Streamlit
     archivo_cdp = st.file_uploader(
         "Upload (cargar)",
         type=["xlsx"],
         key="uploader_cdp",
         label_visibility="collapsed"
     )
+    
+    # 4. Cerramos el contenedor HTML
+    st.markdown('</div>', unsafe_allow_html=True)
+    
 with b1:
     btn_1 = st.button("PLANILLA CLIENTES", key="top_1", use_container_width=True)
 with b2:
