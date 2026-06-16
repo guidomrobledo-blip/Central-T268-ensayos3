@@ -321,22 +321,6 @@ div.stButton > button[kind="primary"]:hover {
     color: var(--text-muted) !important;
     margin-left: 4px !important;
 }
-
-/* Oculta nombre y tamaño del archivo */
-[data-testid="stFileUploaderFileData"] span,
-[data-testid="stFileUploaderFileData"] small {
-    display: none !important;
-}
-/* Texto fijo cuando hay archivo cargado */
-[data-testid="stFileUploaderFileData"]::before {
-    content: "✓ ARCHIVO CARGADO";
-    color: var(--green);
-    font-size: 0.74rem;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    height: 100%;
-}
 [data-testid="stFileUploaderFileData"] button {
     position: absolute !important;
     right: 6px !important; top: 5px !important;
@@ -353,6 +337,18 @@ div.stButton > button[kind="primary"]:hover {
     border-radius: 50% !important;
 }
 
+/* Ocultar nombre del archivo */
+[data-testid="stFileChipName"] {
+    display: none !important;
+}
+
+/* Mostrar texto fijo */
+[data-testid="stFileChip"]::before {
+    content: "✓ ARCHIVO CARGADO";
+    color: var(--green) !important;
+    font-size: 0.74rem !important;
+    font-weight: 700 !important;
+}
 /* =====================================================
    ZONA RESERVADA DE DESCARGAS (extremo derecho Bloque 2)
    ===================================================== */
